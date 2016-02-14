@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.renesas.cdt.launch.debug.launchConfigurationType">
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Release\Edesign314.x"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="Edesign314"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.renesas.cdt.RL78.configuration.hardwaredebug.2060823146"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Edesign314"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>
