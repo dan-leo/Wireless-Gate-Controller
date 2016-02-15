@@ -150,6 +150,9 @@ void R_MAIN_UserInit(void)
 		}
 	}
 
+	writeByteLcd(0U, 0x1C);
+	for (i = 0; i < 100; i++);
+
 	uart1Status = R_UART1_Receive(&uart1RxBuf[0],1);	// Prime UART1 Rx
 	/* End user code. Do not edit comment generated here */
 }
