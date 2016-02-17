@@ -57,8 +57,6 @@ void r_tau0_channel2_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	timer2_interrupt = 1;
-	PM7=0x7F;
-	P7^=0x80;
     /* End user code. Do not edit comment generated here */
 }
 
