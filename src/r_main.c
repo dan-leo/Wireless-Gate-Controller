@@ -70,7 +70,6 @@ extern tx_flag;
 uint8_t t_received;
 uint8_t send;
 uint8_t lcd_message_max = 32;
-uint8_t soft_timer = 0;
 
 void toggle_led();
 void delay(uint16_t delay);
@@ -89,6 +88,11 @@ void main(void)
 	R_MAIN_UserInit();
 	/* Start user code. Do not edit comment generated here */
 	uart1RxBuf[0] = 'a';
+//	uint8_t soft_timer = 0;
+	uint8_t rx_tail = 0;
+	uint8_t tx_tail = 0;
+	uint8_t *rx;
+	uint8_t *tx;
 	while (1U)
 	{
 		//		if (timer0_interrupt)
@@ -98,46 +102,54 @@ void main(void)
 		//		}
 		if (rx_flag){
 			rx_flag = 0U;
-
 			DI();
-			uart1TxBuf[0] = uart1RxBuf[0];
-//			send = 1;
-			uart1Status = R_UART1_Receive(&uart1RxBuf[0],1);
-			uart1Status = R_UART1_Send(&uart1TxBuf[0],1);
+			uart1Status = R_UART1_Receive(rx,1);
+			uart1RxBuf[rx_tail] = *rx;
+//			uart1TxBuf[tx_tail] = rx;
+			uart1Status = R_UART1_Send(rx,1);
+
+			lcd_clear();
+			print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+
+			rx_tail++;
+			rx_tail %= RX_BUF_LEN;
+			tx_tail++;
+			tx_tail %= TX_BUF_LEN;
 			EI();
 		}
 
-//		if (timer2_interrupt && (soft_timer < 9)){
-//			PM7=0x7F;
-//			P7^=0x80;
-//			timer2_interrupt = 0;
-//			soft_timer++;
-//		}
-//		else if (soft_timer == 9)
-//		{
-//			lcd_clear();
-//			delayNoInt(100);
-//			char lcd_messege[20] = "Fobinson DL 18361137";
-//			print_lcd(lcd_messege, 20);
-//			soft_timer++;
-//		}
-//		else
-//		{
-//
-//		}
-
-
-		//		if (timer2_interrupt && tx_flag && send){
-		//			PM7 = 0x7F;
-		//			P7 ^= 0x80;
-		//			timer2_interrupt = 0;
-		//			tx_flag = 0;
-		//			send--;
-		//			uart1Status = R_UART1_Send(&uart1TxBuf[0],1);
-		//		}
+		/*if (timer2_interrupt){
+			timer2_interrupt = 0;
+			if (soft_timer < 9){
+				PM7=0x7F;
+				P7^=0x80;
+				soft_timer++;
+			}
+			else if (soft_timer >= 9)
+			{
+				lcd_clear();
+				EI();
+//				delayNoInt(100);
+//				char lcd_messege[20] = "abcdefghijklmnopqrst";
+//				print_lcd(lcd_messege, 20);
+				soft_timer++;
+			}
+		}*/
 	}
-	/* End user code. Do not edit comment generated here */
+
+
+
+	//		if (timer2_interrupt && tx_flag && send){
+	//			PM7 = 0x7F;
+	//			P7 ^= 0x80;
+	//			timer2_interrupt = 0;
+	//			tx_flag = 0;
+	//			send--;
+	//			uart1Status = R_UART1_Send(&uart1TxBuf[0],1);
+	//		}
 }
+/* End user code. Do not edit comment generated here */
+
 
 
 /***********************************************************************************************************************
