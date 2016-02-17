@@ -52,5 +52,6 @@ void writeByteLcd(uint8_t reg, uint8_t value);
 
 void delayNoInt(uint16_t delay);
 void startTMR0(int delay);
+void lcd_clear();
 
 #endif /* LCD_H_ */

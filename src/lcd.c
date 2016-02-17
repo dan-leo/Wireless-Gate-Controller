@@ -101,17 +101,7 @@ void initLcd(void)
 	writeByteLcd(LCD_CTRL_WR, FUNCTION_SET);  // Set 2 lines, 5x7 dots
 	delayNoInt(40);					// Start timer with 40 usec delay
 
-	writeByteLcd(LCD_CTRL_WR, LCD_CURSOR_ON);     // Display Cursor ON
-	delayNoInt(40);					// Start timer with 40 usec delay
-
-	writeByteLcd(LCD_CTRL_WR, LCD_CLEAR);          // Clear Display
-	delayNoInt(1640);				// Start timer with 1640 usec delay
-
-	writeByteLcd(LCD_CTRL_WR, CURSOR_MODE_INC);    // Entry Mode set
-	delayNoInt(40);					// Start timer with 40 usec delay
-
-	writeByteLcd(LCD_CTRL_WR, LCD_HOME_L1);
-	delayNoInt(40);					// Start timer with 40 usec delay
+	lcd_clear();
 
 }
 
@@ -130,6 +120,20 @@ void delayNoInt(uint16_t delay){
 	while(TMIF00 == 0) // Wait for timer flag
 		NOP();
 	R_TAU0_Channel0_Stop(); // Stop timer and clear all flags
+}
+
+void lcd_clear(){
+	writeByteLcd(LCD_CTRL_WR, LCD_CURSOR_ON);     // Display Cursor ON
+	delayNoInt(40);					// Start timer with 40 usec delay
+
+	writeByteLcd(LCD_CTRL_WR, LCD_CLEAR);          // Clear Display
+	delayNoInt(1640);				// Start timer with 1640 usec delay
+
+	writeByteLcd(LCD_CTRL_WR, CURSOR_MODE_INC);    // Entry Mode set
+	delayNoInt(40);					// Start timer with 40 usec delay
+
+	writeByteLcd(LCD_CTRL_WR, LCD_HOME_L1);
+	delayNoInt(40);					// Start timer with 40 usec delay
 }
 
 

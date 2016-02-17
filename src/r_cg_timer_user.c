@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-02-16
+* Creation Date: 2016-02-17
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -56,7 +56,9 @@ uint8_t timer2_interrupt;
 void r_tau0_channel2_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
-	timer2_interrupt =1;
+	timer2_interrupt = 1;
+	PM7=0x7F;
+	P7^=0x80;
     /* End user code. Do not edit comment generated here */
 }
 
