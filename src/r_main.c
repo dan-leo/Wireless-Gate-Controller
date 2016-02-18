@@ -88,11 +88,14 @@ void main(void)
 	R_MAIN_UserInit();
 	/* Start user code. Do not edit comment generated here */
 	uart1RxBuf[0] = 'a';
-//	uint8_t soft_timer = 0;
-	uint8_t rx_tail = 0;
-	uint8_t tx_tail = 0;
+	//	uint8_t soft_timer = 0;
+	uint8_t rx_tail;
+	uint8_t tx_tail;
 	uint8_t *rx;
 	uint8_t *tx;
+//	uint16_t k;
+	uint8_t test_mode;
+
 	while (1U)
 	{
 		//		if (timer0_interrupt)
@@ -105,12 +108,31 @@ void main(void)
 			DI();
 			uart1Status = R_UART1_Receive(rx,1);
 			uart1RxBuf[rx_tail] = *rx;
-//			uart1TxBuf[tx_tail] = rx;
+			//			uart1TxBuf[tx_tail] = rx;
 			uart1Status = R_UART1_Send(rx,1);
 
-			lcd_clear();
-			print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+			//lcd_clear();
+			if (*rx == 0x81) test_mode = 1;
+			else if (*rx == 0x80) test_mode = 0;
 
+//			if (test_mode == 1){
+//				if ((*rx == 0xF4) /*|| (*rx == 0x0D)*/) print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+//			}
+
+			//			if (rx_tail < 17){
+			//				rx_tail++;
+			//			}
+
+
+			//			if (rx_tail < 17){
+			//				rx_tail++;
+			//			}
+			//			else
+			//			{
+			//				for (k = rx_tail; k > 1; k--){
+			//					uart1RxBuf[k-1] = uart1RxBuf[k];
+			//				}
+			//			}
 			rx_tail++;
 			rx_tail %= RX_BUF_LEN;
 			tx_tail++;
@@ -197,7 +219,7 @@ void delay(uint16_t delay){
 }
 
 void print_lcd(char *message, uint8_t len){
-	// lcd_clear();
+	lcd_clear();
 
 	int i;
 	if (len > lcd_message_max) len = lcd_message_max;
