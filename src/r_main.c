@@ -74,6 +74,7 @@ uint8_t lcd_message_max = 32;
 void toggle_led();
 void delay(uint16_t delay);
 void print_lcd(char *message, uint8_t len);
+void print_long_message(char * message);
 /* End user code. Do not edit comment generated here */
 void R_MAIN_UserInit(void);
 
@@ -88,12 +89,11 @@ void main(void)
 	R_MAIN_UserInit();
 	/* Start user code. Do not edit comment generated here */
 	uart1RxBuf[0] = 'a';
-	//	uint8_t soft_timer = 0;
+	//	uint8_t soft_timer;
 	uint8_t rx_tail;
 	uint8_t tx_tail;
 	uint8_t *rx;
 	uint8_t *tx;
-//	uint16_t k;
 	uint8_t test_mode;
 
 	while (1U)
@@ -112,12 +112,30 @@ void main(void)
 			uart1Status = R_UART1_Send(rx,1);
 
 			//lcd_clear();
-			if (*rx == 0x81) test_mode = 1;
-			else if (*rx == 0x80) test_mode = 0;
+			if (*rx == 0x81){
+				test_mode = 1;
+				rx_tail=0;
+				print_lcd("test_mode", 9);
+			}
+			else if (*rx == 0x80){
+				test_mode = 0;
+				rx_tail=0;
+				print_lcd("normal_mode", 11);
+			}
 
-//			if (test_mode == 1){
-//				if ((*rx == 0xF4) /*|| (*rx == 0x0D)*/) print_lcd(uart1RxBuf, strlen(uart1RxBuf));
-//			}
+			if (*rx == 0xF4) {
+				if (rx_tail < 16){
+					print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+				}
+				else{
+					print_long_message(uart1RxBuf);
+				}
+				rx_tail = 0;
+			}
+
+			//			if (test_mode == 1){
+			//				if ((*rx == 0xF4) /*|| (*rx == 0x0D)*/) print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+			//			}
 
 			//			if (rx_tail < 17){
 			//				rx_tail++;
@@ -134,15 +152,17 @@ void main(void)
 			//				}
 			//			}
 			rx_tail++;
-			rx_tail %= RX_BUF_LEN;
+//			rx_tail %= RX_BUF_LEN;
 			tx_tail++;
-			tx_tail %= TX_BUF_LEN;
+//			tx_tail %= TX_BUF_LEN;
 			EI();
 		}
 
-		/*if (timer2_interrupt){
+		if (timer2_interrupt){
 			timer2_interrupt = 0;
-			if (soft_timer < 9){
+//			PM7=0x7F;
+//			P7^=0x80;
+			/*			if (soft_timer < 9){
 				PM7=0x7F;
 				P7^=0x80;
 				soft_timer++;
@@ -155,8 +175,8 @@ void main(void)
 //				char lcd_messege[20] = "abcdefghijklmnopqrst";
 //				print_lcd(lcd_messege, 20);
 				soft_timer++;
-			}
-		}*/
+			}*/
+		}
 	}
 
 
@@ -198,8 +218,9 @@ void R_MAIN_UserInit(void)
 	//	timer2_interrupt = 1;
 	//	tx_flag = 1;
 	//	send = 1;
-	char lcd_message[20] = "Robinson DL 18361137";
-	print_lcd(lcd_message, 20);
+	uint8_t lcd_message[20] = "Robinson DL 18361137";
+	print_long_message(lcd_message);
+	// print_lcd(lcd_message, 20);
 	delay(100);
 
 	uart1Status = R_UART1_Receive(&uart1RxBuf[0],1);	// Prime UART1 Rx
@@ -225,7 +246,9 @@ void print_lcd(char *message, uint8_t len){
 	if (len > lcd_message_max) len = lcd_message_max;
 	for (i = 0; i < len; i++)
 	{
-		writeByteLcd(1U, message[i]);
+		if (message[i] <= 0x7F){
+			writeByteLcd(1U, message[i]);
+		}
 		delay(100);
 		// writeByteLcd(0U, LCD_CURSOR_RIGHT);
 		// for (j = 0 ; j < 100; j++);
@@ -243,5 +266,25 @@ void print_lcd(char *message, uint8_t len){
 	// scroll one right
 	//writeByteLcd(0U, 0x1C);
 	//	delay(100);
+}
+
+void print_long_message(char * message)
+{
+	uint8_t head;
+	uint8_t tail;
+	uint8_t lcd_display[16];
+	uint16_t k;
+	for (tail = 0; tail < strlen(message) - 17; tail++)
+	{
+		for(head = 0; head < 16; head++)
+		{
+			lcd_display[head] = message[head + tail];
+		}
+		print_lcd(lcd_display, strlen(lcd_display));
+		for (k = 0; k < 100; k++)
+		{
+			delayNoInt(10000);
+		}
+	}
 }
 /* End user code. Do not edit comment generated here */
