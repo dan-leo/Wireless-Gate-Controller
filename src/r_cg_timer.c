@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-02-24
+* Creation Date: 2016-02-29
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -55,7 +55,7 @@ Global variables and functions
 void R_TAU0_Create(void)
 {
     TAU0EN = 1U;    /* supplies input clock */
-    TPS0 = _0004_TAU_CKM0_FCLK_4 | _0050_TAU_CKM1_FCLK_5 | _0000_TAU_CKM2_FCLK_1 | _0000_TAU_CKM3_FCLK_8;
+    TPS0 = _0000_TAU_CKM0_FCLK_0 | _0040_TAU_CKM1_FCLK_4 | _0000_TAU_CKM2_FCLK_1 | _0000_TAU_CKM3_FCLK_8;
     /* Stop all channels */
     TT0 = _0001_TAU_CH0_STOP_TRG_ON | _0002_TAU_CH1_STOP_TRG_ON | _0004_TAU_CH2_STOP_TRG_ON |
           _0008_TAU_CH3_STOP_TRG_ON | _0200_TAU_CH1_H8_STOP_TRG_ON | _0800_TAU_CH3_H8_STOP_TRG_ON;
@@ -81,15 +81,15 @@ void R_TAU0_Create(void)
     TMPR102 = 1U;
     TMPR002 = 1U;
     /* Channel 0 used as interval timer */
-    TMR00 = _0000_TAU_CLOCK_SELECT_CKM0 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE |
+    TMR00 = _8000_TAU_CLOCK_SELECT_CKM1 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE |
             _0000_TAU_TRIGGER_SOFTWARE | _0000_TAU_MODE_INTERVAL_TIMER | _0000_TAU_START_INT_UNUSED;
     TDR00 = _F617_TAU_TDR00_VALUE;
     TO0 &= ~_0001_TAU_CH0_OUTPUT_VALUE_1;
     TOE0 &= ~_0001_TAU_CH0_OUTPUT_ENABLE;
     /* Channel 2 used as interval timer */
-    TMR02 = _8000_TAU_CLOCK_SELECT_CKM1 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE |
+    TMR02 = _0000_TAU_CLOCK_SELECT_CKM0 | _0000_TAU_CLOCK_MODE_CKS | _0000_TAU_COMBINATION_SLAVE |
             _0000_TAU_TRIGGER_SOFTWARE | _0000_TAU_MODE_INTERVAL_TIMER | _0000_TAU_START_INT_UNUSED;
-    TDR02 = _C34F_TAU_TDR02_VALUE;
+    TDR02 = _1F3F_TAU_TDR02_VALUE;
     TOM0 &= ~_0004_TAU_CH2_OUTPUT_COMBIN;
     TOL0 &= ~_0004_TAU_CH2_OUTPUT_LEVEL_L;
     TO0 &= ~_0004_TAU_CH2_OUTPUT_VALUE_1;
@@ -143,6 +143,87 @@ void R_TAU0_Channel2_Stop(void)
     /* Mask channel 2 interrupt */
     TMMK02 = 1U;    /* disable INTTM02 interrupt */
     TMIF02 = 0U;    /* clear INTTM02 interrupt flag */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RD0_Create
+* Description  : This function initializes the TMRD0 module.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RD0_Create(void)
+{
+    TRD0EN = 1U;    /* enable input clock supply */ 
+    TRDSTR |= _04_TMRD_TRD0_COUNT_CONTINUES;
+    TRDSTR &= (uint8_t)~_01_TMRD_TRD0_COUNT_START;  /* disable TMRD0 operation */
+    TRDMK0 = 1U;    /* disable TMRD0 interrupt */
+    TRDIF0 = 0U;    /* clear TMRD0 interrupt flag */
+    /* Set INTTRD0 low priority */
+    TRDPR10 = 1U;
+    TRDPR00 = 1U;
+    TRDMR |= _00_TMRD_TRDGRC0_GENERAL | _00_TMRD_TRDGRD0_GENERAL;
+    TRDPMR |= _01_TMRD_TRDIOB0_PWM_MODE | _02_TMRD_TRDIOC0_PWM_MODE | _04_TMRD_TRDIOD0_PWM_MODE;
+    TRDDF0 = _00_TMRD_TRDIOD_FORCEDCUTOFF_DISABLE | _00_TMRD_TRDIOC_FORCEDCUTOFF_DISABLE |
+             _00_TMRD_TRDIOB_FORCEDCUTOFF_DISABLE;
+    TRDOER1 &= _F0_TMRD_CHANNEL0_OUTPUT_DEFAULT;
+    TRDOER1 |= _01_TMRD_TRDIOA0_OUTPUT_DISABLE | _00_TMRD_TRDIOB0_OUTPUT_ENABLE | _00_TMRD_TRDIOC0_OUTPUT_ENABLE |
+               _00_TMRD_TRDIOD0_OUTPUT_ENABLE;
+    TRDOCR |= _00_TMRD_TRDIOB0_INITIAL_OUTPUT_L | _00_TMRD_TRDIOC0_INITIAL_OUTPUT_L | _00_TMRD_TRDIOD0_INITIAL_OUTPUT_L;
+    TRDCR0 |= _00_TMRD_INETNAL_CLOCK_F1_FIH | _20_TMRD_COUNTER_CLEAR_TRDGRA;
+    TRDIER0 = _01_TMRD_IMIA_ENABLE | _02_TMRD_IMIB_ENABLE | _04_TMRD_IMIC_ENABLE | _08_TMRD_IMID_ENABLE |
+              _10_TMRD_OVIE_ENABLE;
+    TRDPOCR0 = _01_TMRD_TRDIOB_OUTPUT_ACTIVE_H | _02_TMRD_TRDIOC_OUTPUT_ACTIVE_H | _04_TMRD_TRDIOD_OUTPUT_ACTIVE_H;
+    TRDGRA0 = _3E7F_TMRD_TRDGRA0_VALUE;
+    TRDGRB0 = _2EDF_TMRD_TRDGRB0_VALUE;
+    TRDGRC0 = _1F3F_TMRD_TRDGRC0_VALUE;
+    TRDGRD0 = _0F9F_TMRD_TRDGRD0_VALUE;
+    /* Set TRDIOB0 pin */
+    POM1 &= 0xDFU;
+    P1 &= 0xDFU;
+    PM1 &= 0xDFU;
+    /* Set TRDIOC0 pin */
+    P1 &= 0xBFU;
+    PM1 &= 0xBFU;
+    /* Set TRDIOD0 pin */
+    POM1 &= 0xEFU;
+    P1 &= 0xEFU;
+    PM1 &= 0xEFU;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RD0_Start
+* Description  : This function starts TMRD0 counter.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RD0_Start(void)
+{
+    uint8_t trdsr_dummy;
+    
+    trdsr_dummy = TRDSR0; /* read TRDSR0 before write 0 */
+    TRDSR0 = 0x00U; /* clear TRD0 each interrupt request */
+    TRDIF0 = 0U;    /* clear TMRD0 interrupt flag */
+    TRDMK0 = 0U;    /* enable TMRD0 interrupt */
+    TRDSTR |= _04_TMRD_TRD0_COUNT_CONTINUES;
+    TRDSTR |= _01_TMRD_TRD0_COUNT_START;    /* start TMRD0 counter */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RD0_Stop
+* Description  : This function stops TMRD0 counter.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RD0_Stop(void)
+{
+    uint8_t trdsr_dummy;
+    
+    TRDSTR |= _04_TMRD_TRD0_COUNT_CONTINUES;
+    TRDSTR &= (uint8_t)~_01_TMRD_TRD0_COUNT_START;  /* stop TMRD0 counter */
+    TRDMK0 = 1U;    /* disable TMRD0 interrupt */
+    TRDIF0 = 0U;    /* clear TMRD0 interrupt flag */
+    trdsr_dummy = TRDSR0; /* read TRDSR0 before write 0 */
+    TRDSR0 = 0x00U; /* clear TRD0 each interrupt request */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

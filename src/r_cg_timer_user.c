@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-02-24
+* Creation Date: 2016-02-29
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -57,6 +57,18 @@ void r_tau0_channel2_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	timer2_interrupt = 1;
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_tmr_rd0_interrupt
+* Description  : This function is INTTRD0 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_tmr_rd0_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
     /* End user code. Do not edit comment generated here */
 }
 

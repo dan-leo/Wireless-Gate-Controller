@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements main function.
-* Creation Date: 2016-02-24
+* Creation Date: 2016-02-29
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -95,6 +95,8 @@ void main(void)
 	uint8_t *rx;
 	uint8_t *tx;
 	uint8_t test_mode;
+	uint16_t pwm_counter;
+	PM7 &= 0x7F;
 
 	while (1U)
 	{
@@ -160,6 +162,15 @@ void main(void)
 
 		if (timer2_interrupt){
 			timer2_interrupt = 0;
+
+			pwm_counter++;
+			pwm_counter%=2*1000/30;
+			if (pwm_counter < 1000/30 ){
+				P7|=0x80;
+			}
+			else {
+				P7&=0x7F;
+			}
 //			PM7=0x7F;
 //			P7^=0x80;
 			/*			if (soft_timer < 9){
@@ -209,6 +220,17 @@ void R_MAIN_UserInit(void)
 	R_TAU0_Create();
 	R_TAU0_Channel2_Start();
 
+	delayNoInt(1000);
+	R_TMR_RD0_Create();
+	R_TMR_RD0_Start();
+
+	//PM4 |= 0xF3;
+	//P4 = 0x0 | 0x8 | 0x4;
+//	PM4_bit.no2 = 0;
+//	PM4_bit.no3 = 0;
+//	P4_bit.no2 = 1;
+//	P4_bit.no3 = 1;
+
 	R_UART1_Start();
 	initLcd();
 	// writeByteLcd(0U, 0x1);
@@ -228,7 +250,6 @@ void R_MAIN_UserInit(void)
 
 /* Start user code for adding. Do not edit comment generated here */
 void toggle_led(){
-	//
 	P7 ^= 0xFF;
 }
 

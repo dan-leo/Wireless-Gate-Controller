@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements general head file.
-* Creation Date: 2016-02-24
+* Creation Date: 2016-02-29
 ***********************************************************************************************************************/
 
 #ifndef STATUS_H
