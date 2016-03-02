@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements main function.
-* Creation Date: 2016-02-29
+* Creation Date: 2016-03-02
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -38,6 +38,7 @@ Includes
 #include "r_cg_cgc.h"
 #include "r_cg_port.h"
 #include "r_cg_serial.h"
+#include "r_cg_adc.h"
 #include "r_cg_timer.h"
 /* Start user code for include. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -66,6 +67,8 @@ MD_STATUS uart1Status;
 extern timer2_interrupt;
 extern rx_flag;
 extern tx_flag;
+extern adc_ready;
+
 // flag to check if a 't' has been received
 uint8_t t_received;
 uint8_t send;
@@ -96,6 +99,8 @@ void main(void)
 	uint8_t *tx;
 	uint8_t test_mode;
 	uint16_t pwm_counter;
+	uint16_t adc_result;
+
 	PM7 &= 0x7F;
 
 	while (1U)
@@ -123,6 +128,15 @@ void main(void)
 				test_mode = 0;
 				rx_tail=0;
 				print_lcd("normal_mode", 11);
+			}
+			else if (*rx == 'a'){
+				R_ADC_Start();
+				P7|=0x80;
+				while(!adc_ready);
+				adc_ready=0;
+				R_ADC_Get_Result(&adc_result);
+				R_UART1_Send('>', 1);
+				R_UART1_Send((uint8_t)adc_result, 1);
 			}
 
 			if (*rx == 0xF4) {
@@ -166,10 +180,10 @@ void main(void)
 			pwm_counter++;
 			pwm_counter%=2*1000/30;
 			if (pwm_counter < 1000/30 ){
-				P7|=0x80;
+//				P7|=0x80;
 			}
 			else {
-				P7&=0x7F;
+//				P7&=0x7F;
 			}
 //			PM7=0x7F;
 //			P7^=0x80;
@@ -188,6 +202,12 @@ void main(void)
 				soft_timer++;
 			}*/
 		}
+		if (adc_ready){
+			adc_ready = 0;
+			P7&=0x7F;
+			R_ADC_Get_Result(&adc_result);
+		}
+
 	}
 
 
@@ -219,6 +239,10 @@ void R_MAIN_UserInit(void)
 
 	R_TAU0_Create();
 	R_TAU0_Channel2_Start();
+
+//	R_ADC_Create();
+	R_ADC_Start();
+	R_ADC_Set_OperationOn();
 
 	delayNoInt(1000);
 	R_TMR_RD0_Create();

@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements system initializing function.
-* Creation Date: 2016-02-29
+* Creation Date: 2016-03-02
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -38,6 +38,7 @@ Includes
 #include "r_cg_cgc.h"
 #include "r_cg_port.h"
 #include "r_cg_serial.h"
+#include "r_cg_adc.h"
 #include "r_cg_timer.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
@@ -65,6 +66,7 @@ void R_Systeminit(void)
     R_CGC_Create();
     R_PORT_Create();
     R_SAU0_Create();
+    R_ADC_Create();
     R_TAU0_Create();
     R_TMR_RD0_Create();
     IAWCTL = 0x00U;

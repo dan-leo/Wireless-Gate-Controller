@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-02-29
+* Creation Date: 2016-03-02
 ***********************************************************************************************************************/
 
 #ifndef TAU_H
@@ -894,10 +894,6 @@ Macro definitions
 #define _3E7F_TMRD_TRDGRA0_VALUE                (0x3E7FU)
 /* TMRD register B0 (TRDGRB0) */
 #define _2EDF_TMRD_TRDGRB0_VALUE                (0x2EDFU)
-/* TMRD register C0 (TRDGRC0) */
-#define _1F3F_TMRD_TRDGRC0_VALUE                (0x1F3FU)
-/* TMRD register D0 (TRDGRD0) */
-#define _0F9F_TMRD_TRDGRD0_VALUE                (0x0F9FU)
 
 /***********************************************************************************************************************
 Typedef definitions

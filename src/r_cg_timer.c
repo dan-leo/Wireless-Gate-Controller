@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-02-29
+* Creation Date: 2016-03-02
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -162,32 +162,22 @@ void R_TMR_RD0_Create(void)
     TRDPR10 = 1U;
     TRDPR00 = 1U;
     TRDMR |= _00_TMRD_TRDGRC0_GENERAL | _00_TMRD_TRDGRD0_GENERAL;
-    TRDPMR |= _01_TMRD_TRDIOB0_PWM_MODE | _02_TMRD_TRDIOC0_PWM_MODE | _04_TMRD_TRDIOD0_PWM_MODE;
+    TRDPMR |= _01_TMRD_TRDIOB0_PWM_MODE;
     TRDDF0 = _00_TMRD_TRDIOD_FORCEDCUTOFF_DISABLE | _00_TMRD_TRDIOC_FORCEDCUTOFF_DISABLE |
              _00_TMRD_TRDIOB_FORCEDCUTOFF_DISABLE;
     TRDOER1 &= _F0_TMRD_CHANNEL0_OUTPUT_DEFAULT;
-    TRDOER1 |= _01_TMRD_TRDIOA0_OUTPUT_DISABLE | _00_TMRD_TRDIOB0_OUTPUT_ENABLE | _00_TMRD_TRDIOC0_OUTPUT_ENABLE |
-               _00_TMRD_TRDIOD0_OUTPUT_ENABLE;
-    TRDOCR |= _00_TMRD_TRDIOB0_INITIAL_OUTPUT_L | _00_TMRD_TRDIOC0_INITIAL_OUTPUT_L | _00_TMRD_TRDIOD0_INITIAL_OUTPUT_L;
+    TRDOER1 |= _01_TMRD_TRDIOA0_OUTPUT_DISABLE | _00_TMRD_TRDIOB0_OUTPUT_ENABLE | _04_TMRD_TRDIOC0_OUTPUT_DISABLE |
+               _08_TMRD_TRDIOD0_OUTPUT_DISABLE;
+    TRDOCR |= _00_TMRD_TRDIOB0_INITIAL_OUTPUT_L;
     TRDCR0 |= _00_TMRD_INETNAL_CLOCK_F1_FIH | _20_TMRD_COUNTER_CLEAR_TRDGRA;
-    TRDIER0 = _01_TMRD_IMIA_ENABLE | _02_TMRD_IMIB_ENABLE | _04_TMRD_IMIC_ENABLE | _08_TMRD_IMID_ENABLE |
-              _10_TMRD_OVIE_ENABLE;
-    TRDPOCR0 = _01_TMRD_TRDIOB_OUTPUT_ACTIVE_H | _02_TMRD_TRDIOC_OUTPUT_ACTIVE_H | _04_TMRD_TRDIOD_OUTPUT_ACTIVE_H;
+    TRDIER0 = _01_TMRD_IMIA_ENABLE | _02_TMRD_IMIB_ENABLE | _10_TMRD_OVIE_ENABLE;
+    TRDPOCR0 = _01_TMRD_TRDIOB_OUTPUT_ACTIVE_H;
     TRDGRA0 = _3E7F_TMRD_TRDGRA0_VALUE;
     TRDGRB0 = _2EDF_TMRD_TRDGRB0_VALUE;
-    TRDGRC0 = _1F3F_TMRD_TRDGRC0_VALUE;
-    TRDGRD0 = _0F9F_TMRD_TRDGRD0_VALUE;
     /* Set TRDIOB0 pin */
     POM1 &= 0xDFU;
     P1 &= 0xDFU;
     PM1 &= 0xDFU;
-    /* Set TRDIOC0 pin */
-    P1 &= 0xBFU;
-    PM1 &= 0xBFU;
-    /* Set TRDIOD0 pin */
-    POM1 &= 0xEFU;
-    P1 &= 0xEFU;
-    PM1 &= 0xEFU;
 }
 
 /***********************************************************************************************************************
