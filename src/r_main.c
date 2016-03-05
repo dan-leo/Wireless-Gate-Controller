@@ -43,8 +43,8 @@ Includes
 /* Start user code for include. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 #include "lcd.h"
-#include "stdlib.h"
-#include "stdio.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -68,13 +68,17 @@ extern timer2_interrupt;
 extern rx_flag;
 extern tx_flag;
 extern adc_ready;
+extern rx_char;
+
+uint8_t rx_char_main;
 
 // flag to check if a 't' has been received
 uint8_t t_received;
 uint8_t send;
 uint8_t lcd_message_max = 32;
 
-uint8_t *rx, *tx;
+uint8_t *rx;
+uint8_t *tx;
 
 void toggle_led();
 void delay(uint16_t delay);
@@ -117,7 +121,7 @@ void main(void)
 			uart1Status = R_UART1_Receive(rx,1);
 			uart1RxBuf[rx_tail] = *rx;
 			//			uart1TxBuf[tx_tail] = rx;
-			uart1Status = R_UART1_Send(rx,1);
+			uart1Status = R_UART1_Send(&rx_char_main,1);
 
 			//lcd_clear();
 			if (*rx == 0x81){

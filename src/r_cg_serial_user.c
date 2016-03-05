@@ -49,8 +49,11 @@ extern volatile uint8_t * gp_uart1_rx_address;         /* uart1 receive buffer a
 extern volatile uint16_t  g_uart1_rx_count;            /* uart1 receive data number */
 extern volatile uint16_t  g_uart1_rx_length;           /* uart1 receive data length */
 /* Start user code for global. Do not edit comment generated here */
+extern volatile rx_char_main;
+
 uint8_t rx_flag = 0;
 uint8_t tx_flag = 1;
+uint8_t rx_char;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -73,6 +76,10 @@ void r_uart1_interrupt_receive(void)
     }
     
     rx_data = RXD1;
+    /* Start user code. Do not edit comment generated here */
+	rx_char = rx_data;
+	rx_char_main = rx_data;
+    /* End user code. Do not edit comment generated here */
 
     if (g_uart1_rx_length > g_uart1_rx_count)
     {
