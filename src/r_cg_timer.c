@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-03-02
+* Creation Date: 2016-03-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -172,8 +172,8 @@ void R_TMR_RD0_Create(void)
     TRDCR0 |= _00_TMRD_INETNAL_CLOCK_F1_FIH | _20_TMRD_COUNTER_CLEAR_TRDGRA;
     TRDIER0 = _01_TMRD_IMIA_ENABLE | _02_TMRD_IMIB_ENABLE | _10_TMRD_OVIE_ENABLE;
     TRDPOCR0 = _01_TMRD_TRDIOB_OUTPUT_ACTIVE_H;
-    TRDGRA0 = _3E7F_TMRD_TRDGRA0_VALUE;
-    TRDGRB0 = _2EDF_TMRD_TRDGRB0_VALUE;
+    TRDGRA0 = _018F_TMRD_TRDGRA0_VALUE;
+    TRDGRB0 = _012B_TMRD_TRDGRB0_VALUE;
     /* Set TRDIOB0 pin */
     POM1 &= 0xDFU;
     P1 &= 0xDFU;

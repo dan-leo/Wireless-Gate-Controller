@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements main function.
-* Creation Date: 2016-03-02
+* Creation Date: 2016-03-06
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -74,6 +74,8 @@ uint8_t t_received;
 uint8_t send;
 uint8_t lcd_message_max = 32;
 
+uint8_t *rx, *tx;
+
 void toggle_led();
 void delay(uint16_t delay);
 void print_lcd(char *message, uint8_t len);
@@ -91,16 +93,15 @@ void main(void)
 {
     R_MAIN_UserInit();
     /* Start user code. Do not edit comment generated here */
-	uart1RxBuf[0] = 'a';
+	uart1RxBuf[0] = 'b';
+	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
 	//	uint8_t soft_timer;
-	uint8_t rx_tail;
-	uint8_t tx_tail;
-	uint8_t *rx;
-	uint8_t *tx;
-	uint8_t test_mode;
-	uint16_t pwm_counter;
-	uint16_t adc_result;
+	uint8_t rx_tail, tx_tail, test_mode;
 
+	uint16_t pwm_counter, adc_result;
+	uint8_t * c = ">";
+
+	TRDGRB0 = 225U;
 	PM7 &= 0x7F;
 
 	while (1U)
@@ -111,8 +112,8 @@ void main(void)
 		//			uart1Status = R_UART1_Send(&uart1TxBuf[0], 1);
 		//		}
 		if (rx_flag){
-			rx_flag = 0U;
-			DI();
+			rx_flag = 0;
+			//DI();
 			uart1Status = R_UART1_Receive(rx,1);
 			uart1RxBuf[rx_tail] = *rx;
 			//			uart1TxBuf[tx_tail] = rx;
@@ -135,8 +136,12 @@ void main(void)
 				while(!adc_ready);
 				adc_ready=0;
 				R_ADC_Get_Result(&adc_result);
-				R_UART1_Send('>', 1);
+				R_UART1_Send(c, 1);
 				R_UART1_Send((uint8_t)adc_result, 1);
+			}
+
+			if (rx_tail < 16){
+				//[[print_lcd(uart1RxBuf, strlen(uart1RxBuf));
 			}
 
 			if (*rx == 0xF4) {
@@ -168,10 +173,10 @@ void main(void)
 			//				}
 			//			}
 			rx_tail++;
-//			rx_tail %= RX_BUF_LEN;
+			rx_tail %= RX_BUF_LEN;
 			tx_tail++;
-//			tx_tail %= TX_BUF_LEN;
-			EI();
+			tx_tail %= TX_BUF_LEN;
+			//EI();
 		}
 
 		if (timer2_interrupt){
@@ -204,8 +209,9 @@ void main(void)
 		}
 		if (adc_ready){
 			adc_ready = 0;
-			P7&=0x7F;
-			R_ADC_Get_Result(&adc_result);
+//			P7&=0x7F;
+			P7^=0x80;
+//			R_ADC_Get_Result(&adc_result);
 		}
 
 	}
@@ -234,19 +240,18 @@ void R_MAIN_UserInit(void)
 {
     /* Start user code. Do not edit comment generated here */
 	EI();
-	R_TAU0_Create();
-	R_TAU0_Channel0_Start();
+	//[[R_TAU0_Channel0_Start();
+	//[[R_TAU0_Channel2_Start();
 
-	R_TAU0_Create();
-	R_TAU0_Channel2_Start();
+	R_UART1_Start();
 
 //	R_ADC_Create();
-	R_ADC_Start();
-	R_ADC_Set_OperationOn();
+	//[[R_ADC_Start();
+//	R_ADC_Set_OperationOn();
 
-	delayNoInt(1000);
-	R_TMR_RD0_Create();
-	R_TMR_RD0_Start();
+	//[[delayNoInt(1000);
+	//[[R_TMR_RD0_Create();
+	//[[R_TMR_RD0_Start();
 
 	//PM4 |= 0xF3;
 	//P4 = 0x0 | 0x8 | 0x4;
@@ -255,27 +260,25 @@ void R_MAIN_UserInit(void)
 //	P4_bit.no2 = 1;
 //	P4_bit.no3 = 1;
 
-	R_UART1_Start();
-	initLcd();
+
+	//[[initLcd();
 	// writeByteLcd(0U, 0x1);
 	// writeByteLcd(0U, 0x2);
 
 	//	timer2_interrupt = 1;
 	//	tx_flag = 1;
 	//	send = 1;
-	uint8_t lcd_message[20] = "Robinson DL 18361137";
-	print_long_message(lcd_message);
+	//[[uint8_t lcd_message[20] = "Robinson DL 18361137";
+	//[[print_long_message(lcd_message);
 	// print_lcd(lcd_message, 20);
-	delay(100);
+	//[[delay(100);
 
-	uart1Status = R_UART1_Receive(&uart1RxBuf[0],1);	// Prime UART1 Rx
+
+	uart1Status = R_UART1_Receive(rx,1);	// Prime UART1 Rx
 	/* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
-void toggle_led(){
-	P7 ^= 0xFF;
-}
 
 void delay(uint16_t delay){
 	// DI();
