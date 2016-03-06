@@ -81,7 +81,8 @@ void delay(uint16_t delay);
 void print_lcd(char *message, uint8_t len);
 void print_long_message(char * message);
 void main_service();
-uint16_t scale_down_16bit(uint16_t value, uint8_t percentage);
+uint16_t scale_down(uint16_t value, uint8_t percentage);
+uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t ratio_denominator);
 /* End user code. Do not edit comment generated here */
 void R_MAIN_UserInit(void);
 
@@ -247,14 +248,33 @@ void motor_power(uint8_t percentage){
 	volatile uint8_t max_duty_cycle_percentage = 44;
 	volatile uint16_t falling_edge_of_decrementing_steps;
 	volatile uint16_t scaled_steps;
-	scaled_steps = scale_down_16bit(TRDGRA0,max_duty_cycle_percentage);
-	scaled_steps = scale_down_16bit(scaled_steps,percentage);
+	scaled_steps = scale_down(TRDGRA0,max_duty_cycle_percentage);
+	scaled_steps = scale_down(scaled_steps,percentage);
 	falling_edge_of_decrementing_steps = TRDGRA0 - scaled_steps;
 	TRDGRB0 = falling_edge_of_decrementing_steps;
 }
 
-uint16_t scale_down_16bit(uint16_t value, uint8_t percentage){
+/**
+ * update power of motor according ratio
+ * motor pwm % limited to specified value.
+ * @param: fraction
+ */
+void motor_power_ratio(uint16_t ratio_numerator, uint16_t ratio_denominator){
+	volatile uint8_t max_duty_cycle_percentage = 100;
+	volatile uint16_t falling_edge_of_decrementing_steps;
+	volatile uint16_t scaled_steps;
+	scaled_steps = scale_down(TRDGRA0,max_duty_cycle_percentage);
+	scaled_steps = scale_down_ratio(scaled_steps, ratio_numerator, ratio_denominator);
+	falling_edge_of_decrementing_steps = TRDGRA0 - scaled_steps;
+	TRDGRB0 = falling_edge_of_decrementing_steps;
+}
+
+uint16_t scale_down(uint16_t value, uint8_t percentage){
 	return ((value * percentage) / 100);
+}
+
+uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t ratio_denominator){
+	return ((value * ratio_numerator) / ratio_denominator);
 }
 
 void main_service(){
@@ -340,9 +360,9 @@ void main_service(){
 
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
-
+			adc_last_reading = adc_get_reading();
+			motor_power_ratio(adc_last_reading,1024);
 			if (adc_enable){
-				adc_last_reading = adc_get_reading();
 				serial_print_adc(adc_last_reading);
 			}
 
