@@ -81,6 +81,7 @@ void delay(uint16_t delay);
 void print_lcd(char *message, uint8_t len);
 void print_long_message(char * message);
 void main_service();
+uint16_t scale_down_16bit(uint16_t value, uint8_t percentage);
 /* End user code. Do not edit comment generated here */
 void R_MAIN_UserInit(void);
 
@@ -118,12 +119,7 @@ void R_MAIN_UserInit(void)
 
 	R_UART1_Start();
 
-	//	R_ADC_Create();
-	// R_ADC_Start();
-	//	R_ADC_Set_OperationOn();
-
 	delayNoInt(1000);
-	R_TMR_RD0_Create();
 	R_TMR_RD0_Start();
 
 	//PM4 |= 0xF3;
@@ -242,6 +238,25 @@ void pwm_change_duty_cycle(uint8_t percentage){
 	TRDGRB0 = falling_edge_of_decrementing_steps;
 }
 
+/**
+ * change power of motor.
+ * motor pwm % limited to specified value.
+ * @param: 0-100%
+ */
+void motor_power(uint8_t percentage){
+	volatile uint8_t max_duty_cycle_percentage = 44;
+	volatile uint16_t falling_edge_of_decrementing_steps;
+	volatile uint16_t scaled_steps;
+	scaled_steps = scale_down_16bit(TRDGRA0,max_duty_cycle_percentage);
+	scaled_steps = scale_down_16bit(scaled_steps,percentage);
+	falling_edge_of_decrementing_steps = TRDGRA0 - scaled_steps;
+	TRDGRB0 = falling_edge_of_decrementing_steps;
+}
+
+uint16_t scale_down_16bit(uint16_t value, uint8_t percentage){
+	return ((value * percentage) / 100);
+}
+
 void main_service(){
 	uart1RxBuf[0] = '>';
 	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
@@ -251,7 +266,7 @@ void main_service(){
 	volatile uint16_t adc_last_reading;
 	volatile uint8_t adc_enable = 0;
 
-	pwm_change_duty_cycle(50);
+	motor_power(28);
 	PM7 &= 0x7F;
 
 	while (1U)
