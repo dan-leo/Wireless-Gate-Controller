@@ -886,10 +886,10 @@ Macro definitions
 #define _F617_TAU_TDR00_VALUE                   (0xF617U)
 /* Clock divisor for TAU0 channel 0 */
 #define _0010_TAU0_CHANNEL0_DIVISOR             (0x0010U)
-/* 16-bit timer data register 02 (TDR02) */
-#define _1F3F_TAU_TDR02_VALUE                   (0x1F3FU)
-/* Clock divisor for TAU0 channel 2 */
-#define _0001_TAU0_CHANNEL2_DIVISOR             (0x0001U)
+/* 8-bit timer data register 01 (TDR01L) */
+#define _61_TAU_TDR01L_VALUE                    (0x61U)
+/* Clock divisor for TAU0 channel 1 */
+#define _4000_TAU0_CHANNEL1_DIVISOR             (0x4000U)
 /* TMRD register A0 (TRDGRA0) */
 #define _018F_TMRD_TRDGRA0_VALUE                (0x018FU)
 /* TMRD register B0 (TRDGRB0) */
@@ -913,8 +913,8 @@ Global functions
 void R_TAU0_Create(void);
 void R_TAU0_Channel0_Start(void);
 void R_TAU0_Channel0_Stop(void);
-void R_TAU0_Channel2_Start(void);
-void R_TAU0_Channel2_Stop(void);
+void R_TAU0_Channel1_Lower8bits_Start(void);
+void R_TAU0_Channel1_Lower8bits_Stop(void);
 void R_TMR_RD0_Create(void);
 void R_TMR_RD0_Start(void);
 void R_TMR_RD0_Stop(void);

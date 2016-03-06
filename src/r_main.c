@@ -64,18 +64,17 @@ volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
 volatile MD_STATUS uart1Status;
 
 //this variable gets modified every 1ms by the timer interrupt
-extern volatile timer2_interrupt;
-
+extern volatile timer1_interrupt;
 extern volatile rx_flag;
-
 extern volatile adc_ready;
 
+uint8_t rx;
 // uart fix
 uint8_t rx_char_main;
 
 volatile uint8_t lcd_message_max = 32;
 
-volatile uint8_t rx;
+
 
 void toggle_led();
 void delay(uint16_t delay);
@@ -95,7 +94,7 @@ void main(void)
 {
 	R_MAIN_UserInit();
 	/* Start user code. Do not edit comment generated here */
-	//$
+	main_service();
 	while (1U)
 	{
 		//#
@@ -115,7 +114,7 @@ void R_MAIN_UserInit(void)
 {
 	/* Start user code. Do not edit comment generated here */
 	R_TAU0_Channel0_Start();
-	R_TAU0_Channel2_Start();
+	R_TAU0_Channel1_Lower8bits_Start();
 
 	R_UART1_Start();
 
@@ -149,8 +148,6 @@ void R_MAIN_UserInit(void)
 
 
 	uart1Status = R_UART1_Receive(&rx,1);	// Prime UART1 Rx
-
-	main_service();
 	/* End user code. Do not edit comment generated here */
 }
 
@@ -212,26 +209,53 @@ void print_long_message(char * message)
 	}
 }
 
+void serial_print_adc(uint16_t reading){
+	uint8_t a;
+	a = reading >> 8;
+	R_UART1_Send(&a, 1);
+	delay(65535U);
+	a = (uint8_t)reading;
+	R_UART1_Send(&a, 1);
+}
+
+uint16_t adc_get_reading(){
+	uint16_t adc_result;
+	P7^=0x80;
+	R_ADC_Start();
+	while(!adc_ready);
+	adc_ready=0;
+	R_ADC_Get_Result(&adc_result);
+	R_ADC_Stop();
+	return adc_result;
+}
+
+/**
+ * change duty cycle of pwm signal for motor.
+ * @param: uint8_t percentage
+ */
+void pwm_change_duty_cycle(uint8_t percentage){
+	volatile uint16_t max_motor_steps = TRDGRA0;
+	volatile uint16_t falling_edge_of_decrementing_steps;
+	if (percentage > 100) percentage = 100;
+	if (percentage < -100) percentage = -100;
+	falling_edge_of_decrementing_steps = (100*max_motor_steps - percentage*max_motor_steps)/100;
+	TRDGRB0 = falling_edge_of_decrementing_steps;
+}
+
 void main_service(){
 	uart1RxBuf[0] = '>';
 	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
-	//	uint8_t soft_timer;
 	volatile uint8_t rx_tail, tx_tail, test_mode;
 
 	volatile uint16_t pwm_counter;
-	uint16_t adc_result;
-	uint8_t * c = "{";
+	volatile uint16_t adc_last_reading;
+	volatile uint8_t adc_enable = 0;
 
-	TRDGRB0 = 225U;
+	pwm_change_duty_cycle(50);
 	PM7 &= 0x7F;
 
 	while (1U)
 	{
-		//		if (timer0_interrupt)
-		//		{
-		//			timer0_interrupt = 0;
-		//			uart1Status = R_UART1_Send(&uart1TxBuf[0], 1);
-		//		}
 		if (rx_flag){
 			rx_flag = 0;
 			//DI();
@@ -252,23 +276,12 @@ void main_service(){
 				rx_tail=0;
 				print_lcd("normal_mode", 11);
 			}
-			else if (rx == 'a'){
-				uint8_t a;
-				R_ADC_Start();
-				P7^=0x80;
-				while(!adc_ready);
-				adc_ready=0;
-				R_ADC_Get_Result(&adc_result);
-				// R_UART1_Send(c, 1);
-				//				R_UART1_Send(&adc_result, 1);
-				//				delay(100);
-				a = adc_result >> 8;
-				R_UART1_Send(&a, 1);
-				delay(100000);
-				a = (uint8_t)adc_result;
-				R_UART1_Send(&a, 1);
+			else if (rx == '*'){
+				adc_enable ^= 1;
 
-				R_ADC_Stop();
+				// send one dummy char to get a column of 2 chars in RealTerm
+				uint8_t *c = "{";
+				R_UART1_Send(c, 1);
 			}
 
 			if (rx_tail < 16){
@@ -310,17 +323,22 @@ void main_service(){
 			//EI();
 		}
 
-		if (timer2_interrupt){
-			timer2_interrupt = 0;
+		if (timer1_interrupt){
+			timer1_interrupt = 0;
 
-			pwm_counter++;
+			if (adc_enable){
+				adc_last_reading = adc_get_reading();
+				serial_print_adc(adc_last_reading);
+			}
+
+			/*			pwm_counter++;
 			pwm_counter%=2*1000/30;
 			if (pwm_counter < 1000/30 ){
 				//				P7|=0x80;
 			}
 			else {
 				//				P7&=0x7F;
-			}
+			}*/
 			//			PM7=0x7F;
 			//			P7^=0x80;
 			/*			if (soft_timer < 9){

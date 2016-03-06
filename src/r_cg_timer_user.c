@@ -44,19 +44,19 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-uint8_t timer2_interrupt;
+uint8_t timer1_interrupt;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: r_tau0_channel2_interrupt
-* Description  : This function is INTTM02 interrupt service routine.
+* Function Name: r_tau0_channel1_interrupt
+* Description  : This function is INTTM01 interrupt service routine.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void r_tau0_channel2_interrupt(void)
+void r_tau0_channel1_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
-	timer2_interrupt = 1;
+	timer1_interrupt = 1;
     /* End user code. Do not edit comment generated here */
 }
 

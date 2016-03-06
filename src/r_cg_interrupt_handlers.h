@@ -53,8 +53,8 @@ Global functions
 void r_uart1_interrupt_send(void) __attribute__ ((interrupt));
 //0x26
 void r_uart1_interrupt_receive(void) __attribute__ ((interrupt));
-//0x30
-void r_tau0_channel2_interrupt(void) __attribute__ ((interrupt));
+//0x2E
+void r_tau0_channel1_interrupt(void) __attribute__ ((interrupt));
 //0x34
 void r_adc_interrupt(void) __attribute__ ((interrupt));
 //0x56
