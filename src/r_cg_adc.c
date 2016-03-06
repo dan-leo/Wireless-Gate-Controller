@@ -71,11 +71,12 @@ void R_ADC_Create(void)
     PMC12 |= 0x01U;
     PM12 |= 0x01U;
     ADM0 = _08_AD_CONVERSION_CLOCK_32 | _00_AD_TIME_MODE_NORMAL_1 | _00_AD_OPERMODE_SELECT;
-    ADM1 = _00_AD_TRIGGER_SOFTWARE | _00_AD_CONVMODE_CONSELECT;
+    ADM1 = _00_AD_TRIGGER_SOFTWARE | _20_AD_CONVMODE_ONESELECT;
     ADM2 = _00_AD_POSITIVE_VDD | _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;          
     ADUL = _FF_AD_ADUL_VALUE;
     ADLL = _00_AD_ADLL_VALUE;
     ADS = _02_AD_INPUT_CHANNEL_2;
+    ADCE = 1U;  /* enable AD comparator */
 }
 
 /***********************************************************************************************************************

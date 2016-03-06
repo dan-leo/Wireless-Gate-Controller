@@ -1,39 +1,39 @@
 /***********************************************************************************************************************
-* DISCLAIMER
-* This software is supplied by Renesas Electronics Corporation and is only 
-* intended for use with Renesas products. No other uses are authorized. This 
-* software is owned by Renesas Electronics Corporation and is protected under 
-* all applicable laws, including copyright laws.
-* THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING 
-* THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT 
-* LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 
-* AND NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
-* TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS 
-* ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE 
-* FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR 
-* ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE 
-* BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-* Renesas reserves the right, without notice, to make changes to this software 
-* and to discontinue the availability of this software.  By using this software, 
-* you agree to the additional terms and conditions found by accessing the 
-* following link:
-* http://www.renesas.com/disclaimer
-*
-* Copyright (C) 2011, 2013 Renesas Electronics Corporation. All rights reserved.
-***********************************************************************************************************************/
+ * DISCLAIMER
+ * This software is supplied by Renesas Electronics Corporation and is only
+ * intended for use with Renesas products. No other uses are authorized. This
+ * software is owned by Renesas Electronics Corporation and is protected under
+ * all applicable laws, including copyright laws.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+ * THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT
+ * LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
+ * TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS
+ * ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR
+ * ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE
+ * BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * Renesas reserves the right, without notice, to make changes to this software
+ * and to discontinue the availability of this software.  By using this software,
+ * you agree to the additional terms and conditions found by accessing the
+ * following link:
+ * http://www.renesas.com/disclaimer
+ *
+ * Copyright (C) 2011, 2013 Renesas Electronics Corporation. All rights reserved.
+ ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_main.c
-* Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
-* Device(s)    : R5F104LE
-* Tool-Chain   : GCCRL78
-* Description  : This file implements main function.
-* Creation Date: 2016-03-06
-***********************************************************************************************************************/
+ * File Name    : r_main.c
+ * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
+ * Device(s)    : R5F104LE
+ * Tool-Chain   : GCCRL78
+ * Description  : This file implements main function.
+ * Creation Date: 2016-03-06
+ ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 Includes
-***********************************************************************************************************************/
+ ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "r_cg_cgc.h"
 #include "r_cg_port.h"
@@ -51,59 +51,176 @@ Includes
 
 /***********************************************************************************************************************
 Global variables and functions
-***********************************************************************************************************************/
+ ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 uint8_t uart1RxBuf[RX_BUF_LEN];
-uint16_t uart1RxCnt;
-uint8_t uart1RxFlag;
-uint8_t uart1TxBuf[TX_BUF_LEN];
-uint16_t uart1TxCnt;
-uint8_t uart1TxFlag;
-uint8_t	uart1RxErrFlag;	// UART2 Receive Error Flag
-uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
-MD_STATUS uart1Status;
+volatile uint16_t uart1RxCnt;
+volatile uint8_t uart1RxFlag;
+volatile uint8_t uart1TxBuf[TX_BUF_LEN];
+volatile uint16_t uart1TxCnt;
+volatile uint8_t uart1TxFlag;
+volatile uint8_t uart1RxErrFlag;	// UART2 Receive Error Flag
+volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
+volatile MD_STATUS uart1Status;
 
 //this variable gets modified every 1ms by the timer interrupt
-extern timer2_interrupt;
-extern rx_flag;
-extern tx_flag;
-extern adc_ready;
-extern rx_char;
+extern volatile timer2_interrupt;
 
+extern volatile rx_flag;
+
+extern volatile adc_ready;
+
+// uart fix
 uint8_t rx_char_main;
 
-// flag to check if a 't' has been received
-uint8_t t_received;
-uint8_t send;
-uint8_t lcd_message_max = 32;
+volatile uint8_t lcd_message_max = 32;
 
-uint8_t *rx;
-uint8_t *tx;
+volatile uint8_t rx;
 
 void toggle_led();
 void delay(uint16_t delay);
 void print_lcd(char *message, uint8_t len);
 void print_long_message(char * message);
+void main_service();
 /* End user code. Do not edit comment generated here */
 void R_MAIN_UserInit(void);
 
 /***********************************************************************************************************************
-* Function Name: main
-* Description  : This function implements main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
+ * Function Name: main
+ * Description  : This function implements main function.
+ * Arguments    : None
+ * Return Value : None
+ ***********************************************************************************************************************/
 void main(void)
 {
-    R_MAIN_UserInit();
-    /* Start user code. Do not edit comment generated here */
-	uart1RxBuf[0] = 'b';
+	R_MAIN_UserInit();
+	/* Start user code. Do not edit comment generated here */
+	//$
+	while (1U)
+	{
+		//#
+		;
+	}
+	/* End user code. Do not edit comment generated here */
+}
+
+
+/***********************************************************************************************************************
+ * Function Name: R_MAIN_UserInit
+ * Description  : This function adds user code before implementing main function.
+ * Arguments    : None
+ * Return Value : None
+ ***********************************************************************************************************************/
+void R_MAIN_UserInit(void)
+{
+	/* Start user code. Do not edit comment generated here */
+	R_TAU0_Channel0_Start();
+	R_TAU0_Channel2_Start();
+
+	R_UART1_Start();
+
+	//	R_ADC_Create();
+	// R_ADC_Start();
+	//	R_ADC_Set_OperationOn();
+
+	delayNoInt(1000);
+	R_TMR_RD0_Create();
+	R_TMR_RD0_Start();
+
+	//PM4 |= 0xF3;
+	//P4 = 0x0 | 0x8 | 0x4;
+	//	PM4_bit.no2 = 0;
+	//	PM4_bit.no3 = 0;
+	//	P4_bit.no2 = 1;
+	//	P4_bit.no3 = 1;
+
+
+	initLcd();
+	// writeByteLcd(0U, 0x1);
+	// writeByteLcd(0U, 0x2);
+
+	//	timer2_interrupt = 1;
+	//	tx_flag = 1;
+	//	send = 1;
+	uint8_t lcd_message[20] = "Robinson DL 18361137";
+	print_long_message(lcd_message);
+	// print_lcd(lcd_message, 20);
+	delay(100);
+
+
+	uart1Status = R_UART1_Receive(&rx,1);	// Prime UART1 Rx
+
+	main_service();
+	/* End user code. Do not edit comment generated here */
+}
+
+/* Start user code for adding. Do not edit comment generated here */
+
+void delay(uint16_t delay){
+	// DI();
+	for ( ; delay > 0 ; delay--);
+	// EI();
+}
+
+void print_lcd(char *message, uint8_t len){
+	lcd_clear();
+
+	int i;
+	if (len > lcd_message_max) len = lcd_message_max;
+	for (i = 0; i < len; i++)
+	{
+		if (message[i] <= 0x7F){
+			writeByteLcd(1U, message[i]);
+		}
+		delay(100);
+		// writeByteLcd(0U, LCD_CURSOR_RIGHT);
+		// for (j = 0 ; j < 100; j++);
+		// writeByteLcd(1U, lcd_message[i]);
+		if (i == 7){
+			int k;
+			for (k = 0; k < 32; k++)
+			{
+				writeByteLcd(0U, LCD_CURSOR_RIGHT);
+				delay(100);
+			}
+		}
+	}
+
+	// scroll one right
+	//writeByteLcd(0U, 0x1C);
+	//	delay(100);
+	EI();
+}
+
+void print_long_message(char * message)
+{
+	uint8_t head;
+	uint8_t tail;
+	uint8_t lcd_display[16];
+	uint16_t k;
+	for (tail = 0; tail < strlen(message) - 17; tail++)
+	{
+		for(head = 0; head < 16; head++)
+		{
+			lcd_display[head] = message[head + tail];
+		}
+		print_lcd(lcd_display, strlen(lcd_display));
+		for (k = 0; k < 100; k++)
+		{
+			delayNoInt(10000);
+		}
+	}
+}
+
+void main_service(){
+	uart1RxBuf[0] = '>';
 	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
 	//	uint8_t soft_timer;
-	uint8_t rx_tail, tx_tail, test_mode;
+	volatile uint8_t rx_tail, tx_tail, test_mode;
 
-	uint16_t pwm_counter, adc_result;
-	uint8_t * c = ">";
+	volatile uint16_t pwm_counter;
+	uint16_t adc_result;
+	uint8_t * c = "{";
 
 	TRDGRB0 = 225U;
 	PM7 &= 0x7F;
@@ -118,37 +235,47 @@ void main(void)
 		if (rx_flag){
 			rx_flag = 0;
 			//DI();
-			uart1Status = R_UART1_Receive(rx,1);
-			uart1RxBuf[rx_tail] = *rx;
+			uart1Status = R_UART1_Receive(&rx,1);
+			rx = rx_char_main;
+			uart1RxBuf[rx_tail] = rx;
 			//			uart1TxBuf[tx_tail] = rx;
-			uart1Status = R_UART1_Send(&rx_char_main,1);
+			uart1Status = R_UART1_Send(&rx,1);
 
 			//lcd_clear();
-			if (*rx == 0x81){
+			if (rx == 0x81){
 				test_mode = 1;
 				rx_tail=0;
 				print_lcd("test_mode", 9);
 			}
-			else if (*rx == 0x80){
+			else if (rx == 0x80){
 				test_mode = 0;
 				rx_tail=0;
 				print_lcd("normal_mode", 11);
 			}
-			else if (*rx == 'a'){
+			else if (rx == 'a'){
+				uint8_t a;
 				R_ADC_Start();
-				P7|=0x80;
+				P7^=0x80;
 				while(!adc_ready);
 				adc_ready=0;
 				R_ADC_Get_Result(&adc_result);
-				R_UART1_Send(c, 1);
-				R_UART1_Send((uint8_t)adc_result, 1);
+				// R_UART1_Send(c, 1);
+				//				R_UART1_Send(&adc_result, 1);
+				//				delay(100);
+				a = adc_result >> 8;
+				R_UART1_Send(&a, 1);
+				delay(100000);
+				a = (uint8_t)adc_result;
+				R_UART1_Send(&a, 1);
+
+				R_ADC_Stop();
 			}
 
 			if (rx_tail < 16){
-				//[[print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+				print_lcd(uart1RxBuf, strlen(uart1RxBuf));
 			}
 
-			if (*rx == 0xF4) {
+			if (rx == 0xF4) {
 				if (rx_tail < 16){
 					print_lcd(uart1RxBuf, strlen(uart1RxBuf));
 				}
@@ -189,13 +316,13 @@ void main(void)
 			pwm_counter++;
 			pwm_counter%=2*1000/30;
 			if (pwm_counter < 1000/30 ){
-//				P7|=0x80;
+				//				P7|=0x80;
 			}
 			else {
-//				P7&=0x7F;
+				//				P7&=0x7F;
 			}
-//			PM7=0x7F;
-//			P7^=0x80;
+			//			PM7=0x7F;
+			//			P7^=0x80;
 			/*			if (soft_timer < 9){
 				PM7=0x7F;
 				P7^=0x80;
@@ -211,12 +338,12 @@ void main(void)
 				soft_timer++;
 			}*/
 		}
-		if (adc_ready){
+		/*		if (adc_ready){
 			adc_ready = 0;
 //			P7&=0x7F;
 			P7^=0x80;
 //			R_ADC_Get_Result(&adc_result);
-		}
+		}*/
 
 	}
 
@@ -230,112 +357,6 @@ void main(void)
 	//			send--;
 	//			uart1Status = R_UART1_Send(&uart1TxBuf[0],1);
 	//		}
-	/* End user code. Do not edit comment generated here */
 }
 
-
-/***********************************************************************************************************************
-* Function Name: R_MAIN_UserInit
-* Description  : This function adds user code before implementing main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_MAIN_UserInit(void)
-{
-    /* Start user code. Do not edit comment generated here */
-	EI();
-	//[[R_TAU0_Channel0_Start();
-	//[[R_TAU0_Channel2_Start();
-
-	R_UART1_Start();
-
-//	R_ADC_Create();
-	//[[R_ADC_Start();
-//	R_ADC_Set_OperationOn();
-
-	//[[delayNoInt(1000);
-	//[[R_TMR_RD0_Create();
-	//[[R_TMR_RD0_Start();
-
-	//PM4 |= 0xF3;
-	//P4 = 0x0 | 0x8 | 0x4;
-//	PM4_bit.no2 = 0;
-//	PM4_bit.no3 = 0;
-//	P4_bit.no2 = 1;
-//	P4_bit.no3 = 1;
-
-
-	//[[initLcd();
-	// writeByteLcd(0U, 0x1);
-	// writeByteLcd(0U, 0x2);
-
-	//	timer2_interrupt = 1;
-	//	tx_flag = 1;
-	//	send = 1;
-	//[[uint8_t lcd_message[20] = "Robinson DL 18361137";
-	//[[print_long_message(lcd_message);
-	// print_lcd(lcd_message, 20);
-	//[[delay(100);
-
-
-	uart1Status = R_UART1_Receive(rx,1);	// Prime UART1 Rx
-	/* End user code. Do not edit comment generated here */
-}
-
-/* Start user code for adding. Do not edit comment generated here */
-
-void delay(uint16_t delay){
-	// DI();
-	for ( ; delay > 0 ; delay--);
-	// EI();
-}
-
-void print_lcd(char *message, uint8_t len){
-	lcd_clear();
-
-	int i;
-	if (len > lcd_message_max) len = lcd_message_max;
-	for (i = 0; i < len; i++)
-	{
-		if (message[i] <= 0x7F){
-			writeByteLcd(1U, message[i]);
-		}
-		delay(100);
-		// writeByteLcd(0U, LCD_CURSOR_RIGHT);
-		// for (j = 0 ; j < 100; j++);
-		// writeByteLcd(1U, lcd_message[i]);
-		if (i == 7){
-			int k;
-			for (k = 0; k < 32; k++)
-			{
-				writeByteLcd(0U, LCD_CURSOR_RIGHT);
-				delay(100);
-			}
-		}
-	}
-
-	// scroll one right
-	//writeByteLcd(0U, 0x1C);
-	//	delay(100);
-}
-
-void print_long_message(char * message)
-{
-	uint8_t head;
-	uint8_t tail;
-	uint8_t lcd_display[16];
-	uint16_t k;
-	for (tail = 0; tail < strlen(message) - 17; tail++)
-	{
-		for(head = 0; head < 16; head++)
-		{
-			lcd_display[head] = message[head + tail];
-		}
-		print_lcd(lcd_display, strlen(lcd_display));
-		for (k = 0; k < 100; k++)
-		{
-			delayNoInt(10000);
-		}
-	}
-}
 /* End user code. Do not edit comment generated here */

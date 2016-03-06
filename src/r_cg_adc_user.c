@@ -44,7 +44,7 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-uint8_t adc_ready;
+volatile uint8_t adc_ready;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
