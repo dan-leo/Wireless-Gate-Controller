@@ -257,15 +257,21 @@ void motor_power(uint8_t percentage){
 /**
  * update power of motor according ratio
  * motor pwm % limited to specified value.
+ *
+ * be careful of overflow!!
+ *
  * @param: fraction
  */
 void motor_power_ratio(uint16_t ratio_numerator, uint16_t ratio_denominator){
-	volatile uint8_t max_duty_cycle_percentage = 100;
+	volatile uint8_t max_duty_cycle_percentage = 44;
 	volatile uint16_t falling_edge_of_decrementing_steps;
 	volatile uint16_t scaled_steps;
 	scaled_steps = scale_down(TRDGRA0,max_duty_cycle_percentage);
 	scaled_steps = scale_down_ratio(scaled_steps, ratio_numerator, ratio_denominator);
 	falling_edge_of_decrementing_steps = TRDGRA0 - scaled_steps;
+	if (TRDGRA0 == falling_edge_of_decrementing_steps){
+		falling_edge_of_decrementing_steps = TRDGRA0 - 1;
+	}
 	TRDGRB0 = falling_edge_of_decrementing_steps;
 }
 
@@ -361,7 +367,8 @@ void main_service(){
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
 			adc_last_reading = adc_get_reading();
-			motor_power_ratio(adc_last_reading,1024);
+			volatile tiny_adc_reading = adc_last_reading >> 3;
+			motor_power_ratio(tiny_adc_reading,128);
 			if (adc_enable){
 				serial_print_adc(adc_last_reading);
 			}
