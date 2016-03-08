@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for ADC module.
-* Creation Date: 2016-03-06
+* Creation Date: 2016-03-08
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -62,20 +62,20 @@ void R_ADC_Create(void)
     ADPR1 = 0U;
     ADPR0 = 0U;
     /* The reset status of ADPC is analog input, so it's unnecessary to set. */
-    /* Set ANI0 - ANI2 pin as analog input */
-    PM2 |= 0x07U;
+    /* Set ANI0 - ANI7 pin as analog input */
+    PM2 |= 0xFFU;
     /* Set ANI18 pin */
     PMC14 |= 0x80U;
     PM14 |= 0x80U;
     /* Set ANI19 pin */
     PMC12 |= 0x01U;
     PM12 |= 0x01U;
-    ADM0 = _08_AD_CONVERSION_CLOCK_32 | _00_AD_TIME_MODE_NORMAL_1 | _00_AD_OPERMODE_SELECT;
+    ADM0 = _08_AD_CONVERSION_CLOCK_32 | _00_AD_TIME_MODE_NORMAL_1 | _40_AD_OPERMODE_SCAN;
     ADM1 = _00_AD_TRIGGER_SOFTWARE | _20_AD_CONVMODE_ONESELECT;
     ADM2 = _00_AD_POSITIVE_VDD | _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;          
     ADUL = _FF_AD_ADUL_VALUE;
     ADLL = _00_AD_ADLL_VALUE;
-    ADS = _02_AD_INPUT_CHANNEL_2;
+    ADS = _00_AD_INPUT_CHANNEL_0_3;
     ADCE = 1U;  /* enable AD comparator */
 }
 

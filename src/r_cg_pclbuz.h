@@ -23,59 +23,58 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_cgc.c
+* File Name    : r_cg_pclbuz.h
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements device driver for CGC module.
+* Description  : This file implements device driver for PCLBUZ module.
 * Creation Date: 2016-03-08
 ***********************************************************************************************************************/
 
-/***********************************************************************************************************************
-Includes
-***********************************************************************************************************************/
-#include "r_cg_macrodriver.h"
-#include "r_cg_cgc.h"
-/* Start user code for include. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
-#include "r_cg_userdefine.h"
+#ifndef PCLBUZ_H
+#define PCLBUZ_H
 
 /***********************************************************************************************************************
-Global variables and functions
+Macro definitions (Register bit)
 ***********************************************************************************************************************/
-/* Start user code for global. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+
+/*
+    Clock output select registers n (CKSn)
+*/
+/* PCLBUZn output enable/disable specification (PCLOEn) */
+#define _80_PCLBUZ_OUTPUT_ENABLE        (0x80U)    /* pclbuz pin output enable */
+#define _00_PCLBUZ_OUTPUT_DISABLE       (0x00U)    /* pclbuz pin output disable */
+/* PCLBUZn output clock selection (CSELn, CCSn2 - CCSn0) */
+#define _00_PCLBUZ_OUTCLK_fMAIN0        (0x00U)    /* fMAIN */
+#define _01_PCLBUZ_OUTCLK_fMAIN1        (0x01U)    /* fMAIN/2 */
+#define _02_PCLBUZ_OUTCLK_fMAIN2        (0x02U)    /* fMAIN/2^2 */
+#define _03_PCLBUZ_OUTCLK_fMAIN3        (0x03U)    /* fMAIN/2^3 */
+#define _04_PCLBUZ_OUTCLK_fMAIN4        (0x04U)    /* fMAIN/2^4 */
+#define _05_PCLBUZ_OUTCLK_fMAIN5        (0x05U)    /* fMAIN/2^11 */
+#define _06_PCLBUZ_OUTCLK_fMAIN6        (0x06U)    /* fMAIN/2^12 */
+#define _07_PCLBUZ_OUTCLK_fMAIN7        (0x07U)    /* fMAIN/2^13 */
+#define _08_PCLBUZ_OUTCLK_fSUB0         (0x08U)    /* fSUB */
+#define _09_PCLBUZ_OUTCLK_fSUB1         (0x09U)    /* fSUB/2 */
+#define _0A_PCLBUZ_OUTCLK_fSUB2         (0x0AU)    /* fSUB/2^2 */
+#define _0B_PCLBUZ_OUTCLK_fSUB3         (0x0BU)    /* fSUB/2^3 */
+#define _0C_PCLBUZ_OUTCLK_fSUB4         (0x0CU)    /* fSUB/2^4 */
+#define _0D_PCLBUZ_OUTCLK_fSUB5         (0x0DU)    /* fSUB/2^5 */
+#define _0E_PCLBUZ_OUTCLK_fSUB6         (0x0EU)    /* fSUB/2^6 */
+#define _0F_PCLBUZ_OUTCLK_fSUB7         (0x0FU)    /* fSUB/2^7 */
 
 /***********************************************************************************************************************
-* Function Name: R_CGC_Create
-* Description  : This function initializes the clock generator.
-* Arguments    : None
-* Return Value : None
+Macro definitions
 ***********************************************************************************************************************/
-void R_CGC_Create(void)
-{
-    volatile uint16_t w_count;
 
-    /* Set fMX */
-    CMC = _00_CGC_HISYS_PORT | _10_CGC_SUB_OSC | _00_CGC_SYSOSC_DEFAULT | _00_CGC_SUBMODE_LOW;
-    MSTOP = 1U;
-    /* Set fMAIN */
-    MCM0 = 0U;
-    /* Set fSUB */
-    XTSTOP = 0U;
+/***********************************************************************************************************************
+Typedef definitions
+***********************************************************************************************************************/
 
-    /* Change the waiting time according to the system */
-    for (w_count = 0U; w_count <= CGC_SUBWAITTIME; w_count++)
-    {
-        NOP();
-    }
-    
-    OSMC = _00_CGC_SUBINHALT_ON | _00_CGC_RTC_CLK_FSUB;
-    /* Set fCLK */
-    CSS = 0U;
-    /* Set fIH */
-    HIOSTOP = 0U;
-}
+/***********************************************************************************************************************
+Global functions
+***********************************************************************************************************************/
+void R_PCLBUZ0_Create(void);
+void R_PCLBUZ0_Start(void);
+void R_PCLBUZ0_Stop(void);
 
-/* Start user code for adding. Do not edit comment generated here */
-/* End user code. Do not edit comment generated here */
+#endif

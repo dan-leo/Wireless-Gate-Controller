@@ -28,7 +28,7 @@
  * Device(s)    : R5F104LE
  * Tool-Chain   : GCCRL78
  * Description  : This file implements main function.
- * Creation Date: 2016-03-06
+ * Creation Date: 2016-03-08
  ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -40,6 +40,7 @@ Includes
 #include "r_cg_serial.h"
 #include "r_cg_adc.h"
 #include "r_cg_timer.h"
+#include "r_cg_pclbuz.h"
 /* Start user code for include. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 #include "lcd.h"
@@ -74,7 +75,19 @@ uint8_t rx_char_main;
 
 volatile uint8_t lcd_message_max = 32;
 
+volatile uint8_t ADC_done = 0; /* Flag: conversion complete */
+volatile uint16_t ADC_value[NUM_CHANNELS];
+volatile uint8_t INTAD_FSM_state = AD_IDLE;
 
+static const uint8_t hextable[] = {
+   [0 ... 255] = -1, // bit aligned access into this table is considerably
+   ['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
+   ['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
+   ['a'] = 10, 11, 12, 13, 14, 15        // signed char.
+};
+
+
+uint8_t hexdec(const uint8_t *hex);
 
 void toggle_led();
 void delay(uint16_t delay);
@@ -210,7 +223,7 @@ void serial_print_adc(uint16_t reading){
 	uint8_t a;
 	a = reading >> 8;
 	R_UART1_Send(&a, 1);
-	delay(65535U);
+	delay(10000U);
 	a = (uint8_t)reading;
 	R_UART1_Send(&a, 1);
 }
@@ -283,6 +296,23 @@ uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t rat
 	return ((value * ratio_numerator) / ratio_denominator);
 }
 
+/**
+ * @brief convert a hexidecimal string to a signed long
+ * will not produce or process negative numbers except
+ * to signal error.
+ *
+ * @param hex without decoration, case insensative.
+ *
+ * @return -1 on error, or result (max sizeof(long)-1 bits)
+ */
+uint8_t hexdec(const uint8_t *hex) {
+   volatile uint8_t ret = 0;
+   while (*hex && ret >= 0) {
+      ret = (ret << 4) | hextable[*hex++];
+   }
+   return ret;
+}
+
 void main_service(){
 	uart1RxBuf[0] = '>';
 	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
@@ -291,6 +321,10 @@ void main_service(){
 	volatile uint16_t pwm_counter;
 	volatile uint16_t adc_last_reading;
 	volatile uint8_t adc_enable = 0;
+
+	float P_in, P_out, effic;
+	/* Peripheral start function calls */
+	R_ADC_Set_OperationOn(); /* Enable ADC voltage comparator */
 
 	motor_power(28);
 	PM7 &= 0x7F;
@@ -366,12 +400,30 @@ void main_service(){
 
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
-			adc_last_reading = adc_get_reading();
+
+			INTAD_FSM_state = AD_SAMPLING;
+			ADC_done = 0;
+			R_ADC_Start(); /* Start ADC (ADCS = 0n) */
+			while (!ADC_done)
+				;
+
+			if (adc_enable){
+				// serial_print_adc(ADC_value[2]);
+				uint8_t a = ADC_value[2] >> 8;
+				uint8_t val = hexdec(a);
+				R_UART1_Send(val,1);
+				a = (uint8_t)ADC_value[2];
+				val = hexdec(a);
+				R_UART1_Send(val,1);
+			}
+
+			/*			adc_last_reading = adc_get_reading();
 			volatile tiny_adc_reading = adc_last_reading >> 3;
 			motor_power_ratio(tiny_adc_reading,128);
 			if (adc_enable){
 				serial_print_adc(adc_last_reading);
-			}
+			}*/
+
 
 			/*			pwm_counter++;
 			pwm_counter%=2*1000/30;

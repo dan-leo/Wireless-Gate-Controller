@@ -23,11 +23,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_cgc.c
+* File Name    : r_cg_pclbuz.c
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements device driver for CGC module.
+* Description  : This file implements device driver for PCLBUZ module.
 * Creation Date: 2016-03-08
 ***********************************************************************************************************************/
 
@@ -35,7 +35,7 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_cg_cgc.h"
+#include "r_cg_pclbuz.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -47,34 +47,40 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_CGC_Create
-* Description  : This function initializes the clock generator.
+* Function Name: R_PCLBUZ0_Create
+* Description  : This function initializes the PCLBUZ0 module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_CGC_Create(void)
+void R_PCLBUZ0_Create(void)
 {
-    volatile uint16_t w_count;
+    PCLOE0 = 0U;    /* disable PCLBUZ0 operation */
+    CKS0 = _0C_PCLBUZ_OUTCLK_fSUB4;
+    /* Set PCLBUZ0 pin */
+    P14 &= 0xFEU;
+    PM14 &= 0xFEU;
+}
 
-    /* Set fMX */
-    CMC = _00_CGC_HISYS_PORT | _10_CGC_SUB_OSC | _00_CGC_SYSOSC_DEFAULT | _00_CGC_SUBMODE_LOW;
-    MSTOP = 1U;
-    /* Set fMAIN */
-    MCM0 = 0U;
-    /* Set fSUB */
-    XTSTOP = 0U;
+/***********************************************************************************************************************
+* Function Name: R_PCLBUZ0_Start
+* Description  : This function starts the PCLBUZ0 module.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_PCLBUZ0_Start(void)
+{
+    PCLOE0 = 1U;    /* enable PCLBUZ0 operation */
+}
 
-    /* Change the waiting time according to the system */
-    for (w_count = 0U; w_count <= CGC_SUBWAITTIME; w_count++)
-    {
-        NOP();
-    }
-    
-    OSMC = _00_CGC_SUBINHALT_ON | _00_CGC_RTC_CLK_FSUB;
-    /* Set fCLK */
-    CSS = 0U;
-    /* Set fIH */
-    HIOSTOP = 0U;
+/***********************************************************************************************************************
+* Function Name: R_PCLBUZ0_Stop
+* Description  : This function stops the PCLBUZ0 module.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_PCLBUZ0_Stop(void)
+{
+    PCLOE0 = 0U;    /* disable PCLBUZ0 operation */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
