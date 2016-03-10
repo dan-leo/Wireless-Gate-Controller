@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for Serial module.
-* Creation Date: 2016-03-09
+* Creation Date: 2016-03-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -77,7 +77,6 @@ void r_uart1_interrupt_receive(void)
     }
     
     rx_data = RXD1;
-    rx_char_main = rx_data;
 
     if (g_uart1_rx_length > g_uart1_rx_count)
     {

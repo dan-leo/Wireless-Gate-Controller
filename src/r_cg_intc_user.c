@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-03-09
+* Creation Date: 2016-03-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -56,6 +56,21 @@ void r_intc3_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	P7^=0x80;
+	nSLEEP = 0;
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_intc7_interrupt
+* Description  : This function is INTP7 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_intc7_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	P7^=0x80;
+	nSLEEP = 0;
     /* End user code. Do not edit comment generated here */
 }
 

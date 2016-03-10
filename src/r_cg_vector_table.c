@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements interrupt vector.
-* Creation Date: 2016-03-09
+* Creation Date: 2016-03-10
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -133,7 +133,7 @@ const void *Vectors[] VECT_SECT  = {
 	// Address 0x4A
 	R_Dummy,
 	// Address 0x4C
-	R_Dummy,
+	r_intc7_interrupt,
 	// Address 0x4E
 	R_Dummy,
 	// Address 0x50
