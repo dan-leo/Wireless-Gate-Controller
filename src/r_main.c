@@ -28,7 +28,7 @@
  * Device(s)    : R5F104LE
  * Tool-Chain   : GCCRL78
  * Description  : This file implements main function.
- * Creation Date: 2016-03-08
+ * Creation Date: 2016-03-09
  ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,6 +37,7 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "r_cg_cgc.h"
 #include "r_cg_port.h"
+#include "r_cg_intc.h"
 #include "r_cg_serial.h"
 #include "r_cg_adc.h"
 #include "r_cg_timer.h"
@@ -80,18 +81,19 @@ volatile uint16_t ADC_value[NUM_CHANNELS];
 volatile uint8_t INTAD_FSM_state = AD_IDLE;
 
 static const uint8_t hextable[] = {
-   [0 ... 255] = -1, // bit aligned access into this table is considerably
-   ['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
-   ['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
-   ['a'] = 10, 11, 12, 13, 14, 15        // signed char.
+		[0 ... 255] = -1, // bit aligned access into this table is considerably
+		['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
+		['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
+		['a'] = 10, 11, 12, 13, 14, 15        // signed char.
 };
 
 
 uint8_t hexdec(const uint8_t *hex);
 
+void echo(uint8_t c);
 void toggle_led();
 void delay(uint16_t delay);
-void print_lcd(char *message, uint8_t len);
+void print_lcd(char *message);
 void print_long_message(char * message);
 void main_service();
 uint16_t scale_down(uint16_t value, uint8_t percentage);
@@ -132,6 +134,7 @@ void R_MAIN_UserInit(void)
 	R_TAU0_Channel1_Lower8bits_Start();
 
 	R_UART1_Start();
+	R_INTC3_Start();
 
 	delayNoInt(1000);
 	R_TMR_RD0_Start();
@@ -153,7 +156,7 @@ void R_MAIN_UserInit(void)
 	//	send = 1;
 	uint8_t lcd_message[20] = "Robinson DL 18361137";
 	print_long_message(lcd_message);
-	// print_lcd(lcd_message, 20);
+	// print_lcd(lcd_message);
 	delay(100);
 
 
@@ -169,8 +172,10 @@ void delay(uint16_t delay){
 	// EI();
 }
 
-void print_lcd(char *message, uint8_t len){
+void print_lcd(char *message){
+	uint8_t len = strlen(message);
 	lcd_clear();
+	delayNoInt(10000);
 
 	int i;
 	if (len > lcd_message_max) len = lcd_message_max;
@@ -180,9 +185,6 @@ void print_lcd(char *message, uint8_t len){
 			writeByteLcd(1U, message[i]);
 		}
 		delay(100);
-		// writeByteLcd(0U, LCD_CURSOR_RIGHT);
-		// for (j = 0 ; j < 100; j++);
-		// writeByteLcd(1U, lcd_message[i]);
 		if (i == 7){
 			int k;
 			for (k = 0; k < 32; k++)
@@ -211,7 +213,7 @@ void print_long_message(char * message)
 		{
 			lcd_display[head] = message[head + tail];
 		}
-		print_lcd(lcd_display, strlen(lcd_display));
+		print_lcd(lcd_display);
 		for (k = 0; k < 100; k++)
 		{
 			delayNoInt(10000);
@@ -306,28 +308,33 @@ uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t rat
  * @return -1 on error, or result (max sizeof(long)-1 bits)
  */
 uint8_t hexdec(const uint8_t *hex) {
-   volatile uint8_t ret = 0;
-   while (*hex && ret >= 0) {
-      ret = (ret << 4) | hextable[*hex++];
-   }
-   return ret;
+	volatile uint8_t ret = 0;
+	while (*hex && ret >= 0) {
+		ret = (ret << 4) | hextable[*hex++];
+	}
+	return ret;
+}
+
+/**
+ * echo char to serial
+ * @param: uint8_t
+ */
+void echo(uint8_t c){
+	R_UART1_Send(&c,1);
 }
 
 void main_service(){
-	uart1RxBuf[0] = '>';
-	uart1Status = R_UART1_Send(&uart1RxBuf[0],1);
-	volatile uint8_t rx_tail, tx_tail, test_mode;
-
+	volatile uint8_t rx_tail, tx_tail, test_mode = 0;
 	volatile uint16_t pwm_counter;
 	volatile uint16_t adc_last_reading;
 	volatile uint8_t adc_enable = 0;
 
-	float P_in, P_out, effic;
+	echo(0x80);
+	print_lcd("normal_mode");
 	/* Peripheral start function calls */
 	R_ADC_Set_OperationOn(); /* Enable ADC voltage comparator */
 
 	motor_power(28);
-	PM7 &= 0x7F;
 
 	while (1U)
 	{
@@ -338,39 +345,66 @@ void main_service(){
 			rx = rx_char_main;
 			uart1RxBuf[rx_tail] = rx;
 			//			uart1TxBuf[tx_tail] = rx;
-			uart1Status = R_UART1_Send(&rx,1);
+			//			R_UART1_Send(&rx,1);
+			//			echo(rx);
 
 			//lcd_clear();
-			if (rx == 0x81){
+			switch (rx){
+			case 0x81:
+				echo(0x81);
 				test_mode = 1;
 				rx_tail=0;
-				print_lcd("test_mode", 9);
-			}
-			else if (rx == 0x80){
+				print_lcd("test_mode");
+				break;
+			case 0x80:
+				echo(0x80);
 				test_mode = 0;
 				rx_tail=0;
-				print_lcd("normal_mode", 11);
-			}
-			else if (rx == '*'){
+				print_lcd("normal_mode");
+				break;
+			case '*':
+				// debug output to serial
 				adc_enable ^= 1;
 
-				// send one dummy char to get a column of 2 chars in RealTerm
-				uint8_t *c = "{";
-				R_UART1_Send(c, 1);
-			}
-
-			if (rx_tail < 16){
-				print_lcd(uart1RxBuf, strlen(uart1RxBuf));
-			}
-
-			if (rx == 0xF4) {
+				// send dummy chars to get a column of 2 chars in RealTerm
+				echo('*');
+				echo('{');
+				break;
+			case 0xF0:
+				// start buzzer
+				echo(0xF0);
+				R_PCLBUZ0_Start();
+				break;
+			case 0xF1:
+				// stop buzzer
+				echo(0xF1);
+				R_PCLBUZ0_Stop();
+				break;
+			case 0xF4:
 				if (rx_tail < 16){
-					print_lcd(uart1RxBuf, strlen(uart1RxBuf));
+					print_lcd(uart1RxBuf);
 				}
 				else{
 					print_long_message(uart1RxBuf);
 				}
 				rx_tail = 0;
+				break;
+			case 0xF7:
+				// read current
+				echo(0xF7);
+				break;
+			case 0xF8:
+				// close gate
+				echo(0xF8);
+				break;
+			case 0xF9:
+				// open gate
+				echo(0xF9);
+				break;
+			case 0xFF:
+				//read status
+				echo(0xFF);
+				break;
 			}
 
 			//			if (test_mode == 1){
@@ -392,11 +426,12 @@ void main_service(){
 			//				}
 			//			}
 			rx_tail++;
-			rx_tail %= RX_BUF_LEN;
-			tx_tail++;
-			tx_tail %= TX_BUF_LEN;
+//			rx_tail %= RX_BUF_LEN;
+//			tx_tail++;
+//			tx_tail %= TX_BUF_LEN;
 			//EI();
 		}
+
 
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
@@ -408,19 +443,19 @@ void main_service(){
 				;
 
 			if (adc_enable){
-				// serial_print_adc(ADC_value[2]);
-				uint8_t a = ADC_value[2] >> 8;
-				uint8_t val = hexdec(a);
-				R_UART1_Send(val,1);
-				a = (uint8_t)ADC_value[2];
-				val = hexdec(a);
-				R_UART1_Send(val,1);
+				serial_print_adc(ADC_value[2]);
+				serial_print_adc(ADC_value[3]);
+				//				lcd_clear();
+				//				uint8_t a = ADC_value[2] >> 8;
+				//				writeByteLcd(1,a);
+				//				a = (uint8_t)ADC_value[2];
+				//				writeByteLcd(1,a);
 			}
 
-			/*			adc_last_reading = adc_get_reading();
-			volatile tiny_adc_reading = adc_last_reading >> 3;
+			/*			adc_last_reading = adc_get_reading();*/
+			volatile tiny_adc_reading = ADC_value[2] >> 3;
 			motor_power_ratio(tiny_adc_reading,128);
-			if (adc_enable){
+			/*if (adc_enable){
 				serial_print_adc(adc_last_reading);
 			}*/
 

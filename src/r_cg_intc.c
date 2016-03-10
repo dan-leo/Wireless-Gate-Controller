@@ -23,11 +23,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_hardware_setup.c
+* File Name    : r_cg_intc.c
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements system initializing function.
+* Description  : This file implements device driver for INTC module.
 * Creation Date: 2016-03-09
 ***********************************************************************************************************************/
 
@@ -35,13 +35,7 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_cg_cgc.h"
-#include "r_cg_port.h"
 #include "r_cg_intc.h"
-#include "r_cg_serial.h"
-#include "r_cg_adc.h"
-#include "r_cg_timer.h"
-#include "r_cg_pclbuz.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -51,43 +45,69 @@ Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-int HardwareSetup(void);
-void R_Systeminit(void);
-
 
 /***********************************************************************************************************************
-* Function Name: R_Systeminit
-* Description  : This function initializes every macro.
+* Function Name: R_INTC_Create
+* Description  : This function initializes INTP module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_Systeminit(void)
+void R_INTC_Create(void)
 {
-    PIOR0 = 0x00U;
-    PIOR1 = 0x00U;
-    R_CGC_Create();
-    R_PORT_Create();
-    R_SAU0_Create();
-    R_ADC_Create();
-    R_TAU0_Create();
-    R_PCLBUZ0_Create();
-    R_INTC_Create();
-    R_TMR_RD0_Create();
-    IAWCTL = 0x00U;
+    PMK0 = 1U;    /* disable INTP0 operation */
+    PIF0 = 0U;    /* clear INTP0 interrupt flag */
+    PMK1 = 1U;    /* disable INTP1 operation */
+    PIF1 = 0U;    /* clear INTP1 interrupt flag */
+    PMK2 = 1U;    /* disable INTP2 operation */
+    PIF2 = 0U;    /* clear INTP2 interrupt flag */
+    PMK3 = 1U;    /* disable INTP3 operation */
+    PIF3 = 0U;    /* clear INTP3 interrupt flag */
+    PMK4 = 1U;    /* disable INTP4 operation */
+    PIF4 = 0U;    /* clear INTP4 interrupt flag */
+    PMK5 = 1U;    /* disable INTP5 operation */
+    PIF5 = 0U;    /* clear INTP5 interrupt flag */
+    PMK6 = 1U;    /* disable INTP6 operation */
+    PIF6 = 0U;    /* clear INTP6 interrupt flag */
+    PMK7 = 1U;    /* disable INTP7 operation */
+    PIF7 = 0U;    /* clear INTP7 interrupt flag */
+    PMK8 = 1U;    /* disable INTP8 operation */
+    PIF8 = 0U;    /* clear INTP8 interrupt flag */
+    PMK9 = 1U;    /* disable INTP9 operation */
+    PIF9 = 0U;    /* clear INTP9 interrupt flag */
+    PMK10 = 1U;    /* disable INTP10 operation */
+    PIF10 = 0U;    /* clear INTP10 interrupt flag */
+    PMK11 = 1U;    /* disable INTP11 operation */
+    PIF11 = 0U;    /* clear INTP11 interrupt flag */
+    /* Set INTP3 low priority */
+    PPR13 = 1U;
+    PPR03 = 1U;
+    EGN0 = _08_INTP3_EDGE_FALLING_SEL;
+    /* Set INTP3 pin */
+    PM3 |= 0x01U;
 }
 
 /***********************************************************************************************************************
-* Function Name: HardwareSetup
-* Description  : This function initializes hardware setting.
+* Function Name: R_INTC3_Start
+* Description  : This function clears INTP3 interrupt flag and enables interrupt.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-int HardwareSetup(void)
+void R_INTC3_Start(void)
 {
-    DI();
-    R_Systeminit();
+    PIF3 = 0U;    /* clear INTP3 interrupt flag */
+    PMK3 = 0U;    /* enable INTP3 interrupt */
+}
 
-    return (1U);
+/***********************************************************************************************************************
+* Function Name: R_INTC3_Stop
+* Description  : This function disables INTP3 interrupt and clears interrupt flag.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_INTC3_Stop(void)
+{
+    PMK3 = 1U;    /* disable INTP3 interrupt */
+    PIF3 = 0U;    /* clear INTP3 interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

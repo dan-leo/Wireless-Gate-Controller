@@ -23,11 +23,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_hardware_setup.c
+* File Name    : r_cg_intc_user.c
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements system initializing function.
+* Description  : This file implements device driver for INTC module.
 * Creation Date: 2016-03-09
 ***********************************************************************************************************************/
 
@@ -35,13 +35,7 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_cg_cgc.h"
-#include "r_cg_port.h"
 #include "r_cg_intc.h"
-#include "r_cg_serial.h"
-#include "r_cg_adc.h"
-#include "r_cg_timer.h"
-#include "r_cg_pclbuz.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -51,43 +45,18 @@ Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-int HardwareSetup(void);
-void R_Systeminit(void);
-
 
 /***********************************************************************************************************************
-* Function Name: R_Systeminit
-* Description  : This function initializes every macro.
+* Function Name: r_intc3_interrupt
+* Description  : This function is INTP3 interrupt service routine.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_Systeminit(void)
+void r_intc3_interrupt(void)
 {
-    PIOR0 = 0x00U;
-    PIOR1 = 0x00U;
-    R_CGC_Create();
-    R_PORT_Create();
-    R_SAU0_Create();
-    R_ADC_Create();
-    R_TAU0_Create();
-    R_PCLBUZ0_Create();
-    R_INTC_Create();
-    R_TMR_RD0_Create();
-    IAWCTL = 0x00U;
-}
-
-/***********************************************************************************************************************
-* Function Name: HardwareSetup
-* Description  : This function initializes hardware setting.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-int HardwareSetup(void)
-{
-    DI();
-    R_Systeminit();
-
-    return (1U);
+    /* Start user code. Do not edit comment generated here */
+	P7^=0x80;
+    /* End user code. Do not edit comment generated here */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

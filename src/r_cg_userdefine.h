@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file includes user definition.
-* Creation Date: 2016-03-08
+* Creation Date: 2016-03-09
 ***********************************************************************************************************************/
 
 #ifndef _USER_DEF_H
@@ -42,14 +42,14 @@ User definitions
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
 
+// adc
 #define V_REF (5.0)
 #define NUM_CHANNELS (4)
-#define VIN_IDX (0)
-#define IIN_IDX (1)
-#define VOUT_IDX (2)
-#define IOUT_IDX (3)
 #define AD_SAMPLING (1)
 #define AD_IDLE (0)
-#define K_CONVERSION (0.123)
+
+#define PHASE P4_bit.no3
+#define nSLEEP P4_bit.no2
+
 /* End user code. Do not edit comment generated here */
 #endif
