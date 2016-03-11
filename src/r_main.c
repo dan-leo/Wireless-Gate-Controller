@@ -1,43 +1,42 @@
 /***********************************************************************************************************************
-* DISCLAIMER
-* This software is supplied by Renesas Electronics Corporation and is only 
-* intended for use with Renesas products. No other uses are authorized. This 
-* software is owned by Renesas Electronics Corporation and is protected under 
-* all applicable laws, including copyright laws.
-* THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING 
-* THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT 
-* LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE 
-* AND NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
-* TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS 
-* ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE 
-* FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR 
-* ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE 
-* BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-* Renesas reserves the right, without notice, to make changes to this software 
-* and to discontinue the availability of this software.  By using this software, 
-* you agree to the additional terms and conditions found by accessing the 
-* following link:
-* http://www.renesas.com/disclaimer
-*
-* Copyright (C) 2011, 2013 Renesas Electronics Corporation. All rights reserved.
-***********************************************************************************************************************/
+ * DISCLAIMER
+ * This software is supplied by Renesas Electronics Corporation and is only
+ * intended for use with Renesas products. No other uses are authorized. This
+ * software is owned by Renesas Electronics Corporation and is protected under
+ * all applicable laws, including copyright laws.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING
+ * THIS SOFTWARE, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING BUT NOT
+ * LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.
+ * TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY LAW, NEITHER RENESAS
+ * ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR
+ * ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR ITS AFFILIATES HAVE
+ * BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+ * Renesas reserves the right, without notice, to make changes to this software
+ * and to discontinue the availability of this software.  By using this software,
+ * you agree to the additional terms and conditions found by accessing the
+ * following link:
+ * http://www.renesas.com/disclaimer
+ *
+ * Copyright (C) 2011, 2013 Renesas Electronics Corporation. All rights reserved.
+ ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_main.c
-* Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
-* Device(s)    : R5F104LE
-* Tool-Chain   : GCCRL78
-* Description  : This file implements main function.
-* Creation Date: 2016-03-10
-***********************************************************************************************************************/
+ * File Name    : r_main.c
+ * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
+ * Device(s)    : R5F104LE
+ * Tool-Chain   : GCCRL78
+ * Description  : This file implements main function.
+ * Creation Date: 2016-03-11
+ ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
 Includes
-***********************************************************************************************************************/
+ ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
 #include "r_cg_cgc.h"
 #include "r_cg_port.h"
-#include "r_cg_intc.h"
 #include "r_cg_serial.h"
 #include "r_cg_adc.h"
 #include "r_cg_timer.h"
@@ -53,7 +52,7 @@ Includes
 
 /***********************************************************************************************************************
 Global variables and functions
-***********************************************************************************************************************/
+ ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 uint8_t uart1RxBuf[RX_BUF_LEN];
 volatile uint16_t uart1RxCnt;
@@ -64,11 +63,16 @@ volatile uint8_t uart1TxFlag;
 volatile uint8_t uart1RxErrFlag;	// UART2 Receive Error Flag
 volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
 volatile MD_STATUS uart1Status;
+volatile uint8_t gate_position;
+volatile uint8_t last_gate_position;
 
 //this variable gets modified every 1ms by the timer interrupt
 extern volatile timer1_interrupt;
+extern volatile timer2_interrupt;
 extern volatile rx_flag;
 extern volatile adc_ready;
+extern volatile gate_opened;
+extern volatile gate_closed;
 
 uint8_t rx;
 // uart fix
@@ -79,16 +83,6 @@ volatile uint8_t lcd_message_max = 32;
 volatile uint8_t ADC_done = 0; /* Flag: conversion complete */
 volatile uint16_t ADC_value[NUM_CHANNELS];
 volatile uint8_t INTAD_FSM_state = AD_IDLE;
-
-static const uint8_t hextable[] = {
-		[0 ... 255] = -1, // bit aligned access into this table is considerably
-		['0'] = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, // faster for most modern processors,
-		['A'] = 10, 11, 12, 13, 14, 15,       // for the space conscious, reduce to
-		['a'] = 10, 11, 12, 13, 14, 15        // signed char.
-};
-
-
-uint8_t hexdec(const uint8_t *hex);
 
 void echo(uint8_t c);
 void toggle_led();
@@ -102,15 +96,15 @@ uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t rat
 void R_MAIN_UserInit(void);
 
 /***********************************************************************************************************************
-* Function Name: main
-* Description  : This function implements main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
+ * Function Name: main
+ * Description  : This function implements main function.
+ * Arguments    : None
+ * Return Value : None
+ ***********************************************************************************************************************/
 void main(void)
 {
-    R_MAIN_UserInit();
-    /* Start user code. Do not edit comment generated here */
+	R_MAIN_UserInit();
+	/* Start user code. Do not edit comment generated here */
 	main_service();
 	while (1U)
 	{
@@ -122,41 +116,29 @@ void main(void)
 
 
 /***********************************************************************************************************************
-* Function Name: R_MAIN_UserInit
-* Description  : This function adds user code before implementing main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
+ * Function Name: R_MAIN_UserInit
+ * Description  : This function adds user code before implementing main function.
+ * Arguments    : None
+ * Return Value : None
+ ***********************************************************************************************************************/
 void R_MAIN_UserInit(void)
 {
-    /* Start user code. Do not edit comment generated here */
+	/* Start user code. Do not edit comment generated here */
+	nSLEEP = 0;
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
 
 	R_UART1_Start();
-	R_INTC3_Start();
-	R_INTC7_Start();
+	delay(100);
+//	R_INTC4_Start();
+//	R_INTC3_Start();
 
-	delayNoInt(1000);
 	R_TMR_RD0_Start();
 
-	//PM4 |= 0xF3;
-	//P4 = 0x0 | 0x8 | 0x4;
-	//	PM4_bit.no2 = 0;
-	//	PM4_bit.no3 = 0;
-	//	P4_bit.no2 = 1;
-	//	P4_bit.no3 = 1;
-
-
 	initLcd();
-	// writeByteLcd(0U, 0x1);
-	// writeByteLcd(0U, 0x2);
 
 	//	timer2_interrupt = 1;
-	//	tx_flag = 1;
-	//	send = 1;
-	uint8_t lcd_message[20] = "Robinson DL 18361137";
-	print_long_message(lcd_message);
+	print_long_message("Robinson DL 18361137");
 	// print_lcd(lcd_message);
 	delay(100);
 
@@ -176,7 +158,7 @@ void delay(uint16_t delay){
 void print_lcd(char *message){
 	uint8_t len = strlen(message);
 	lcd_clear();
-	delayNoInt(10000);
+	delay(10000);
 
 	int i;
 	if (len > lcd_message_max) len = lcd_message_max;
@@ -208,7 +190,7 @@ void print_long_message(char * message)
 	uint8_t tail;
 	uint8_t lcd_display[16];
 	uint16_t k;
-	for (tail = 0; tail < strlen(message) - 17; tail++)
+	for (tail = 0; tail < strlen(message) - 15; tail++)
 	{
 		for(head = 0; head < 16; head++)
 		{
@@ -217,11 +199,15 @@ void print_long_message(char * message)
 		print_lcd(lcd_display);
 		for (k = 0; k < 100; k++)
 		{
-			delayNoInt(10000);
+			delay(10000);
 		}
 	}
 }
 
+/**
+ * Print adc result to serial terminal
+ * @param: adc result
+ */
 void serial_print_adc(uint16_t reading){
 	uint8_t a;
 	a = reading >> 8;
@@ -231,6 +217,10 @@ void serial_print_adc(uint16_t reading){
 	R_UART1_Send(&a, 1);
 }
 
+/**
+ * get adc reading (single-shot reading of 1 channel)
+ * @return: 10-bit adc result
+ */
 uint16_t adc_get_reading(){
 	uint16_t adc_result;
 	P7^=0x80;
@@ -295,25 +285,12 @@ uint16_t scale_down(uint16_t value, uint8_t percentage){
 	return ((value * percentage) / 100);
 }
 
+/**
+ * a way to scale down without using floats
+ * @param: the value to be scaled, and a fraction
+ */
 uint16_t scale_down_ratio(uint16_t value, uint16_t ratio_numerator, uint16_t ratio_denominator){
 	return ((value * ratio_numerator) / ratio_denominator);
-}
-
-/**
- * @brief convert a hexidecimal string to a signed long
- * will not produce or process negative numbers except
- * to signal error.
- *
- * @param hex without decoration, case insensative.
- *
- * @return -1 on error, or result (max sizeof(long)-1 bits)
- */
-uint8_t hexdec(const uint8_t *hex) {
-	volatile uint8_t ret = 0;
-	while (*hex && ret >= 0) {
-		ret = (ret << 4) | hextable[*hex++];
-	}
-	return ret;
 }
 
 /**
@@ -341,6 +318,7 @@ void main_service(){
 	{
 		if (rx_flag){
 			rx_flag = 0;
+			PM7^=0x80;
 			//DI();
 			uart1Status = R_UART1_Receive(&rx,1);
 			// rx = rx_char_main;
@@ -382,14 +360,22 @@ void main_service(){
 				R_PCLBUZ0_Stop();
 				break;
 			case 0xF4:
-				if (rx_tail < 16){
-					rx_tail = 0;
-					print_lcd(uart1RxBuf);
+				//				if (rx_tail < 16){
+				//					rx_tail = 0;
+				//					print_lcd(uart1RxBuf);
+				//				}
+				//				else{
+				//					rx_tail = 0;
+				//					print_long_message(uart1RxBuf);
+				//				}
+				lcd_clear();
+				delay(100);
+				print_long_message(uart1RxBuf);
+				int k;
+				for (k = 0; k < rx_tail; k++){
+					uart1RxBuf[k] = 0;
 				}
-				else{
-					rx_tail = 0;
-					print_long_message(uart1RxBuf);
-				}
+				rx_tail = 0;
 				break;
 			case 0xF7:
 				// read current
@@ -400,22 +386,29 @@ void main_service(){
 				echo(0xF8);
 				PHASE = 1;
 				nSLEEP = 1;
+				gate_position = UNKNOWN;
+				//if (gate_position == OPEN) R_INTC3_Stop();
+				print_lcd("unknown");
 				break;
 			case 0xF9:
 				// open gate
 				echo(0xF9);
 				PHASE = 0;
 				nSLEEP = 1;
+				gate_position = UNKNOWN;
+				//if (gate_position == CLOSED) R_INTC4_Stop();
+				print_lcd("unknown");
 				break;
 			case 0xFF:
 				//read status
 				echo(0xFF);
+				echo(gate_position);
 				break;
 			}
 
-			if (rx_tail < 16){
-				print_lcd(uart1RxBuf);
-			}
+			//			if (rx_tail < 16){
+			//				print_lcd(uart1RxBuf);
+			//			}
 
 			//			if (test_mode == 1){
 			//				if ((*rx == 0xF4) /*|| (*rx == 0x0D)*/) print_lcd(uart1RxBuf, strlen(uart1RxBuf));
@@ -436,65 +429,108 @@ void main_service(){
 			//				}
 			//			}
 			rx_tail++;
-			rx_tail %= RX_BUF_LEN;
-//			tx_tail++;
-//			tx_tail %= TX_BUF_LEN;
+			//			rx_tail %= RX_BUF_LEN;
+			//			tx_tail++;
+			//			tx_tail %= TX_BUF_LEN;
 			//EI();
 		}
 
-
-		if (timer1_interrupt){
-			timer1_interrupt = 0;
-
-			INTAD_FSM_state = AD_SAMPLING;
-			ADC_done = 0;
-			R_ADC_Start(); /* Start ADC (ADCS = 0n) */
-			while (!ADC_done)
-				;
-
-			if (adc_enable){
-				serial_print_adc(ADC_value[2]);
-				serial_print_adc(ADC_value[3]);
-				//				lcd_clear();
-				//				uint8_t a = ADC_value[2] >> 8;
-				//				writeByteLcd(1,a);
-				//				a = (uint8_t)ADC_value[2];
-				//				writeByteLcd(1,a);
+		if (timer2_interrupt){
+			timer2_interrupt = 0;
+			if (SW_OPENED && !SW_CLOSED){
+				if (last_gate_position != OPEN){
+					P7^=0x80;
+					nSLEEP = 0;
+					gate_position = OPEN;
+					last_gate_position = OPEN;
+					R_INTC4_Start();
+					print_lcd("opened");
+				}
 			}
-
-			/*			adc_last_reading = adc_get_reading();*/
-			volatile tiny_adc_reading = ADC_value[2] >> 3;
-			motor_power_ratio(tiny_adc_reading,128);
-			/*if (adc_enable){
-				serial_print_adc(adc_last_reading);
-			}*/
-
-
-			/*			pwm_counter++;
-			pwm_counter%=2*1000/30;
-			if (pwm_counter < 1000/30 ){
-				//				P7|=0x80;
+			if (SW_CLOSED && !SW_OPENED){
+				if (last_gate_position != CLOSED){
+					P7^=0x80;
+					nSLEEP = 0;
+					gate_position = CLOSED;
+					last_gate_position = CLOSED;
+					R_INTC3_Start();
+					print_lcd("closed");
+				}
 			}
-			else {
-				//				P7&=0x7F;
-			}*/
-			//			PM7=0x7F;
-			//			P7^=0x80;
-			/*			if (soft_timer < 9){
-				PM7=0x7F;
-				P7^=0x80;
-				soft_timer++;
+			if (!(SW_OPENED || SW_CLOSED)){
+				if (last_gate_position != UNKNOWN){
+					last_gate_position = UNKNOWN;
+					gate_position = UNKNOWN;
+					print_lcd("unknown");
+				}
 			}
-			else if (soft_timer >= 9)
-			{
-				lcd_clear();
-				EI();
-//				delayNoInt(100);
-//				char lcd_messege[20] = "abcdefghijklmnopqrst";
-//				print_lcd(lcd_messege, 20);
-				soft_timer++;
-			}*/
 		}
+
+		//		if (gate_opened){
+		//			gate_opened=0;
+		//
+		//		}
+		//
+		//		if (gate_closed){
+		//			gate_closed=0;
+		//
+		//		}
+
+		delay(100);
+
+
+		//		if (timer1_interrupt){
+		//			timer1_interrupt = 0;
+		//
+		//			INTAD_FSM_state = AD_SAMPLING;
+		//			ADC_done = 0;
+		//			R_ADC_Start(); /* Start ADC (ADCS = 0n) */
+		//			while (!ADC_done)
+		//				;
+		//
+		//			if (adc_enable){
+		//				serial_print_adc(ADC_value[2]);
+		//				serial_print_adc(ADC_value[3]);
+		//				//				lcd_clear();
+		//				//				uint8_t a = ADC_value[2] >> 8;
+		//				//				writeByteLcd(1,a);
+		//				//				a = (uint8_t)ADC_value[2];
+		//				//				writeByteLcd(1,a);
+		//			}
+		//
+		//			/*			adc_last_reading = adc_get_reading();*/
+		//			volatile tiny_adc_reading = ADC_value[2] >> 3;
+		//			motor_power_ratio(tiny_adc_reading,128);
+		//			/*if (adc_enable){
+		//				serial_print_adc(adc_last_reading);
+		//			}*/
+		//
+		//
+		//			/*			pwm_counter++;
+		//			pwm_counter%=2*1000/30;
+		//			if (pwm_counter < 1000/30 ){
+		//				//				P7|=0x80;
+		//			}
+		//			else {
+		//				//				P7&=0x7F;
+		//			}*/
+		//			//			PM7=0x7F;
+		//			//			P7^=0x80;
+		//			/*			if (soft_timer < 9){
+		//				PM7=0x7F;
+		//				P7^=0x80;
+		//				soft_timer++;
+		//			}
+		//			else if (soft_timer >= 9)
+		//			{
+		//				lcd_clear();
+		//				EI();
+		////				delayNoInt(100);
+		////				char lcd_messege[20] = "abcdefghijklmnopqrst";
+		////				print_lcd(lcd_messege, 20);
+		//				soft_timer++;
+		//			}*/
+		//		}
 		/*		if (adc_ready){
 			adc_ready = 0;
 //			P7&=0x7F;

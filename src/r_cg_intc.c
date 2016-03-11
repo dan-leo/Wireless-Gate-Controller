@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-03-10
+* Creation Date: 2016-03-11
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -78,17 +78,18 @@ void R_INTC_Create(void)
     PIF10 = 0U;    /* clear INTP10 interrupt flag */
     PMK11 = 1U;    /* disable INTP11 operation */
     PIF11 = 0U;    /* clear INTP11 interrupt flag */
-    /* Set INTP3 low priority */
-    PPR13 = 1U;
-    PPR03 = 1U;
-    /* Set INTP7 low priority */
-    PPR17 = 1U;
-    PPR07 = 1U;
-    EGP0 = _08_INTP3_EDGE_RISING_SEL | _80_INTP7_EDGE_RISING_SEL;
+    /* Set INTP3 high priority */
+    PPR13 = 0U;
+    PPR03 = 0U;
+    /* Set INTP4 high priority */
+    PPR14 = 0U;
+    PPR04 = 0U;
+    EGN0 = _08_INTP3_EDGE_FALLING_SEL | _10_INTP4_EDGE_FALLING_SEL;
+    EGP0 = _08_INTP3_EDGE_RISING_SEL | _10_INTP4_EDGE_RISING_SEL;
     /* Set INTP3 pin */
     PM3 |= 0x01U;
-    /* Set INTP7 pin */
-    PM14 |= 0x02U;
+    /* Set INTP4 pin */
+    PM3 |= 0x02U;
 }
 
 /***********************************************************************************************************************
@@ -116,27 +117,27 @@ void R_INTC3_Stop(void)
 }
 
 /***********************************************************************************************************************
-* Function Name: R_INTC7_Start
-* Description  : This function clears INTP7 interrupt flag and enables interrupt.
+* Function Name: R_INTC4_Start
+* Description  : This function clears INTP4 interrupt flag and enables interrupt.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_INTC7_Start(void)
+void R_INTC4_Start(void)
 {
-    PIF7 = 0U;    /* clear INTP7 interrupt flag */
-    PMK7 = 0U;    /* enable INTP7 interrupt */
+    PIF4 = 0U;    /* clear INTP4 interrupt flag */
+    PMK4 = 0U;    /* enable INTP4 interrupt */
 }
 
 /***********************************************************************************************************************
-* Function Name: R_INTC7_Stop
-* Description  : This function disables INTP7 interrupt and clears interrupt flag.
+* Function Name: R_INTC4_Stop
+* Description  : This function disables INTP4 interrupt and clears interrupt flag.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_INTC7_Stop(void)
+void R_INTC4_Stop(void)
 {
-    PMK7 = 1U;    /* disable INTP7 interrupt */
-    PIF7 = 0U;    /* clear INTP7 interrupt flag */
+    PMK4 = 1U;    /* disable INTP4 interrupt */
+    PIF4 = 0U;    /* clear INTP4 interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */
