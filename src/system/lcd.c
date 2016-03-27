@@ -18,6 +18,8 @@
 //	- write a whole string to the LCD
 //	- write a delay function delayNoInt(delay in usec)
 
+uint8_t lcd_message_max = 32;
+
 /************************************************************************
  * Function Name: writByteLcd()
  * Description  : This function writes 2 nibbles to the LCD.
@@ -105,23 +107,6 @@ void initLcd(void)
 
 }
 
-void startTMR0(int delay)
-{
-	TMIF00 = 0U; // Clear any interrupt flag
-	TDR00 = delay; // Load register (in 1 usec units)
-	TS0 = 1U; // Start timer
-}
-
-void delayNoInt(uint16_t delay){
-	//	DI();
-	//	for ( ; delay > 0 ; delay--);
-	//	EI();
-	startTMR0(delay); // Start timer with delay value
-	while(TMIF00 == 0) // Wait for timer flag
-		NOP();
-	R_TAU0_Channel0_Stop(); // Stop timer and clear all flags
-}
-
 void lcd_clear(){
 	writeByteLcd(LCD_CTRL_WR, LCD_CURSOR_ON);     // Display Cursor ON
 	delayNoInt(40);					// Start timer with 40 usec delay
@@ -134,6 +119,55 @@ void lcd_clear(){
 
 	writeByteLcd(LCD_CTRL_WR, LCD_HOME_L1);
 	delayNoInt(40);					// Start timer with 40 usec delay
+}
+
+void print_lcd(char *message){
+	uint8_t len = strlen(message);
+	lcd_clear();
+	delay(10000);
+
+	int i;
+	//if (len > lcd_message_max) len = lcd_message_max;
+	for (i = 0; i < len; i++)
+	{
+		if (message[i] <= 0x7F){
+			writeByteLcd(1U, message[i]);
+		}
+		delay(100);
+		if (i == 7){
+			int k;
+			for (k = 0; k < 32; k++)
+			{
+				writeByteLcd(0U, LCD_CURSOR_RIGHT);
+				delay(100);
+			}
+		}
+	}
+
+	// scroll one right
+	//writeByteLcd(0U, 0x1C);
+	//	delay(100);
+	EI();
+}
+
+void print_long_message(char * message)
+{
+	uint8_t head;
+	uint8_t tail;
+	uint8_t lcd_display[16];
+	uint16_t k;
+	for (tail = 0; tail < strlen(message) - 15; tail++)
+	{
+		for(head = 0; head < 16; head++)
+		{
+			lcd_display[head] = message[head + tail];
+		}
+		print_lcd(lcd_display);
+		for (k = 0; k < 100; k++)
+		{
+			delay(10000);
+		}
+	}
 }
 
 

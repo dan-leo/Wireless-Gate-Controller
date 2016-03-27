@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file includes user definition.
-* Creation Date: 2016-03-11
+* Creation Date: 2016-03-27
 ***********************************************************************************************************************/
 
 #ifndef _USER_DEF_H
@@ -39,26 +39,5 @@ User definitions
 ***********************************************************************************************************************/
 
 /* Start user code for function. Do not edit comment generated here */
-#define RX_BUF_LEN 16
-#define TX_BUF_LEN 16
-
-// adc
-#define V_REF (5.0)
-#define NUM_CHANNELS (4)
-#define AD_SAMPLING (1)
-#define AD_IDLE (0)
-
-#define PHASE P4_bit.no3
-#define nSLEEP P4_bit.no2
-
-#define SW_OPENED P3_bit.no0
-#define SW_CLOSED P3_bit.no1
-
-
-enum gate_position {
-	CLOSED = 0x81,
-	OPEN = 0x82,
-	UNKNOWN = 0x84
-} gate_pos_t;
 /* End user code. Do not edit comment generated here */
 #endif

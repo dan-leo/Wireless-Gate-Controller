@@ -3,6 +3,7 @@
  *
  *  Created on: 24 Mar 2015
  *      Author: jtreurn
+ *      Edited: Daniel Robinson
  */
 
 #ifndef LCD_H_
@@ -42,16 +43,16 @@
 #define	SET_LCD_EN_HIGH		LCD_E = 1 		//asm("SET1 0xFFF0E.6")
 #define	SET_LCD_EN_LOW		LCD_E = 0 		//asm("CLR1 0xFFF0E.6")
 
-#include "r_cg_macrodriver.h"
+#include "../r_cg_macrodriver.h"
+#include <string.h>
 
 	// Prototypes
 void initLcd(void);
 void writeNibbleLcd(uint8_t reg, uint8_t nibble);
 void writeByteLcd(uint8_t reg, uint8_t value);
 
-
-void delayNoInt(uint16_t delay);
-void startTMR0(int delay);
 void lcd_clear();
+void print_lcd(char *message);
+void print_long_message(char * message);
 
 #endif /* LCD_H_ */

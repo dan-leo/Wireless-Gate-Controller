@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for PORT module.
-* Creation Date: 2016-03-11
+* Creation Date: 2016-03-27
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -57,10 +57,13 @@ void R_PORT_Create(void)
     P4 = _04_Pn2_OUTPUT_1 | _08_Pn3_OUTPUT_1;
     P7 = _00_Pn0_OUTPUT_0 | _00_Pn1_OUTPUT_0 | _00_Pn2_OUTPUT_0 | _00_Pn3_OUTPUT_0 | _00_Pn4_OUTPUT_0 |
          _00_Pn5_OUTPUT_0 | _00_Pn6_OUTPUT_0 | _00_Pn7_OUTPUT_0;
-    PU0 = _04_PUn2_PULLUP_ON | _08_PUn3_PULLUP_ON;
-    PU3 = _01_PUn0_PULLUP_ON | _02_PUn1_PULLUP_ON;
+    PU0 = _04_PUn2_PULLUP_ON | _08_PUn3_PULLUP_ON | _20_PUn5_PULLUP_ON | _40_PUn6_PULLUP_ON;
+    PU3 = _01_PUn0_PULLUP_ON;
     PU4 = _01_PUn0_PULLUP_ON;
     PIM0 = _08_PIMn3_TTL_ON;
+    PIM3 = _01_PIMn0_TTL_ON;
+    PM0 = _01_PMn0_NOT_USE | _02_PMn1_NOT_USE | _04_PMn2_NOT_USE | _08_PMn3_NOT_USE | _10_PMn4_NOT_USE |
+          _20_PMn5_MODE_INPUT | _40_PMn6_MODE_INPUT | _80_PM0_DEFAULT;
     PM4 = _01_PMn0_NOT_USE | _02_PMn1_NOT_USE | _00_PMn2_MODE_OUTPUT | _00_PMn3_MODE_OUTPUT | _F0_PM4_DEFAULT;
     PM7 = _00_PMn0_MODE_OUTPUT | _00_PMn1_MODE_OUTPUT | _00_PMn2_MODE_OUTPUT | _00_PMn3_MODE_OUTPUT |
           _00_PMn4_MODE_OUTPUT | _00_PMn5_MODE_OUTPUT | _00_PMn6_MODE_OUTPUT | _00_PMn7_MODE_OUTPUT;
