@@ -130,8 +130,8 @@ void R_MAIN_UserInit(void)
 
 	R_UART1_Start();
 	delay(100);
-//	R_INTC4_Start();
-//	R_INTC3_Start();
+	//	R_INTC4_Start();
+	//	R_INTC3_Start();
 
 	R_TMR_RD0_Start();
 
@@ -306,6 +306,7 @@ void main_service(){
 	volatile uint16_t pwm_counter;
 	volatile uint16_t adc_last_reading;
 	volatile uint8_t adc_enable = 0;
+	volatile uint8_t gate_is_moving = 0;
 
 	echo(0x80);
 	print_lcd("normal_mode");
@@ -380,6 +381,12 @@ void main_service(){
 			case 0xF7:
 				// read current
 				echo(0xF7);
+				if (gate_is_moving){
+					echo(0x0A);
+				}
+				else{
+					echo(0x0);
+				}
 				break;
 			case 0xF8:
 				// close gate
@@ -387,6 +394,7 @@ void main_service(){
 				PHASE = 1;
 				nSLEEP = 1;
 				gate_position = UNKNOWN;
+				gate_is_moving = 1;
 				//if (gate_position == OPEN) R_INTC3_Stop();
 				print_lcd("unknown");
 				break;
@@ -396,6 +404,7 @@ void main_service(){
 				PHASE = 0;
 				nSLEEP = 1;
 				gate_position = UNKNOWN;
+				gate_is_moving = 1;
 				//if (gate_position == CLOSED) R_INTC4_Stop();
 				print_lcd("unknown");
 				break;
@@ -441,6 +450,7 @@ void main_service(){
 				if (last_gate_position != OPEN){
 					P7^=0x80;
 					nSLEEP = 0;
+					gate_is_moving = 0;
 					gate_position = OPEN;
 					last_gate_position = OPEN;
 					R_INTC4_Start();
@@ -451,6 +461,7 @@ void main_service(){
 				if (last_gate_position != CLOSED){
 					P7^=0x80;
 					nSLEEP = 0;
+					gate_is_moving = 0;
 					gate_position = CLOSED;
 					last_gate_position = CLOSED;
 					R_INTC3_Start();
@@ -476,61 +487,59 @@ void main_service(){
 		//
 		//		}
 
-		delay(100);
+
+		if (timer1_interrupt){
+			timer1_interrupt = 0;
+
+			INTAD_FSM_state = AD_SAMPLING;
+			ADC_done = 0;
+			R_ADC_Start(); /* Start ADC (ADCS = 0n) */
+			while (!ADC_done)
+				;
+
+			if (adc_enable){
+				serial_print_adc(ADC_value[2]);
+				serial_print_adc(ADC_value[3]);
+				//				lcd_clear();
+				//				uint8_t a = ADC_value[2] >> 8;
+				//				writeByteLcd(1,a);
+				//				a = (uint8_t)ADC_value[2];
+				//				writeByteLcd(1,a);
+			}
+
+			/*			adc_last_reading = adc_get_reading();*/
+			volatile tiny_adc_reading = ADC_value[2] >> 3;
+			motor_power_ratio(tiny_adc_reading,128);
+			/*if (adc_enable){
+						serial_print_adc(adc_last_reading);
+					}*/
 
 
-		//		if (timer1_interrupt){
-		//			timer1_interrupt = 0;
-		//
-		//			INTAD_FSM_state = AD_SAMPLING;
-		//			ADC_done = 0;
-		//			R_ADC_Start(); /* Start ADC (ADCS = 0n) */
-		//			while (!ADC_done)
-		//				;
-		//
-		//			if (adc_enable){
-		//				serial_print_adc(ADC_value[2]);
-		//				serial_print_adc(ADC_value[3]);
-		//				//				lcd_clear();
-		//				//				uint8_t a = ADC_value[2] >> 8;
-		//				//				writeByteLcd(1,a);
-		//				//				a = (uint8_t)ADC_value[2];
-		//				//				writeByteLcd(1,a);
-		//			}
-		//
-		//			/*			adc_last_reading = adc_get_reading();*/
-		//			volatile tiny_adc_reading = ADC_value[2] >> 3;
-		//			motor_power_ratio(tiny_adc_reading,128);
-		//			/*if (adc_enable){
-		//				serial_print_adc(adc_last_reading);
-		//			}*/
-		//
-		//
-		//			/*			pwm_counter++;
-		//			pwm_counter%=2*1000/30;
-		//			if (pwm_counter < 1000/30 ){
-		//				//				P7|=0x80;
-		//			}
-		//			else {
-		//				//				P7&=0x7F;
-		//			}*/
-		//			//			PM7=0x7F;
-		//			//			P7^=0x80;
-		//			/*			if (soft_timer < 9){
-		//				PM7=0x7F;
-		//				P7^=0x80;
-		//				soft_timer++;
-		//			}
-		//			else if (soft_timer >= 9)
-		//			{
-		//				lcd_clear();
-		//				EI();
-		////				delayNoInt(100);
-		////				char lcd_messege[20] = "abcdefghijklmnopqrst";
-		////				print_lcd(lcd_messege, 20);
-		//				soft_timer++;
-		//			}*/
-		//		}
+			/*			pwm_counter++;
+					pwm_counter%=2*1000/30;
+					if (pwm_counter < 1000/30 ){
+						//				P7|=0x80;
+					}
+					else {
+						//				P7&=0x7F;
+					}*/
+			//			PM7=0x7F;
+			//			P7^=0x80;
+			/*			if (soft_timer < 9){
+						PM7=0x7F;
+						P7^=0x80;
+						soft_timer++;
+					}
+					else if (soft_timer >= 9)
+					{
+						lcd_clear();
+						EI();
+		//				delayNoInt(100);
+		//				char lcd_messege[20] = "abcdefghijklmnopqrst";
+		//				print_lcd(lcd_messege, 20);
+						soft_timer++;
+					}*/
+		}
 		/*		if (adc_ready){
 			adc_ready = 0;
 //			P7&=0x7F;
