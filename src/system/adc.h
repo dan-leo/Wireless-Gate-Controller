@@ -13,7 +13,6 @@
 #include "../r_cg_macrodriver.h"
 
 // adc
-//#define V_REF (5.0)
 #define NUM_CHANNELS (4)
 #define AD_SAMPLING (1)
 #define AD_IDLE (0)
@@ -25,5 +24,6 @@ volatile uint8_t adc_ready;
 
 uint16_t adc_get_reading();
 void adc_multi_channel_interrupt_service_routine();
+char *adc_ascii_current(uint16_t *adc_val);
 
 #endif /* ADC_H_ */

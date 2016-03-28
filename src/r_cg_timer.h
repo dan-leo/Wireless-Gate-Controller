@@ -887,13 +887,13 @@ Macro definitions
 /* Clock divisor for TAU0 channel 0 */
 #define _0010_TAU0_CHANNEL0_DIVISOR             (0x0010U)
 /* 8-bit timer data register 01 (TDR01L) */
-#define _61_TAU_TDR01L_VALUE                    (0x61U)
+#define _F3_TAU_TDR01L_VALUE                    (0xF3U)
 /* Clock divisor for TAU0 channel 1 */
 #define _4000_TAU0_CHANNEL1_DIVISOR             (0x4000U)
 /* 16-bit timer data register 02 (TDR02) */
-#define _C34F_TAU_TDR02_VALUE                   (0xC34FU)
+#define _3E7F_TAU_TDR02_VALUE                   (0x3E7FU)
 /* Clock divisor for TAU0 channel 2 */
-#define _0020_TAU0_CHANNEL2_DIVISOR             (0x0020U)
+#define _0001_TAU0_CHANNEL2_DIVISOR             (0x0001U)
 /* TMRD register A0 (TRDGRA0) */
 #define _018F_TMRD_TRDGRA0_VALUE                (0x018FU)
 /* TMRD register B0 (TRDGRB0) */

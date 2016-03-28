@@ -7,6 +7,8 @@
 
 #include "adc.h"
 #include "debug.h"
+#include "utility.h"
+//#include <string.h>
 
 /**
  * get adc reading (single-shot reading of 1 channel)
@@ -55,17 +57,26 @@ void adc_get_multiple_channels(){
 	while (!ADC_done)
 		;
 
+	// process data
+	uint8_t ascii_current[6];
+	ascii_current[5] = '\0';
+	uint8_t initial_current;
+	initial_current = ADC_value[3] / 10;
+	ascii_current[0] = initial_current/10 + '0';
+	ascii_current[1] = (initial_current % 10) + '0';
+	ascii_current[2] = ' ';
+	ascii_current[3] = 'm';
+	ascii_current[4] = 'A';
+
+	print_lcd(ascii_current);
+
+//	print_lcd(adc_ascii_current(ADC_value[3]));
+
 	if (debug_adc_serial){
 		serial_print_adc(ADC_value[2]);
 		serial_print_adc(ADC_value[3]);
-		//				lcd_clear();
-		//				uint8_t a = ADC_value[2] >> 8;
-		//				writeByteLcd(1,a);
-		//				a = (uint8_t)ADC_value[2];
-		//				writeByteLcd(1,a);
 	}
 
-	/*			adc_last_reading = adc_get_reading();*/
 	volatile tiny_adc_reading = ADC_value[2] >> 3;
 	motor_power_ratio(tiny_adc_reading,128);
 	/*if (adc_enable){
@@ -97,4 +108,18 @@ void adc_get_multiple_channels(){
 //				print_lcd(lcd_messege, 20);
 				soft_timer++;
 			}*/
+}
+
+char *adc_ascii_current(uint16_t *adc_val){
+	// process data
+	char ascii_current[6];
+	ascii_current[5] = '\0';
+	char initial_current;
+	initial_current = *adc_val / 10;
+	ascii_current[0] = initial_current/10 + '0';
+	ascii_current[1] = (initial_current % 10) + '0';
+	ascii_current[2] = ' ';
+	ascii_current[3] = 'm';
+	ascii_current[4] = 'A';
+	return ascii_current;
 }
