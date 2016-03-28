@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for Serial module.
-* Creation Date: 2016-03-27
+* Creation Date: 2016-03-28
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -49,7 +49,7 @@ extern volatile uint8_t * gp_uart1_rx_address;         /* uart1 receive buffer a
 extern volatile uint16_t  g_uart1_rx_count;            /* uart1 receive data number */
 extern volatile uint16_t  g_uart1_rx_length;           /* uart1 receive data length */
 /* Start user code for global. Do not edit comment generated here */
-extern volatile rx_char_main;
+extern volatile uint8_t rx_char_main;
 
 volatile uint8_t rx_flag = 0;
 volatile uint8_t tx_flag = 1;

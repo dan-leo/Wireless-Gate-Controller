@@ -7,9 +7,11 @@
 
 #include "core.h"
 
-//this variable gets modified every 1ms by the timer interrupt
 extern volatile uint8_t timer1_interrupt;
+
+//this variable gets modified every 1ms by the timer interrupt
 extern volatile uint8_t timer2_interrupt;
+
 extern volatile uint8_t rx_flag;
 
 void core_setup(){
@@ -22,6 +24,7 @@ void core_setup(){
 
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
+	R_TAU0_Channel2_Start();
 
 	R_UART1_Start();
 	delay(100);

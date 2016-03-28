@@ -56,11 +56,7 @@ void serial_handler(){
 	R_UART1_Receive(&serial_rx,1);
 	// rx = rx_char_main;
 	uart1RxBuf[rx_tail] = serial_rx;
-	//			uart1TxBuf[tx_tail] = rx;
-	//			R_UART1_Send(&rx,1);
-	//			echo(rx);
 
-	//lcd_clear();
 	switch (serial_rx){
 	case 0x81:
 		echo(0x81);
