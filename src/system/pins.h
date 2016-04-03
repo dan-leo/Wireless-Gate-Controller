@@ -14,4 +14,6 @@
 #define SW_OPENED P0_bit.no5
 #define SW_CLOSED P0_bit.no6
 
+#define IR_LED_TX P13_bit.no0
+
 #endif /* PINS_H_ */

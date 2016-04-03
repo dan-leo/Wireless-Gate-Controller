@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-03-28
+* Creation Date: 2016-04-03
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -37,6 +37,7 @@ Includes
 #include "r_cg_macrodriver.h"
 #include "r_cg_timer.h"
 /* Start user code for include. Do not edit comment generated here */
+#include "system/infrared.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -73,6 +74,19 @@ void r_tau0_channel2_interrupt(void)
     /* Start user code. Do not edit comment generated here */
 	// 1kHz gate stop button checker
 	timer2_interrupt = 1;
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_tau0_channel3_interrupt
+* Description  : This function is INTTM03 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_tau0_channel3_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	ir_InterruptSR();
     /* End user code. Do not edit comment generated here */
 }
 

@@ -22,9 +22,12 @@ void core_setup(){
 
 	nSLEEP = 0;
 
+	ir_reset_counters();
+
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
 	R_TAU0_Channel2_Start();
+	R_TAU0_Channel3_Start();
 
 	R_UART1_Start();
 	delay(100);
