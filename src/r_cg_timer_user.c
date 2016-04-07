@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-03
+* Creation Date: 2016-04-07
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -86,7 +86,21 @@ void r_tau0_channel2_interrupt(void)
 void r_tau0_channel3_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
-	ir_InterruptSR();
+	ir_txInterruptSR();
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_tmr_rj0_interrupt
+* Description  : This function is INTTRJ0 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_tmr_rj0_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	P5_bit.no4 ^= 1;
+	ir_rxInterruptSR();
     /* End user code. Do not edit comment generated here */
 }
 
@@ -97,6 +111,18 @@ void r_tau0_channel3_interrupt(void)
 * Return Value : None
 ***********************************************************************************************************************/
 void r_tmr_rd0_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
+}
+
+/***********************************************************************************************************************
+* Function Name: r_tmr_rg0_interrupt
+* Description  : This function is INTTRG interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_tmr_rg0_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
     /* End user code. Do not edit comment generated here */

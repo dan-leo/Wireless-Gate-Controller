@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-04-03
+* Creation Date: 2016-04-07
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -81,10 +81,15 @@ void R_INTC_Create(void)
     /* Set INTP3 low priority */
     PPR13 = 1U;
     PPR03 = 1U;
-    EGN0 = _08_INTP3_EDGE_FALLING_SEL;
-    EGP0 = _08_INTP3_EDGE_RISING_SEL;
+    /* Set INTP5 low priority */
+    PPR15 = 1U;
+    PPR05 = 1U;
+    EGN0 = _08_INTP3_EDGE_FALLING_SEL | _20_INTP5_EDGE_FALLING_SEL;
+    EGP0 = _08_INTP3_EDGE_RISING_SEL | _20_INTP5_EDGE_RISING_SEL;
     /* Set INTP3 pin */
     PM3 |= 0x01U;
+    /* Set INTP5 pin */
+    PM1 |= 0x40U;
 }
 
 /***********************************************************************************************************************
@@ -109,6 +114,30 @@ void R_INTC3_Stop(void)
 {
     PMK3 = 1U;    /* disable INTP3 interrupt */
     PIF3 = 0U;    /* clear INTP3 interrupt flag */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_INTC5_Start
+* Description  : This function clears INTP5 interrupt flag and enables interrupt.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_INTC5_Start(void)
+{
+    PIF5 = 0U;    /* clear INTP5 interrupt flag */
+    PMK5 = 0U;    /* enable INTP5 interrupt */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_INTC5_Stop
+* Description  : This function disables INTP5 interrupt and clears interrupt flag.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_INTC5_Stop(void)
+{
+    PMK5 = 1U;    /* disable INTP5 interrupt */
+    PIF5 = 0U;    /* clear INTP5 interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

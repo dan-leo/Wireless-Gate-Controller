@@ -32,8 +32,10 @@ void core_setup(){
 	R_UART1_Start();
 	delay(100);
 	//	R_INTC3_Start();
+	R_INTC5_Start();
 
 	R_TMR_RD0_Start();
+	R_TMR_RJ0_Start();
 
 	initLcd();
 

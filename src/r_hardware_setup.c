@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements system initializing function.
-* Creation Date: 2016-04-03
+* Creation Date: 2016-04-07
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -72,7 +72,9 @@ void R_Systeminit(void)
     R_TAU0_Create();
     R_PCLBUZ0_Create();
     R_INTC_Create();
+    R_TMR_RJ0_Create();
     R_TMR_RD0_Create();
+    R_TMR_RG0_Create();
     IAWCTL = 0x00U;
 }
 

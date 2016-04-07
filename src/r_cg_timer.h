@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-03
+* Creation Date: 2016-04-07
 ***********************************************************************************************************************/
 
 #ifndef TAU_H
@@ -898,10 +898,17 @@ Macro definitions
 #define _378F_TAU_TDR03_VALUE                   (0x378FU)
 /* Clock divisor for TAU0 channel 3 */
 #define _0001_TAU0_CHANNEL3_DIVISOR             (0x0001U)
+/* Timer RJ register (TRJ0) value */
+#define _1BBF_TMRJ_TRJ0_VALUE                   (0x1BBFU)
 /* TMRD register A0 (TRDGRA0) */
 #define _018F_TMRD_TRDGRA0_VALUE                (0x018FU)
 /* TMRD register B0 (TRDGRB0) */
 #define _012B_TMRD_TRDGRB0_VALUE                (0x012BU)
+/* Timer RG General Register A (TRGGRA)*/
+#define _063F_TMRG0_TRGGRA_VALUE                (0x063FU)
+/* Timer RG General Register B (TRGGRB)*/
+#define _031F_TMRG0_TRGGRB_VALUE                (0x031FU)
+
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -927,9 +934,15 @@ void R_TAU0_Channel2_Start(void);
 void R_TAU0_Channel2_Stop(void);
 void R_TAU0_Channel3_Start(void);
 void R_TAU0_Channel3_Stop(void);
+void R_TMR_RJ0_Create(void);
+void R_TMR_RJ0_Start(void);
+void R_TMR_RJ0_Stop(void);
 void R_TMR_RD0_Create(void);
 void R_TMR_RD0_Start(void);
 void R_TMR_RD0_Stop(void);
+void R_TMR_RG0_Create(void);
+void R_TMR_RG0_Start(void);
+void R_TMR_RG0_Stop(void);
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

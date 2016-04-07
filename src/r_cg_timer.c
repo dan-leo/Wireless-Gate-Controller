@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-03
+* Creation Date: 2016-04-07
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -222,6 +222,52 @@ void R_TAU0_Channel3_Stop(void)
 }
 
 /***********************************************************************************************************************
+* Function Name: R_TMR_RJ0_Create
+* Description  : This function initializes the TMRJ0 module.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RJ0_Create(void)
+{
+    TRJ0EN = 1U;    /* enable input clock supply */
+    TRJCR0 &= (uint8_t)~_01_TMRJ_COUNT_START;    /* disable TMRJ0 operation */
+    TRJMK0 = 1U;    /* disable INTTRJ0 interrupt */
+    TRJIF0 = 0U;    /* clear INTTRJ0 interrupt flag */
+    /* Set INTTRJ0 low priority */
+    TRJPR10 = 1U;
+    TRJPR00 = 1U;
+    TRJMR0 = _00_TMRJ_MODE_TIMER | _00_TMRJ_COUNT_SOURCE_FCLK;
+    TRJIOC0 = _00_TMRJ_TRJIOC_INITIAL_VALUE;
+    TRJ0 = _1BBF_TMRJ_TRJ0_VALUE;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RJ0_Start
+* Description  : This function starts TMRJ0 counter.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RJ0_Start(void)
+{
+    TRJIF0 = 0U;    /* clear INTTRJ0 interrupt flag */
+    TRJMK0 = 0U;    /* enable INTTRJ0 interrupt */
+    TRJCR0 |= _01_TMRJ_COUNT_START;    /* enable TMRJ operation */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RJ0_Stop
+* Description  : This function stops TMRJ0 counter.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RJ0_Stop(void)
+{
+    TRJCR0 &= (uint8_t)~_01_TMRJ_COUNT_START;    /* disable TMRJ operation */
+    TRJMK0 = 1U;    /* disable INTTRJ0 interrupt */
+    TRJIF0 = 0U;    /* clear INTTRJ0 interrupt flag */
+}
+
+/***********************************************************************************************************************
 * Function Name: R_TMR_RD0_Create
 * Description  : This function initializes the TMRD0 module.
 * Arguments    : None
@@ -290,6 +336,68 @@ void R_TMR_RD0_Stop(void)
     TRDIF0 = 0U;    /* clear TMRD0 interrupt flag */
     trdsr_dummy = TRDSR0; /* read TRDSR0 before write 0 */
     TRDSR0 = 0x00U; /* clear TRD0 each interrupt request */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RG0_Create
+* Description  : This function initializes the TMRG module.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RG0_Create(void)
+{
+    TRGEN = 1U; /* enable input clock supply */
+    TRGMR &= (uint8_t)~_80_TMRG_COUNT_START;    /* disable TMRG0 operation */
+    TRGMK = 1U; /* disable INTTRG interrupt */
+    TRGIF = 0U; /* clear INTTRG interrupt flag */
+    /* Set INTTRG low priority */
+    TRGPR1 = 1U;
+    TRGPR0 = 1U;
+    /* Set PWM mode */
+    TRGCR = _00_TMRG_COUNT_SOURCE_FCLK | _20_TMRG_CLEAR_SOURCE_TRGGRA;
+    TRGGRA = _063F_TMRG0_TRGGRA_VALUE;
+    TRGGRB = _031F_TMRG0_TRGGRB_VALUE;
+    TRGMR = _00_TMRG_COUNT_MODE_INCREMENT | _01_TMRG_MODE_PWM;
+    TRGIOR = _00_TMRG_TRGGRB_BUFFER_UNUSED | _00_TMRG_TRGGRA_BUFFER_UNUSED;
+    TRGIER = _08_TMRG_INTERRUPT_OVERFLOW_ENABLE | _02_TMRG_INTERRUPT_CAPCOMB_ENABLE | _01_TMRG_INTERRUPT_CAPCOMA_ENABLE;
+    /* Set TRGIOA pin */
+    POM5 &= 0xFEU;
+    P5 &= 0xFEU;
+    PM5 &= 0xFEU;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RG0_Start
+* Description  : This function starts the TMRG module operation.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RG0_Start(void)
+{
+    uint8_t trgsr_dummy;
+    
+    trgsr_dummy = TRGSR; /* read TRGSR before write 0 */
+    TRGSR = 0x00U;
+    TRGIF = 0U; /* clear INTTRG interrupt flag */
+    TRGMK = 0U; /* enable INTTRG interrupt */
+    TRGMR |= _80_TMRG_COUNT_START;  /* enable TMRG0 operation */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_TMR_RG0_Stop
+* Description  : This function stops the TMRG module operation.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_TMR_RG0_Stop(void)
+{
+    uint8_t trgsr_dummy;
+    
+    TRGMR &= (uint8_t)~_80_TMRG_COUNT_START;    /* disable TMRG0 operation */
+    TRGMK = 1U; /* disable INTTRG interrupt */
+    TRGIF = 0U; /* clear INTTRG interrupt flag */
+    trgsr_dummy = TRGSR; /* read TRGSR before write 0 */
+    TRGSR = 0x00U;
 }
 
 /* Start user code for adding. Do not edit comment generated here */
