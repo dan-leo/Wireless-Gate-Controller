@@ -8,3 +8,7 @@ Infrared tx (manchester encoding) works. (tx on G14 only for now -- just for deb
 TODO: 
 add pinout here<br>
 make this all more user friendly!! :)
+
+
+Debugging: have a look at the debug.h folder and 
+change variables to enable certain debugging outputs

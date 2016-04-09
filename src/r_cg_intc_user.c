@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -47,6 +47,21 @@ Global variables and functions
 /* Start user code for global. Do not edit comment generated here */
 //volatile uint8_t gate_opened = 0, gate_closed = 0;s
 /* End user code. Do not edit comment generated here */
+
+/***********************************************************************************************************************
+* Function Name: r_intc2_interrupt
+* Description  : This function is INTP2 interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_intc2_interrupt(void)
+{
+    /* Start user code. Do not edit comment generated here */
+	ir_txMessage |= 0x1;
+	R_TAU0_Channel3_Start();
+	R_INTC2_Stop();
+    /* End user code. Do not edit comment generated here */
+}
 
 /***********************************************************************************************************************
 * Function Name: r_intc3_interrupt
@@ -73,7 +88,7 @@ void r_intc5_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	P7_bit.no7=P1_bit.no6;
-	ir_start_of_rx_interrupt = 1;
+	// ir_start_of_rx_interrupt = 1;
 	R_INTC5_Stop();
 	R_TMR_RJ0_Start();
     /* End user code. Do not edit comment generated here */

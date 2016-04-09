@@ -15,5 +15,6 @@
 
 char *toString(char *message, uint8_t len);
 char *strcat_v2(char *dest, const char *src);
+void word_to_ascii(uint16_t word, uint8_t *lcd_word);
 
 #endif /* UTILITY_H_ */

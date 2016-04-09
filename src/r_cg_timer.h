@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 #ifndef TAU_H
@@ -904,11 +904,6 @@ Macro definitions
 #define _018F_TMRD_TRDGRA0_VALUE                (0x018FU)
 /* TMRD register B0 (TRDGRB0) */
 #define _012B_TMRD_TRDGRB0_VALUE                (0x012BU)
-/* Timer RG General Register A (TRGGRA)*/
-#define _063F_TMRG0_TRGGRA_VALUE                (0x063FU)
-/* Timer RG General Register B (TRGGRB)*/
-#define _031F_TMRG0_TRGGRB_VALUE                (0x031FU)
-
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -940,9 +935,6 @@ void R_TMR_RJ0_Stop(void);
 void R_TMR_RD0_Create(void);
 void R_TMR_RD0_Start(void);
 void R_TMR_RD0_Stop(void);
-void R_TMR_RG0_Create(void);
-void R_TMR_RG0_Start(void);
-void R_TMR_RG0_Stop(void);
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

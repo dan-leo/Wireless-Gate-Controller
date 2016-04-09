@@ -121,7 +121,7 @@ void lcd_clear(){
 	delayNoInt(40);					// Start timer with 40 usec delay
 }
 
-void print_lcd(char *message){
+void print_lcd(uint8_t *message){
 	uint8_t len = strlen(message);
 	lcd_clear();
 	delay(10000);
@@ -135,12 +135,14 @@ void print_lcd(char *message){
 		}
 		delay(100);
 		if (i == 7){
-			int k;
-			for (k = 0; k < 32; k++)
-			{
-				writeByteLcd(0U, LCD_CURSOR_RIGHT);
-				delay(100);
-			}
+//			int k;
+//			for (k = 0; k < 32; k++)
+//			{
+//				writeByteLcd(0U, LCD_CURSOR_RIGHT);
+//				delay(100);
+//			}
+			writeByteLcd(0U, 0xC0);
+			delay(100);
 		}
 	}
 

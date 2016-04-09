@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -78,18 +78,47 @@ void R_INTC_Create(void)
     PIF10 = 0U;    /* clear INTP10 interrupt flag */
     PMK11 = 1U;    /* disable INTP11 operation */
     PIF11 = 0U;    /* clear INTP11 interrupt flag */
+    /* Set INTP2 low priority */
+    PPR12 = 1U;
+    PPR02 = 1U;
     /* Set INTP3 low priority */
     PPR13 = 1U;
     PPR03 = 1U;
     /* Set INTP5 low priority */
     PPR15 = 1U;
     PPR05 = 1U;
-    EGN0 = _08_INTP3_EDGE_FALLING_SEL | _20_INTP5_EDGE_FALLING_SEL;
-    EGP0 = _08_INTP3_EDGE_RISING_SEL | _20_INTP5_EDGE_RISING_SEL;
+    EGN0 = _04_INTP2_EDGE_FALLING_SEL | _08_INTP3_EDGE_FALLING_SEL | _20_INTP5_EDGE_FALLING_SEL;
+    EGP0 = _04_INTP2_EDGE_RISING_SEL | _08_INTP3_EDGE_RISING_SEL | _20_INTP5_EDGE_RISING_SEL;
+    /* Set INTP2 pin */
+    PM5 |= 0x02U;
     /* Set INTP3 pin */
     PM3 |= 0x01U;
     /* Set INTP5 pin */
     PM1 |= 0x40U;
+}
+
+/***********************************************************************************************************************
+* Function Name: R_INTC2_Start
+* Description  : This function clears INTP2 interrupt flag and enables interrupt.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_INTC2_Start(void)
+{
+    PIF2 = 0U;    /* clear INTP2 interrupt flag */
+    PMK2 = 0U;    /* enable INTP2 interrupt */
+}
+
+/***********************************************************************************************************************
+* Function Name: R_INTC2_Stop
+* Description  : This function disables INTP2 interrupt and clears interrupt flag.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_INTC2_Stop(void)
+{
+    PMK2 = 1U;    /* disable INTP2 interrupt */
+    PIF2 = 0U;    /* clear INTP2 interrupt flag */
 }
 
 /***********************************************************************************************************************

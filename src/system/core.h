@@ -15,6 +15,7 @@
 #include "math.h"
 #include "motor_driver.h"
 #include "serial.h"
+#include "utility.h"
 
 void core_setup();
 

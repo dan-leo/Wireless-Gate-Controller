@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for PORT module.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -62,7 +62,7 @@ void R_PORT_Create(void)
     PU0 = _04_PUn2_PULLUP_ON | _08_PUn3_PULLUP_ON | _20_PUn5_PULLUP_ON | _40_PUn6_PULLUP_ON;
     PU3 = _01_PUn0_PULLUP_ON;
     PU4 = _01_PUn0_PULLUP_ON;
-    PU5 = _20_PUn5_PULLUP_ON;
+    PU5 = _02_PUn1_PULLUP_ON | _20_PUn5_PULLUP_ON;
     PIM0 = _08_PIMn3_TTL_ON;
     PIM3 = _01_PIMn0_TTL_ON;
     PIM5 = _20_PIMn5_TTL_ON;

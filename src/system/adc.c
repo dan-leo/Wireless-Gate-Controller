@@ -68,13 +68,14 @@ void adc_get_multiple_channels(){
 	ascii_current[3] = 'm';
 	ascii_current[4] = 'A';
 
-	print_lcd(ascii_current);
+	if (debug_adc_lcd) print_lcd(ascii_current);
 
 //	print_lcd(adc_ascii_current(ADC_value[3]));
 
 	if (debug_adc_serial){
 		serial_print_adc(ADC_value[2]);
 		serial_print_adc(ADC_value[3]);
+		echo('\n');
 	}
 
 	volatile tiny_adc_reading = ADC_value[2] >> 3;

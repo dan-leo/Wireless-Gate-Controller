@@ -28,3 +28,12 @@
 //    dest[i+j] = '\0';
 //    return dest;
 //}
+
+void word_to_ascii(uint16_t word, uint8_t *lcd_word){
+	volatile uint8_t k;
+	for (k = 0; k < 16; k++){
+		uint8_t shift = word >> (15 - k);
+		uint8_t number = shift & 0x1;
+		lcd_word[k] = number + '0';
+	}
+}

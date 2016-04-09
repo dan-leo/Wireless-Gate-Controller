@@ -10,5 +10,8 @@
 
 
 uint8_t debug_adc_serial;
+uint8_t debug_ir_receiver_lcd;
+uint8_t debug_lcd;
+uint8_t debug_adc_lcd;
 
 #endif /* DEBUG_H_ */

@@ -7,6 +7,8 @@
 
 #include "serial.h"
 #include "motor_driver.h"
+#include "debug.h"
+#include "lcd.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -22,8 +24,7 @@ volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
 
 uint8_t rx_tail;
 
-// uart fix
-uint8_t rx_char_main;
+extern volatile uint8_t rx_flag;
 
 
 /**
@@ -78,6 +79,24 @@ void serial_handler(){
 		echo('*');
 		echo('{');
 		break;
+	case '/': // send a command byte
+		while (!rx_flag);
+		rx_flag = 0;
+		R_UART1_Receive(&serial_rx, 1);
+		writeByteLcd(0U, serial_rx);
+		echo(serial_rx);
+		return;
+	case '\\': // send a data byte
+		while (!rx_flag);
+		rx_flag = 0;
+		R_UART1_Receive(&serial_rx, 1);
+		writeByteLcd(1U, serial_rx);
+		echo(serial_rx);
+		return;
+	case '&': // clear lcd
+		lcd_clear();
+		echo('&');
+		return;
 	case 0xF0:
 		// start buzzer
 		echo(0xF0);
@@ -143,31 +162,10 @@ void serial_handler(){
 		break;
 	}
 
-	//			if (rx_tail < 16){
-	//				print_lcd(uart1RxBuf);
-	//			}
-
-	//			if (test_mode == 1){
-	//				if ((*rx == 0xF4) /*|| (*rx == 0x0D)*/) print_lcd(uart1RxBuf, strlen(uart1RxBuf));
-	//			}
-
-	//			if (rx_tail < 17){
-	//				rx_tail++;
-	//			}
-
-
-	//			if (rx_tail < 17){
-	//				rx_tail++;
-	//			}
-	//			else
-	//			{
-	//				for (k = rx_tail; k > 1; k--){
-	//					uart1RxBuf[k-1] = uart1RxBuf[k];
-	//				}
-	//			}
 	rx_tail++;
-	//			rx_tail %= RX_BUF_LEN;
-	//			tx_tail++;
-	//			tx_tail %= TX_BUF_LEN;
+	if (debug_lcd){
+		print_lcd(uart1RxBuf);
+		rx_tail %= RX_BUF_LEN;
+	}
 	//EI();
 }

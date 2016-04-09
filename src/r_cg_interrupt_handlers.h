@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file declares interrupt handlers.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 #ifndef INTERRUPT_HANDLERS_H_H
@@ -49,6 +49,8 @@ Typedef definitions
 /***********************************************************************************************************************
 Global functions
 ***********************************************************************************************************************/
+//0xC
+void r_intc2_interrupt(void) __attribute__ ((interrupt));
 //0xE
 void r_intc3_interrupt(void) __attribute__ ((interrupt));
 //0x12
@@ -69,8 +71,6 @@ void r_adc_interrupt(void) __attribute__ ((interrupt));
 void r_tmr_rj0_interrupt(void) __attribute__ ((interrupt));
 //0x56
 void r_tmr_rd0_interrupt(void) __attribute__ ((interrupt));
-//0x5A
-void r_tmr_rg0_interrupt(void) __attribute__ ((interrupt));
 //Hardware Vectors
 //0x0
 void PowerON_Reset(void) __attribute__ ((interrupt));

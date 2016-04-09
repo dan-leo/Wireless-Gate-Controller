@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-07
+* Creation Date: 2016-04-09
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -86,6 +86,7 @@ void r_tau0_channel2_interrupt(void)
 void r_tau0_channel3_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
+	// 889us transmit ir timer
 	ir_txInterruptSR();
     /* End user code. Do not edit comment generated here */
 }
@@ -99,7 +100,8 @@ void r_tau0_channel3_interrupt(void)
 void r_tmr_rj0_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
-	P5_bit.no4 ^= 1;
+	// 444us timer to receive ir stream
+	P5_bit.no4 ^= 1; // debug output on a pin
 	ir_rxInterruptSR();
     /* End user code. Do not edit comment generated here */
 }
@@ -111,18 +113,6 @@ void r_tmr_rj0_interrupt(void)
 * Return Value : None
 ***********************************************************************************************************************/
 void r_tmr_rd0_interrupt(void)
-{
-    /* Start user code. Do not edit comment generated here */
-    /* End user code. Do not edit comment generated here */
-}
-
-/***********************************************************************************************************************
-* Function Name: r_tmr_rg0_interrupt
-* Description  : This function is INTTRG interrupt service routine.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void r_tmr_rg0_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
     /* End user code. Do not edit comment generated here */

@@ -22,6 +22,7 @@ void delayNoInt(uint16_t delay){
 	while(TMIF00 == 0) // Wait for timer flag
 		NOP();
 	R_TAU0_Channel0_Stop(); // Stop timer and clear all flags
+	EI();
 }
 
 void delay(uint16_t delay){

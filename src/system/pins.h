@@ -15,7 +15,8 @@
 #define SW_CLOSED P0_bit.no6
 
 #define IR_LED_TX P13_bit.no0
-// #define IR_BUTTON_TX P
+#define IR_BUTTON_TX P5_bit.no1
 #define IR_RX P1_bit.no6
+
 
 #endif /* PINS_H_ */

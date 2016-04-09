@@ -19,27 +19,30 @@ void core_setup(){
 	INTAD_FSM_state = AD_IDLE;
 
 	debug_adc_serial = 0;
+	debug_ir_receiver_lcd = 1;
+	debug_lcd = 0;
+	debug_adc_lcd = 0;
 
 	nSLEEP = 0;
-
-	ir_reset_counters();
 
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
 	R_TAU0_Channel2_Start();
-	R_TAU0_Channel3_Start();
+	// R_TAU0_Channel3_Start();
 
 	R_UART1_Start();
 	delay(100);
 	//	R_INTC3_Start();
-	R_INTC5_Start();
+	R_INTC5_Start(); // listen for beginning of ir data stream
+	R_INTC2_Start(); // listen for ir button
+
 
 	R_TMR_RD0_Start();
-	R_TMR_RJ0_Start();
+	// R_TMR_RJ0_Start();
 
 	initLcd();
 
-	print_long_message("Robinson DL 18361137");
+	//	print_long_message("Robinson DL 18361137");
 	delay(100);
 
 	R_UART1_Receive(&serial_rx,1);	// Prime UART1 Rx
@@ -60,14 +63,21 @@ void core_main(){
 			serial_handler();
 		}
 
+		// 1kHz gate stop button checker
 		if (timer2_interrupt){
 			timer2_interrupt = 0;
 			gate_stop_handler();
 		}
 
+		// 10 Hz adc reader
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
 			adc_get_multiple_channels();
+			if (debug_ir_receiver_lcd){
+				volatile uint8_t ascii_word[16];
+				word_to_ascii(ir_rxMessage, ascii_word);
+				print_lcd(ascii_word);
+			}
 		}
 	}
 }
