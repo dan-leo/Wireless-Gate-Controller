@@ -23,6 +23,9 @@ void core_setup(){
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
 
+	// idle mode
+	IR_LED_TX = 1;
+
 	nSLEEP = 0;
 
 	R_TAU0_Channel0_Start();

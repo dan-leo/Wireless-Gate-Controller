@@ -26,7 +26,10 @@
 #define ir_14bitMessage_inHalfBits_total 28
 
 // total receive ticks for a message
-#define ir_14bitMessage_inQuarterBits_total 55
+#define ir_14bitMessage_inQuarterBits_total 53
+
+// total sampling ticks
+#define ir_sampling_ticks_at_444us_total (ir_14bitMessage_inQuarterBits_total + 2)
 
 void ir_pulse_train(uint8_t enabled);
 
@@ -56,7 +59,7 @@ void ir_txInterruptSR(){
 			ir_14bitMessage_inHalfBits_counter--;
 		}
 		else{
-			ir_pulse_train(1);
+			ir_pulse_train(1U);
 		}
 		ir_64bitMessage_inHalfBits_counter--;
 	}
@@ -84,34 +87,45 @@ void ir_pulse_train(uint8_t enabled){
  */
 void ir_rxInterruptSR(){
 	static volatile uint8_t ir_14bitMessage_inQuarterBits_counter = ir_14bitMessage_inQuarterBits_total;
-	static volatile uint8_t double_half_bit;
-	static volatile uint16_t ir_rxMessage_buffer; //ir rx message buffer
-    //	double_half_bit = 0;
 
-	// grab first half-bit
-	if (!((ir_14bitMessage_inQuarterBits_counter + 1) % 4) && ir_14bitMessage_inQuarterBits_counter){
-		double_half_bit = (double_half_bit | IR_RX) << 1;
-	}
+	// this is so that the rising edge of the last bit being read
+	// doesn't trigger the beginning of the next bit of sampling too quickly
+	static volatile uint8_t ir_sampling_ticks_at_444us = ir_sampling_ticks_at_444us_total;
 
-	// if at the end of a full bit
-	if (!((ir_14bitMessage_inQuarterBits_counter - 1) % 4) && ir_14bitMessage_inQuarterBits_counter){
-		double_half_bit |= IR_RX;
-		if (double_half_bit == 0x01){
-			// valid bit, also equal to 1
-			ir_rxMessage_buffer = (ir_rxMessage_buffer | 1) << 1;
+	static volatile uint8_t double_half_bit = 0x2;
+	static volatile uint16_t ir_rxMessage_buffer = 0; //ir rx message buffer
+	//	double_half_bit = 0;
+
+	if (ir_sampling_ticks_at_444us){
+		if (ir_14bitMessage_inQuarterBits_counter){
+			// grab first half-bit
+			if (!((ir_14bitMessage_inQuarterBits_counter + 1) % 4)){
+				double_half_bit = (double_half_bit | IR_RX) << 1;
+			}
+
+			// if at the end of a full bit
+			if (!((ir_14bitMessage_inQuarterBits_counter - 1) % 4)){
+				double_half_bit |= IR_RX;
+				if (!double_half_bit || (double_half_bit != 0x3)){
+					// if it is a 0x10 or 0x01, then take the 2nd lowest significant bit
+					ir_rxMessage_buffer |= ((double_half_bit & 0x2) >> 1);
+					// if it's not the last bit, make place for the next bit
+					if (ir_14bitMessage_inQuarterBits_counter - 1){
+						ir_rxMessage_buffer <<= 1;
+					}
+				}
+				double_half_bit = 0;
+			}
+			ir_14bitMessage_inQuarterBits_counter--;
 		}
-		else if (double_half_bit == 0x10){
-			// valid bit, also equal to 0
-			ir_rxMessage_buffer = (ir_rxMessage_buffer | 0) << 1;
-		}
-		double_half_bit = 0;
+		ir_sampling_ticks_at_444us--;
 	}
-	ir_14bitMessage_inQuarterBits_counter--;
-	if (!ir_14bitMessage_inQuarterBits_counter){
+	else{
 		ir_14bitMessage_inQuarterBits_counter = ir_14bitMessage_inQuarterBits_total;
-		ir_rxMessage_buffer >>= 1;
+		ir_sampling_ticks_at_444us = ir_sampling_ticks_at_444us_total;
 		ir_rxMessage = ir_rxMessage_buffer;
 		ir_rxMessage_buffer = 0;
+		double_half_bit = 0x2;
 		R_TMR_RJ0_Stop();
 		R_INTC5_Start();
 	}
