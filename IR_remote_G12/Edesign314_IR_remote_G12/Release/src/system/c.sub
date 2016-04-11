@@ -1,0 +1,1 @@
+ -Wa,-adlhn="core.lst" -nostdinc -I"C:\\PROGRA~2\\KPIT\\GNURL7~1.02-\\rl78-ELF/rl78-elf/optlibinc" -Os -fno-function-cse -funit-at-a-time -falign-jumps -fdata-sections -ffunction-sections -mmul=none 

@@ -1,0 +1,34 @@
+[Header]
+Description=Renesas Flash Programmer Configuration File
+File Type=3.0
+[Device Info]
+Device Type=3
+Device Code=10000652354631303236412020FF3F00FF170F030003
+Product Name=R5F1026A
+Support FAW=TRUE
+Support ESW=FALSE
+Memory Area Count=2
+[Clock Info]
+Clock Mode=0
+Support Clock=
+OSC Frequency Range=0,0
+CPU Frequency Range=0,0
+SCI Frequency Range=0,0
+CPU Ratio=
+SCI Ratio=
+[Memory Area 0]
+Area Type=0x00000001
+Start Address=0x00000000
+Size=0x00004000
+Erase Unit Size=0x00000400
+Write Unit Size=0x00000400
+Attribute=0x00000000
+[Memory Area 1]
+Area Type=0x00000010
+Start Address=0x000F1000
+Size=0x00000800
+Erase Unit Size=0x00000400
+Write Unit Size=0x00000400
+Attribute=0x00000000
+[Checksum]
+Checksum=0x4F2D26A2

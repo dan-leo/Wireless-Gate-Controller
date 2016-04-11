@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.renesas.cdt.launch.debug.launchConfigurationType">
+<stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Release\Edesign314_IR_remote_G12.x"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="Edesign314_IR_remote_G12"/>
+<stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value="com.renesas.cdt.RL78.configuration.debug.1509896952"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/Edesign314_IR_remote_G12"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>
