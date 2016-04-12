@@ -39,7 +39,6 @@ Includes
 #include "r_cg_port.h"
 #include "r_cg_intc.h"
 #include "r_cg_timer.h"
-#include "r_cg_wdt.h"
 /* Start user code for include. Do not edit comment generated here */
 #include "system/core.h"
 /* End user code. Do not edit comment generated here */

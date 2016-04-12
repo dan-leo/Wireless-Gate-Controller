@@ -39,7 +39,6 @@ Includes
 #include "r_cg_port.h"
 #include "r_cg_intc.h"
 #include "r_cg_timer.h"
-#include "r_cg_wdt.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -66,7 +65,6 @@ void R_Systeminit(void)
     R_CGC_Create();
     R_PORT_Create();
     R_TAU0_Create();
-    R_WDT_Create();
     R_INTC_Create();
     IAWCTL = 0x00U;
 }

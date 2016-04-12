@@ -22,25 +22,25 @@
   22                             	r15	=	0xffef7
   23                             	r23	=	0xffeef
   24                             	r31	=	0xffee7
-  25                             		.section	.text.R_Systeminit,"ax",@progbits
-  26                             		.global	_R_Systeminit
-  28                             	_R_Systeminit:
-  29 0000 F5 77 00                		clrb	!119
-  30 0003 FC 00 00 00             		call	!!%code(_R_CGC_Get_ResetSource)
-  31 0007 FC 00 00 00             		call	!!%code(_R_CGC_Create)
-  32 000b FC 00 00 00             		call	!!%code(_R_PORT_Create)
-  33 000f FC 00 00 00             		call	!!%code(_R_TAU0_Create)
-  34 0013 FC 00 00 00             		call	!!%code(_R_WDT_Create)
-  35 0017 FC 00 00 00             		call	!!%code(_R_INTC_Create)
-  36 001b F5 78 00                		clrb	!120
-  37 001e D7                      		ret
-  39                             		.section	.text.HardwareSetup,"ax",@progbits
-  40                             		.global	_HardwareSetup
-  42                             	_HardwareSetup:
-  43                             	 ; 82 "../src/r_hardware_setup.c" 1
-  44 0000 71 7B FA                		di
-  45                             	 ; 0 "" 2
-  46 0003 FC 00 00 00             		call	!!%code(_R_Systeminit)
-  47 0007 C9 F0 01 00             		movw	r8, #1
-  48 000b D7                      		ret
-  50                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+  25                             		.section	.text.startup.main,"ax",@progbits
+  26                             		.global	_main
+  28                             	_main:
+  29                             	 ; 82 "../src/r_main.c" 1
+  30 0000 71 7A FA                		ei
+  31                             	 ; 0 "" 2
+  32 0003 FC 00 00 00             		call	!!%code(_core_setup)
+  33                             	.L2:
+  34 0007 EC 07 00 00             		br	!!.L2
+  36                             		.section	.text.R_MAIN_UserInit,"ax",@progbits
+  37                             		.global	_R_MAIN_UserInit
+  39                             	_R_MAIN_UserInit:
+  40                             	 ; 82 "../src/r_main.c" 1
+  41 0000 71 7A FA                		ei
+  42                             	 ; 0 "" 2
+  43 0003 D7                      		ret
+  45                             		.comm	_ir_txMessage,2,2
+  46                             		.comm	_ir_enable_pulse_train,1,1
+  47                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+, #1
+  47 000b D7                      		ret
+  49                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
