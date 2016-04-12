@@ -22,5 +22,181 @@
   22                             	r15	=	0xffef7
   23                             	r23	=	0xffeef
   24                             	r31	=	0xffee7
-  25                             		.comm	_ir_enable_pulse_train,1,1
-  26                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+  25                             		.section	.text.button_interrupt,"ax",@progbits
+  26                             		.global	_button_interrupt
+  28                             	_button_interrupt:
+  29                             		; start of function
+  30                             		; push 2: r16
+  31 0000 61 EF                   		sel	rb2
+  32 0002 C1                      		push	ax ; r16
+  33 0003 61 CF                   		sel	rb0
+  34 0005 88 06                   		mov	a, [sp+6]
+  35 0007 9D E8                   		mov	r16, a
+  36 0009 AF 00 00                		movw	ax, !_ir_txMessage
+  37 000c BD F2                   		movw	r10, ax
+  38 000e 8D E8                   		mov	a, r16
+  39 0010 6B F2                   		or	a, r10
+  40 0012 9D F0                   		mov	r8, a
+  41 0014 8D F3                   		mov	a, r11
+  42 0016 9D F1                   		mov	r9, a
+  43 0018 AD F0                   		movw	ax, r8
+  44 001a BF 00 00                		movw	!_ir_txMessage, ax
+  45 001d FC 00 00 00             		call	!!%code(_R_TAU0_Channel3_Start)
+  46 0021 4A E8 02                		cmp	r16, #2
+  47 0024 61 E8                   		 skz
+  48 0026 EC 32 00 00             		 br	!!.L2
+  49 002a FC 00 00 00             		call	!!%code(_R_INTC2_Stop)
+  50 002e EC 36 00 00             		br	!!.L1
+  51                             	.L2:
+  52 0032 FC 00 00 00             		call	!!%code(_R_INTC1_Stop)
+  53                             	.L1:
+  54 0036 61 EF                   		sel	rb2
+  55 0038 C0                      		pop	ax ; r16
+  56 0039 61 CF                   		sel	rb0
+  57 003b D7                      		ret
+  59                             		.section	.text.ir_enable_pulse,"ax",@progbits
+  60                             		.global	_ir_enable_pulse
+  62                             	_ir_enable_pulse:
+  63 0000 88 04                   		mov	a, [sp+4]
+  64 0002 D1                      		cmp0	a
+  65 0003 61 F8                   		 sknz
+  66 0005 EC 11 00 00             		 br	!!.L6
+  67 0009 FC 00 00 00             		call	!!%code(_R_TAU0_Channel0_Start)
+  68 000d EC 15 00 00             		br	!!.L5
+  69                             	.L6:
+  70 0011 FC 00 00 00             		call	!!%code(_R_TAU0_Channel0_Stop)
+  71                             	.L5:
+  72 0015 D7                      		ret
+  74                             		.section	.text.ir_txInterruptSR,"ax",@progbits
+  75                             		.global	_ir_txInterruptSR
+  77                             	_ir_txInterruptSR:
+  78                             		; start of function
+  79                             		; locals: 2 bytes
+  80                             		; outgoing: 2 bytes
+  81 0000 20 04                   		subw	sp, #4
+  82 0002 8F 00 00                		mov	a, !_setup.1632
+  83 0005 9D F0                   		mov	r8, a
+  84 0007 D4 F0                   		cmp0	r8
+  85 0009 61 F8                   		 sknz
+  86 000b EC 1B 00 00             		 br	!!.L9
+  87 000f 30 C0 37                		movw	ax, #14272
+  88 0012 BF 00 00                		movw	!_ir_txMessage, ax
+  89 0015 8D F0                   		mov	a, r8
+  90 0017 91                      		dec	a
+  91 0018 9F 00 00                		mov	!_setup.1632, a
+  92                             	.L9:
+  93 001b D5 00 00                		cmp0	!_ir_64bitMessage_inHalfBits_counter.1633
+  94 001e 61 F8                   		 sknz
+  95 0020 EC 90 00 00             		 br	!!.L10
+  96 0024 D5 00 00                		cmp0	!_ir_14bitMessage_inHalfBits_counter.1634
+  97 0027 61 F8                   		 sknz
+  98 0029 EC 81 00 00             		 br	!!.L11
+  99 002d AF 00 00                		movw	ax, !_ir_txMessage
+ 100 0030 BD F2                   		movw	r10, ax
+ 101 0032 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1634
+ 102 0035 9D F0                   		mov	r8, a
+ 103 0037 CD F1 00                		mov	r9, #0
+ 104 003a A6 F0                   		incw	r8
+ 105 003c AD F0                   		movw	ax, r8
+ 106 003e 31 1F                   		sarw	ax, 1
+ 107 0040 BD F0                   		movw	r8, ax
+ 108 0042 B6 F0                   		decw	r8
+ 109 0044 8D F0                   		mov	a, r8
+ 110 0046 76                      		mov	l, a
+ 111 0047 AD F2                   		movw	ax, r10
+ 112 0049 86                      		inc l
+ 113 004a 96                      		dec l
+ 114 004b DD 05                   		bz $2f
+ 115 004d 31 1E                   		1: shrw	ax, 1
+ 116 004f 96                      		dec l
+ 117 0050 DF FB                   		bnz $1b
+ 118                             		2:
+ 119 0052 60                      		mov	a, x
+ 120 0053 98 03                   		mov	[sp+3], a
+ 121 0055 5C 01                   		and	a, #1
+ 122 0057 98 03                   		mov	[sp+3], a
+ 123 0059 88 03                   		mov	a, [sp+3]
+ 124 005b 9D F2                   		mov	r10, a
+ 125 005d 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1634
+ 126 0060 5C 01                   		and	a, #1
+ 127 0062 9D F1                   		mov	r9, a
+ 128 0064 E4 F0                   		oneb	r8
+ 129 0066 D4 F2                   		cmp0	r10
+ 130 0068 61 F8                   		 sknz
+ 131 006a EC 70 00 00             		 br	!!.L12
+ 132 006e F4 F0                   		clrb	r8
+ 133                             	.L12:
+ 134 0070 8D F1                   		mov	a, r9
+ 135 0072 7B F0                   		xor	a, r8
+ 136 0074 98 00                   		mov	[sp], a
+ 137 0076 FC 00 00 00             		call	!!%code(_ir_enable_pulse)
+ 138 007a B0 00 00                		dec	!_ir_14bitMessage_inHalfBits_counter.1634
+ 139 007d EC 89 00 00             		br	!!.L13
+ 140                             	.L11:
+ 141 0081 FC 00 00 00             		call	!!%code(_R_TAU0_Channel0_Stop)
+ 142 0085 71 08 01 FF             		clr1	!-255.0
+ 143                             	.L13:
+ 144 0089 B0 00 00                		dec	!_ir_64bitMessage_inHalfBits_counter.1633
+ 145 008c EC FE 00 00             		br	!!.L8
+ 146                             	.L10:
+ 147 0090 51 80                   		mov	a, #-128
+ 148 0092 9F 00 00                		mov	!_ir_64bitMessage_inHalfBits_counter.1633, a
+ 149 0095 51 1C                   		mov	a, #28
+ 150 0097 9F 00 00                		mov	!_ir_14bitMessage_inHalfBits_counter.1634, a
+ 151 009a 30 C0 37                		movw	ax, #14272
+ 152 009d BF 00 00                		movw	!_ir_txMessage, ax
+ 153 00a0 8F 04 FF                		mov	a, !-252
+ 154 00a3 31 1A                   		shr	a, 1
+ 155 00a5 31 03 13                		bt	A.0, $.L15
+ 156 00a8 AF 00 00                		movw	ax, !_ir_txMessage
+ 157 00ab BD F2                   		movw	r10, ax
+ 158 00ad 60                      		mov	a, x
+ 159 00ae 6C 01                   		or	a, #1
+ 160 00b0 9D F0                   		mov	r8, a
+ 161 00b2 8D F3                   		mov	a, r11
+ 162 00b4 9D F1                   		mov	r9, a
+ 163 00b6 AD F0                   		movw	ax, r8
+ 164 00b8 BF 00 00                		movw	!_ir_txMessage, ax
+ 165                             	.L15:
+ 166 00bb 8F 01 FF                		mov	a, !-255
+ 167 00be 31 3A                   		shr	a, 3
+ 168 00c0 31 03 13                		bt	A.0, $.L16
+ 169 00c3 AF 00 00                		movw	ax, !_ir_txMessage
+ 170 00c6 BD F2                   		movw	r10, ax
+ 171 00c8 60                      		mov	a, x
+ 172 00c9 6C 02                   		or	a, #2
+ 173 00cb 9D F0                   		mov	r8, a
+ 174 00cd 8D F3                   		mov	a, r11
+ 175 00cf 9D F1                   		mov	r9, a
+ 176 00d1 AD F0                   		movw	ax, r8
+ 177 00d3 BF 00 00                		movw	!_ir_txMessage, ax
+ 178                             	.L16:
+ 179 00d6 8F 04 FF                		mov	a, !-252
+ 180 00d9 31 1A                   		shr	a, 1
+ 181 00db 31 05 20                		bf	A.0, $.L8
+ 182 00de 8F 01 FF                		mov	a, !-255
+ 183 00e1 31 3A                   		shr	a, 3
+ 184 00e3 31 05 18                		bf	A.0, $.L8
+ 185 00e6 AF 00 00                		movw	ax, !_ir_txMessage
+ 186 00e9 7C 08                   		xor a, #8 
+ 187 00eb 08                      		 xch a, x 
+ 188 00ec 7C 00                   		 xor a, #0 
+ 189 00ee 08                      		 xch a, x
+ 190 00ef BF 00 00                		movw	!_ir_txMessage, ax
+ 191 00f2 FC 00 00 00             		call	!!%code(_R_TAU0_Channel3_Stop)
+ 192 00f6 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
+ 193 00fa FC 00 00 00             		call	!!%code(_R_INTC2_Start)
+ 194                             	.L8:
+ 195 00fe 10 04                   		addw	sp, #4
+ 196 0100 D7                      		ret
+ 198                             		.section	.data.ir_14bitMessage_inHalfBits_counter.1634,"aw",@progbits
+ 201                             	_ir_14bitMessage_inHalfBits_counter.1634:
+ 202 0000 1C                      		.byte	28
+ 203                             		.section	.data.ir_64bitMessage_inHalfBits_counter.1633,"aw",@progbits
+ 206                             	_ir_64bitMessage_inHalfBits_counter.1633:
+ 207 0000 80                      		.byte	-128
+ 208                             		.section	.data.setup.1632,"aw",@progbits
+ 211                             	_setup.1632:
+ 212 0000 01                      		.byte	1
+ 213                             		.comm	_ir_txMessage,2,2
+ 214                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1

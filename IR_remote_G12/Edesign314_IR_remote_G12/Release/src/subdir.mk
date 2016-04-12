@@ -16,8 +16,6 @@ C_SRCS += \
 ..\src/r_cg_timer.c \
 ..\src/r_cg_timer_user.c \
 ..\src/r_cg_vector_table.c \
-..\src/r_cg_wdt.c \
-..\src/r_cg_wdt_user.c \
 ..\src/r_hardware_setup.c \
 ..\src/r_main.c 
 
@@ -31,8 +29,6 @@ OBJS += \
 ./src/r_cg_timer.o \
 ./src/r_cg_timer_user.o \
 ./src/r_cg_vector_table.o \
-./src/r_cg_wdt.o \
-./src/r_cg_wdt_user.o \
 ./src/r_hardware_setup.o \
 ./src/r_main.o \
 ./src/r_reset_program.o 
@@ -47,8 +43,6 @@ C_DEPS += \
 ./src/r_cg_timer.d \
 ./src/r_cg_timer_user.d \
 ./src/r_cg_vector_table.d \
-./src/r_cg_wdt.d \
-./src/r_cg_wdt_user.d \
 ./src/r_hardware_setup.d \
 ./src/r_main.d 
 

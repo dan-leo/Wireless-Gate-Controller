@@ -28,7 +28,7 @@
 * Device(s)    : R5F1026A
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-12
+* Creation Date: 2016-04-13
 ***********************************************************************************************************************/
 
 #ifndef TAU_H

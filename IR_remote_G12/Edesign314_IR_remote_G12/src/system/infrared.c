@@ -59,11 +59,15 @@ void ir_txInterruptSR(){
 	else{
 		ir_64bitMessage_inHalfBits_counter = ir_64bitMessage_inHalfBits_total;
 		ir_14bitMessage_inHalfBits_counter = ir_14bitMessage_inHalfBits_total;
-		if (!IR_BUTTON_TX){
-			ir_txMessage |= 0x800;
+		ir_txMessage = ir_txMessage_default;
+		if (!IR_BUTTON_1){
+			ir_txMessage |= 0x1;
 		}
-		else{
-			ir_txMessage = ir_txMessage_default;
+		if (!IR_BUTTON_2){
+			ir_txMessage |= 0x2;
+		}
+		if (IR_BUTTON_1 && IR_BUTTON_2){
+			ir_txMessage ^= 0x800;
 			R_TAU0_Channel3_Stop();
 			R_INTC1_Start();
 			R_INTC2_Start();
@@ -73,9 +77,14 @@ void ir_txInterruptSR(){
 
 void button_interrupt(uint8_t button){
 	ir_txMessage |= button;
+
+	// start manchester timer
 	R_TAU0_Channel3_Start();
+
 	if (button == 2) R_INTC2_Stop();
-	else R_INTC1_Stop();
+	else {
+		R_INTC1_Stop();
+	}
 }
 
 void ir_enable_pulse(uint8_t enabled){

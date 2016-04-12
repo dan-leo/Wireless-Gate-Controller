@@ -4,15 +4,12 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-..\src/system/core.c \
 ..\src/system/infrared.c 
 
 OBJS += \
-./src/system/core.o \
 ./src/system/infrared.o 
 
 C_DEPS += \
-./src/system/core.d \
 ./src/system/infrared.d 
 
 

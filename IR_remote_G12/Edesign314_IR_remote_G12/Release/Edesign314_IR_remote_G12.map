@@ -2,9 +2,7 @@
 Allocating common symbols
 Common symbol       size              file
 
-ir_enable_pulse_train
-                    0x1               ./src/system/core.o
-ir_txMessage        0x2               ./src/system/core.o
+ir_txMessage        0x2               ./src/system/infrared.o
 
 Discarded input sections
 
@@ -52,13 +50,12 @@ Linker script and memory map
 
 .lowtext        0x000000d8        0x0
  *(.plt)
- .plt           0x000000d8        0x0 ./src/system/core.o
+ .plt           0x000000d8        0x0 ./src/system/infrared.o
  *(.lowtext)
                 0x000000d8                . = ALIGN (0x2)
 
-.text           0x000000d8      0x4f4
+.text           0x000000d8      0x506
  *(.text)
- .text          0x000000d8        0x0 ./src/system/core.o
  .text          0x000000d8        0x0 ./src/system/infrared.o
  .text          0x000000d8        0x0 ./src/r_cg_cgc.o
  .text          0x000000d8        0x0 ./src/r_cg_cgc_user.o
@@ -69,105 +66,90 @@ Linker script and memory map
  .text          0x000000d8        0x0 ./src/r_cg_timer.o
  .text          0x000000d8        0x0 ./src/r_cg_timer_user.o
  .text          0x000000d8        0x0 ./src/r_cg_vector_table.o
- .text          0x000000d8        0x0 ./src/r_cg_wdt.o
- .text          0x000000d8        0x0 ./src/r_cg_wdt_user.o
  .text          0x000000d8        0x0 ./src/r_hardware_setup.o
  .text          0x000000d8        0x0 ./src/r_main.o
  .text          0x000000d8       0x60 ./src/r_reset_program.o
                 0x000000da                PowerON_Reset
  *(.text.*)
- .text.core_setup
-                0x00000138        0xc ./src/system/core.o
-                0x00000138                core_setup
  .text.button_interrupt
-                0x00000144       0x3c ./src/system/infrared.o
-                0x00000144                button_interrupt
+                0x00000138       0x3c ./src/system/infrared.o
+                0x00000138                button_interrupt
  .text.ir_enable_pulse
-                0x00000180       0x16 ./src/system/infrared.o
-                0x00000180                ir_enable_pulse
+                0x00000174       0x16 ./src/system/infrared.o
+                0x00000174                ir_enable_pulse
  .text.ir_txInterruptSR
-                0x00000196       0xc7 ./src/system/infrared.o
-                0x00000196                ir_txInterruptSR
+                0x0000018a      0x101 ./src/system/infrared.o
+                0x0000018a                ir_txInterruptSR
  .text.R_CGC_Create
-                0x0000025d       0x13 ./src/r_cg_cgc.o
-                0x0000025d                R_CGC_Create
+                0x0000028b       0x13 ./src/r_cg_cgc.o
+                0x0000028b                R_CGC_Create
  .text.R_CGC_Get_ResetSource
-                0x00000270        0x4 ./src/r_cg_cgc_user.o
-                0x00000270                R_CGC_Get_ResetSource
+                0x0000029e        0x4 ./src/r_cg_cgc_user.o
+                0x0000029e                R_CGC_Get_ResetSource
  .text.R_INTC_Create
-                0x00000274       0x49 ./src/r_cg_intc.o
-                0x00000274                R_INTC_Create
+                0x000002a2       0x45 ./src/r_cg_intc.o
+                0x000002a2                R_INTC_Create
  .text.R_INTC1_Start
-                0x000002bd        0x9 ./src/r_cg_intc.o
-                0x000002bd                R_INTC1_Start
+                0x000002e7        0x9 ./src/r_cg_intc.o
+                0x000002e7                R_INTC1_Start
  .text.R_INTC1_Stop
-                0x000002c6        0x9 ./src/r_cg_intc.o
-                0x000002c6                R_INTC1_Stop
+                0x000002f0        0x9 ./src/r_cg_intc.o
+                0x000002f0                R_INTC1_Stop
  .text.R_INTC2_Start
-                0x000002cf        0x9 ./src/r_cg_intc.o
-                0x000002cf                R_INTC2_Start
+                0x000002f9        0x9 ./src/r_cg_intc.o
+                0x000002f9                R_INTC2_Start
  .text.R_INTC2_Stop
-                0x000002d8        0x9 ./src/r_cg_intc.o
-                0x000002d8                R_INTC2_Stop
+                0x00000302        0x9 ./src/r_cg_intc.o
+                0x00000302                R_INTC2_Stop
  .text.r_intc1_interrupt
-                0x000002e1       0x27 ./src/r_cg_intc_user.o
-                0x000002e1                r_intc1_interrupt
+                0x0000030b       0x27 ./src/r_cg_intc_user.o
+                0x0000030b                r_intc1_interrupt
  .text.r_intc2_interrupt
-                0x00000308       0x28 ./src/r_cg_intc_user.o
-                0x00000308                r_intc2_interrupt
+                0x00000332       0x28 ./src/r_cg_intc_user.o
+                0x00000332                r_intc2_interrupt
  .text.R_PORT_Create
-                0x00000330       0x17 ./src/r_cg_port.o
-                0x00000330                R_PORT_Create
+                0x0000035a       0x17 ./src/r_cg_port.o
+                0x0000035a                R_PORT_Create
  .text.R_TAU0_Create
-                0x00000347      0x141 ./src/r_cg_timer.o
-                0x00000347                R_TAU0_Create
+                0x00000371      0x141 ./src/r_cg_timer.o
+                0x00000371                R_TAU0_Create
  .text.R_TAU0_Channel0_Start
-                0x00000488       0x37 ./src/r_cg_timer.o
-                0x00000488                R_TAU0_Channel0_Start
+                0x000004b2       0x37 ./src/r_cg_timer.o
+                0x000004b2                R_TAU0_Channel0_Start
  .text.R_TAU0_Channel0_Stop
-                0x000004bf       0x37 ./src/r_cg_timer.o
-                0x000004bf                R_TAU0_Channel0_Stop
+                0x000004e9       0x37 ./src/r_cg_timer.o
+                0x000004e9                R_TAU0_Channel0_Stop
  .text.R_TAU0_Channel3_Start
-                0x000004f6       0x1c ./src/r_cg_timer.o
-                0x000004f6                R_TAU0_Channel3_Start
+                0x00000520       0x1c ./src/r_cg_timer.o
+                0x00000520                R_TAU0_Channel3_Start
  .text.R_TAU0_Channel3_Stop
-                0x00000512       0x1c ./src/r_cg_timer.o
-                0x00000512                R_TAU0_Channel3_Stop
+                0x0000053c       0x1c ./src/r_cg_timer.o
+                0x0000053c                R_TAU0_Channel3_Stop
  .text.r_tau0_channel0_interrupt
-                0x0000052e       0x10 ./src/r_cg_timer_user.o
-                0x0000052e                r_tau0_channel0_interrupt
+                0x00000558       0x10 ./src/r_cg_timer_user.o
+                0x00000558                r_tau0_channel0_interrupt
  .text.r_tau0_channel1_interrupt
-                0x0000053e       0x10 ./src/r_cg_timer_user.o
-                0x0000053e                r_tau0_channel1_interrupt
+                0x00000568       0x10 ./src/r_cg_timer_user.o
+                0x00000568                r_tau0_channel1_interrupt
  .text.r_tau0_channel3_interrupt
-                0x0000054e       0x20 ./src/r_cg_timer_user.o
-                0x0000054e                r_tau0_channel3_interrupt
- .text.R_Dummy  0x0000056e        0xc ./src/r_cg_vector_table.o
-                0x0000056e                R_Dummy
- .text.R_WDT_Create
-                0x0000057a       0x15 ./src/r_cg_wdt.o
-                0x0000057a                R_WDT_Create
- .text.R_WDT_Restart
-                0x0000058f        0x5 ./src/r_cg_wdt.o
-                0x0000058f                R_WDT_Restart
- .text.r_wdt_interrupt
-                0x00000594        0x1 ./src/r_cg_wdt_user.o
-                0x00000594                r_wdt_interrupt
+                0x00000578       0x20 ./src/r_cg_timer_user.o
+                0x00000578                r_tau0_channel3_interrupt
+ .text.R_Dummy  0x00000598        0xc ./src/r_cg_vector_table.o
+                0x00000598                R_Dummy
  .text.R_Systeminit
-                0x00000595       0x1b ./src/r_hardware_setup.o
-                0x00000595                R_Systeminit
+                0x000005a4       0x1b ./src/r_hardware_setup.o
+                0x000005a4                R_Systeminit
  .text.HardwareSetup
-                0x000005b0        0xc ./src/r_hardware_setup.o
-                0x000005b0                HardwareSetup
+                0x000005bf        0xc ./src/r_hardware_setup.o
+                0x000005bf                HardwareSetup
  .text.startup.main
-                0x000005bc        0xb ./src/r_main.o
-                0x000005bc                main
+                0x000005cb        0xf ./src/r_main.o
+                0x000005cb                main
  .text.R_MAIN_UserInit
-                0x000005c7        0x4 ./src/r_main.o
-                0x000005c7                R_MAIN_UserInit
-                0x000005cb                etext = .
-                0x000005cc                . = ALIGN (0x2)
- *fill*         0x000005cb        0x1 
+                0x000005da        0x4 ./src/r_main.o
+                0x000005da                R_MAIN_UserInit
+                0x000005de                etext = .
+                0x000005de                . = ALIGN (0x2)
 
 .init
  *(.init)
@@ -194,26 +176,25 @@ Linker script and memory map
 .jcr
  *(.jcr)
 
-.tors           0x000005cc        0x0
-                0x000005cc                __CTOR_LIST__ = .
-                0x000005cc                . = ALIGN (0x2)
-                0x000005cc                ___ctors = .
+.tors           0x000005de        0x0
+                0x000005de                __CTOR_LIST__ = .
+                0x000005de                . = ALIGN (0x2)
+                0x000005de                ___ctors = .
  *(.ctors)
-                0x000005cc                ___ctors_end = .
-                0x000005cc                __CTOR_END__ = .
-                0x000005cc                __DTOR_LIST__ = .
-                0x000005cc                ___dtors = .
+                0x000005de                ___ctors_end = .
+                0x000005de                __CTOR_END__ = .
+                0x000005de                __DTOR_LIST__ = .
+                0x000005de                ___dtors = .
  *(.dtors)
-                0x000005cc                ___dtors_end = .
-                0x000005cc                __DTOR_END__ = .
-                0x000005cc                . = ALIGN (0x2)
-                0x000005cc                _mdata = .
+                0x000005de                ___dtors_end = .
+                0x000005de                __DTOR_END__ = .
+                0x000005de                . = ALIGN (0x2)
+                0x000005de                _mdata = .
 
-.data           0x000ff900        0x4 load address 0x000005cc
+.data           0x000ff900        0x4 load address 0x000005de
                 0x000ff900                . = ALIGN (0x2)
                 0x000ff900                _data = .
  *(.data)
- .data          0x000ff900        0x0 ./src/system/core.o
  .data          0x000ff900        0x0 ./src/system/infrared.o
  .data          0x000ff900        0x0 ./src/r_cg_cgc.o
  .data          0x000ff900        0x0 ./src/r_cg_cgc_user.o
@@ -224,27 +205,24 @@ Linker script and memory map
  .data          0x000ff900        0x0 ./src/r_cg_timer.o
  .data          0x000ff900        0x0 ./src/r_cg_timer_user.o
  .data          0x000ff900        0x0 ./src/r_cg_vector_table.o
- .data          0x000ff900        0x0 ./src/r_cg_wdt.o
- .data          0x000ff900        0x0 ./src/r_cg_wdt_user.o
  .data          0x000ff900        0x0 ./src/r_hardware_setup.o
  .data          0x000ff900        0x0 ./src/r_main.o
  .data          0x000ff900        0x0 ./src/r_reset_program.o
  *(.data.*)
- .data.ir_14bitMessage_inHalfBits_counter.1635
+ .data.ir_14bitMessage_inHalfBits_counter.1634
                 0x000ff900        0x1 ./src/system/infrared.o
- .data.ir_64bitMessage_inHalfBits_counter.1634
+ .data.ir_64bitMessage_inHalfBits_counter.1633
                 0x000ff901        0x1 ./src/system/infrared.o
- .data.setup.1633
+ .data.setup.1632
                 0x000ff902        0x1 ./src/system/infrared.o
                 0x000ff904                . = ALIGN (0x2)
  *fill*         0x000ff903        0x1 
                 0x000ff904                _edata = .
 
-.bss            0x000ff904        0x4 load address 0x000005d0
+.bss            0x000ff904        0x2 load address 0x000005e2
                 0x000ff904                . = ALIGN (0x2)
                 0x000ff904                _bss = .
  *(.bss)
- .bss           0x000ff904        0x0 ./src/system/core.o
  .bss           0x000ff904        0x0 ./src/system/infrared.o
  .bss           0x000ff904        0x0 ./src/r_cg_cgc.o
  .bss           0x000ff904        0x0 ./src/r_cg_cgc_user.o
@@ -255,24 +233,20 @@ Linker script and memory map
  .bss           0x000ff904        0x0 ./src/r_cg_timer.o
  .bss           0x000ff904        0x0 ./src/r_cg_timer_user.o
  .bss           0x000ff904        0x0 ./src/r_cg_vector_table.o
- .bss           0x000ff904        0x0 ./src/r_cg_wdt.o
- .bss           0x000ff904        0x0 ./src/r_cg_wdt_user.o
  .bss           0x000ff904        0x0 ./src/r_hardware_setup.o
  .bss           0x000ff904        0x0 ./src/r_main.o
  .bss           0x000ff904        0x0 ./src/r_reset_program.o
  *(.bss.**)
                 0x000ff904                . = ALIGN (0x2)
  *(COMMON)
- COMMON         0x000ff904        0x4 ./src/system/core.o
-                0x000ff904                ir_enable_pulse_train
-                0x000ff906                ir_txMessage
-                0x000ff908                . = ALIGN (0x2)
-                0x000ff908                _ebss = .
-                0x000ff908                _end = .
+ COMMON         0x000ff904        0x2 ./src/system/infrared.o
+                0x000ff904                ir_txMessage
+                0x000ff906                . = ALIGN (0x2)
+                0x000ff906                _ebss = .
+                0x000ff906                _end = .
 
 .stack          0x000ffe00        0x0
                 0x000ffe00                _stack = .
-LOAD ./src/system/core.o
 LOAD ./src/system/infrared.o
 LOAD ./src/r_cg_cgc.o
 LOAD ./src/r_cg_cgc_user.o
@@ -283,8 +257,6 @@ LOAD ./src/r_cg_port_user.o
 LOAD ./src/r_cg_timer.o
 LOAD ./src/r_cg_timer_user.o
 LOAD ./src/r_cg_vector_table.o
-LOAD ./src/r_cg_wdt.o
-LOAD ./src/r_cg_wdt_user.o
 LOAD ./src/r_hardware_setup.o
 LOAD ./src/r_main.o
 LOAD ./src/r_reset_program.o
@@ -296,9 +268,8 @@ END GROUP
 OUTPUT(Edesign314_IR_remote_G12.x elf32-rl78)
 
 .comment        0x00000000       0x94
- .comment       0x00000000       0x94 ./src/system/core.o
+ .comment       0x00000000       0x94 ./src/system/infrared.o
                                  0x95 (size before relaxing)
- .comment       0x00000000       0x95 ./src/system/infrared.o
  .comment       0x00000000       0x95 ./src/r_cg_cgc.o
  .comment       0x00000000       0x95 ./src/r_cg_cgc_user.o
  .comment       0x00000000       0x95 ./src/r_cg_intc.o
@@ -308,8 +279,6 @@ OUTPUT(Edesign314_IR_remote_G12.x elf32-rl78)
  .comment       0x00000000       0x95 ./src/r_cg_timer.o
  .comment       0x00000000       0x95 ./src/r_cg_timer_user.o
  .comment       0x00000000       0x95 ./src/r_cg_vector_table.o
- .comment       0x00000000       0x95 ./src/r_cg_wdt.o
- .comment       0x00000000       0x95 ./src/r_cg_wdt_user.o
  .comment       0x00000000       0x95 ./src/r_hardware_setup.o
  .comment       0x00000000       0x95 ./src/r_main.o
 

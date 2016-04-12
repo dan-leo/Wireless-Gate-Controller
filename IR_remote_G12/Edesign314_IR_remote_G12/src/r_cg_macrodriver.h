@@ -28,7 +28,7 @@
 * Device(s)    : R5F1026A
 * Tool-Chain   : GCCRL78
 * Description  : This file implements general head file.
-* Creation Date: 2016-04-12
+* Creation Date: 2016-04-13
 ***********************************************************************************************************************/
 
 #ifndef STATUS_H

@@ -28,7 +28,7 @@
 * Device(s)    : R5F1026A
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-04-12
+* Creation Date: 2016-04-13
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -69,7 +69,6 @@ void R_INTC_Create(void)
     PPR12 = 1U;
     PPR02 = 1U;
     EGN0 = _02_INTP1_EDGE_FALLING_SEL | _04_INTP2_EDGE_FALLING_SEL;
-    EGP0 = _02_INTP1_EDGE_RISING_SEL | _04_INTP2_EDGE_RISING_SEL;
     /* Set INTP1 pin */
     PMC4 &= 0xFDU;
     PM4 |= 0x02U;

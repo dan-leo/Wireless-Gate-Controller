@@ -28,7 +28,7 @@
 * Device(s)    : R5F1026A
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-04-12
+* Creation Date: 2016-04-13
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -57,7 +57,6 @@ Global variables and functions
 void r_tau0_channel0_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
-//	IR_TX_38kHz_CARRIER = ir_enable_pulse_train;
 	IR_TX_38kHz_CARRIER = 1;
     /* End user code. Do not edit comment generated here */
 }

@@ -28,7 +28,7 @@
 * Device(s)    : R5F1026A
 * Tool-Chain   : GCCRL78
 * Description  : This file implements main function.
-* Creation Date: 2016-04-12
+* Creation Date: 2016-04-13
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -40,7 +40,6 @@ Includes
 #include "r_cg_intc.h"
 #include "r_cg_timer.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "system/core.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -61,7 +60,11 @@ void main(void)
 {
     R_MAIN_UserInit();
     /* Start user code. Do not edit comment generated here */
-    core_setup();
+
+    // start listening to buttons
+    R_INTC1_Start();
+    R_INTC2_Start();
+
     while (1U)
     {
         ;

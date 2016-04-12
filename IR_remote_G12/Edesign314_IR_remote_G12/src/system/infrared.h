@@ -13,9 +13,6 @@
 
 #include "pins.h"
 
-// enable 38 kHz pulse train
-volatile uint8_t ir_enable_pulse_train;
-
 // ir tx message buffer (16 bits)
 volatile uint16_t ir_txMessage;
 

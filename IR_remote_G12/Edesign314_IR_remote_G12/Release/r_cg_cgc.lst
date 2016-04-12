@@ -25,22 +25,18 @@
   25                             		.section	.text.startup.main,"ax",@progbits
   26                             		.global	_main
   28                             	_main:
-  29                             	 ; 82 "../src/r_main.c" 1
+  29                             	 ; 85 "../src/r_main.c" 1
   30 0000 71 7A FA                		ei
   31                             	 ; 0 "" 2
-  32 0003 FC 00 00 00             		call	!!%code(_core_setup)
-  33                             	.L2:
-  34 0007 EC 07 00 00             		br	!!.L2
-  36                             		.section	.text.R_MAIN_UserInit,"ax",@progbits
-  37                             		.global	_R_MAIN_UserInit
-  39                             	_R_MAIN_UserInit:
-  40                             	 ; 82 "../src/r_main.c" 1
-  41 0000 71 7A FA                		ei
-  42                             	 ; 0 "" 2
-  43 0003 D7                      		ret
-  45                             		.comm	_ir_txMessage,2,2
-  46                             		.comm	_ir_enable_pulse_train,1,1
-  47                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
-, #1
-  47 000b D7                      		ret
-  49                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+  32 0003 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
+  33 0007 FC 00 00 00             		call	!!%code(_R_INTC2_Start)
+  34                             	.L2:
+  35 000b EC 0B 00 00             		br	!!.L2
+  37                             		.section	.text.R_MAIN_UserInit,"ax",@progbits
+  38                             		.global	_R_MAIN_UserInit
+  40                             	_R_MAIN_UserInit:
+  41                             	 ; 85 "../src/r_main.c" 1
+  42 0000 71 7A FA                		ei
+  43                             	 ; 0 "" 2
+  44 0003 D7                      		ret
+  46                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1

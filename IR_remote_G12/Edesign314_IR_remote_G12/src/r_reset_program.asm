@@ -30,7 +30,7 @@
 //* Device(s)    : R5F1026A
 //* Tool-Chain   : gccrl78
 //* Description  : This is start up file for RL78.
-//* Creation Date: 2016-04-12
+//* Creation Date: 2016-04-13
 //*******************************************************************************
 //*/
 
