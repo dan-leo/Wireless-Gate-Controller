@@ -25,6 +25,15 @@ volatile uint16_t ir_txMessage;
 // latest ir message
 volatile uint16_t ir_rxMessage;
 
+// ir message interrupt
+volatile uint8_t ir_new_command_interrupt;
+
+enum ir_commands {
+	IR_GATE_OPEN = 0x3189,
+	IR_GATE_CLOSE = 0x318A,
+	IR_GATE_E_STOP = 0x318B
+} ir_commands_t;
+
 // should be put in a timer interrupt service routine at 444us
 void ir_txInterruptSR();
 // should be put in a timer interrupt service routine at 889us

@@ -8,13 +8,21 @@
 #include "infrared.h"
 
 //default ir tx message
-#define ir_txMessage_default 0x37C0
+#define ir_txMessage_default 0x3188
 
-/*
- * I try to make names self explanatory :D
+/* I try to make names self explanatory :D
  */
 #define ir_64bitMessage_inHalfBits_total 128
 #define ir_14bitMessage_inHalfBits_total 28
+
+#define toggle_button_bounces 3
+
+ /*  this counter will decrement while a button is held in until it triggers a toggle,
+  *  in an effort to avoid bouncing in buttons.
+  *  It triggers the toggle of the 3rd bit when equal to zero.
+  *  Increase value to decrease sensitivity
+  */
+volatile uint8_t toggle_debounce_counter = toggle_button_bounces;
 
 void ir_enable_pulse(uint8_t enabled);
 
@@ -59,6 +67,7 @@ void ir_txInterruptSR(){
 	else{
 		ir_64bitMessage_inHalfBits_counter = ir_64bitMessage_inHalfBits_total;
 		ir_14bitMessage_inHalfBits_counter = ir_14bitMessage_inHalfBits_total;
+		if(toggle_debounce_counter) toggle_debounce_counter--;
 		ir_txMessage = ir_txMessage_default;
 		if (!IR_BUTTON_1){
 			ir_txMessage |= 0x1;
@@ -66,8 +75,12 @@ void ir_txInterruptSR(){
 		if (!IR_BUTTON_2){
 			ir_txMessage |= 0x2;
 		}
+		if (toggle_debounce_counter){
+			return;
+		}
 		if (IR_BUTTON_1 && IR_BUTTON_2){
 			ir_txMessage ^= 0x800;
+			toggle_debounce_counter = toggle_button_bounces;
 			R_TAU0_Channel3_Stop();
 			R_INTC1_Start();
 			R_INTC2_Start();

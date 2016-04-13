@@ -10,6 +10,7 @@
 
 #include "adc.h"
 #include "delay.h"
+#include "gate_controller.h"
 #include "infrared.h"
 #include "io.h"
 #include "math.h"

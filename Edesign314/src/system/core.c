@@ -19,7 +19,7 @@ void core_setup(){
 	INTAD_FSM_state = AD_IDLE;
 
 	debug_adc_serial = 0;
-	debug_ir_receiver_lcd = 1;
+	debug_ir_receiver_lcd = 0;
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
 
@@ -81,6 +81,20 @@ void core_main(){
 				word_to_ascii(ir_rxMessage, ascii_word);
 				print_lcd(ascii_word);
 			}
+		}
+
+		if (ir_new_command_interrupt){
+			ir_new_command_interrupt = 0;
+			if (ir_rxMessage == IR_GATE_OPEN){
+				gate_open();
+			}
+			if (ir_rxMessage == IR_GATE_CLOSE){
+				gate_close();
+			}
+			if (ir_rxMessage == IR_GATE_E_STOP){
+
+			}
+
 		}
 	}
 }

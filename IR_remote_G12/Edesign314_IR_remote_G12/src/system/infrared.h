@@ -16,7 +16,6 @@
 // ir tx message buffer (16 bits)
 volatile uint16_t ir_txMessage;
 
-
 void ir_txInterruptSR();
 void button_interrupt(uint8_t button);
 

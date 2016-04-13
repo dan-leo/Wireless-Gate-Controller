@@ -74,26 +74,26 @@
   79                             		; locals: 2 bytes
   80                             		; outgoing: 2 bytes
   81 0000 20 04                   		subw	sp, #4
-  82 0002 8F 00 00                		mov	a, !_setup.1632
+  82 0002 8F 00 00                		mov	a, !_setup.1633
   83 0005 9D F0                   		mov	r8, a
   84 0007 D4 F0                   		cmp0	r8
   85 0009 61 F8                   		 sknz
   86 000b EC 1B 00 00             		 br	!!.L9
-  87 000f 30 C0 37                		movw	ax, #14272
+  87 000f 30 88 31                		movw	ax, #12680
   88 0012 BF 00 00                		movw	!_ir_txMessage, ax
   89 0015 8D F0                   		mov	a, r8
   90 0017 91                      		dec	a
-  91 0018 9F 00 00                		mov	!_setup.1632, a
+  91 0018 9F 00 00                		mov	!_setup.1633, a
   92                             	.L9:
-  93 001b D5 00 00                		cmp0	!_ir_64bitMessage_inHalfBits_counter.1633
+  93 001b D5 00 00                		cmp0	!_ir_64bitMessage_inHalfBits_counter.1634
   94 001e 61 F8                   		 sknz
   95 0020 EC 90 00 00             		 br	!!.L10
-  96 0024 D5 00 00                		cmp0	!_ir_14bitMessage_inHalfBits_counter.1634
+  96 0024 D5 00 00                		cmp0	!_ir_14bitMessage_inHalfBits_counter.1635
   97 0027 61 F8                   		 sknz
   98 0029 EC 81 00 00             		 br	!!.L11
   99 002d AF 00 00                		movw	ax, !_ir_txMessage
  100 0030 BD F2                   		movw	r10, ax
- 101 0032 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1634
+ 101 0032 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1635
  102 0035 9D F0                   		mov	r8, a
  103 0037 CD F1 00                		mov	r9, #0
  104 003a A6 F0                   		incw	r8
@@ -117,7 +117,7 @@
  122 0057 98 03                   		mov	[sp+3], a
  123 0059 88 03                   		mov	a, [sp+3]
  124 005b 9D F2                   		mov	r10, a
- 125 005d 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1634
+ 125 005d 8F 00 00                		mov	a, !_ir_14bitMessage_inHalfBits_counter.1635
  126 0060 5C 01                   		and	a, #1
  127 0062 9D F1                   		mov	r9, a
  128 0064 E4 F0                   		oneb	r8
@@ -130,73 +130,87 @@
  135 0072 7B F0                   		xor	a, r8
  136 0074 98 00                   		mov	[sp], a
  137 0076 FC 00 00 00             		call	!!%code(_ir_enable_pulse)
- 138 007a B0 00 00                		dec	!_ir_14bitMessage_inHalfBits_counter.1634
+ 138 007a B0 00 00                		dec	!_ir_14bitMessage_inHalfBits_counter.1635
  139 007d EC 89 00 00             		br	!!.L13
  140                             	.L11:
  141 0081 FC 00 00 00             		call	!!%code(_R_TAU0_Channel0_Stop)
  142 0085 71 08 01 FF             		clr1	!-255.0
  143                             	.L13:
- 144 0089 B0 00 00                		dec	!_ir_64bitMessage_inHalfBits_counter.1633
- 145 008c EC FE 00 00             		br	!!.L8
+ 144 0089 B0 00 00                		dec	!_ir_64bitMessage_inHalfBits_counter.1634
+ 145 008c EC 18 01 00             		br	!!.L8
  146                             	.L10:
  147 0090 51 80                   		mov	a, #-128
- 148 0092 9F 00 00                		mov	!_ir_64bitMessage_inHalfBits_counter.1633, a
+ 148 0092 9F 00 00                		mov	!_ir_64bitMessage_inHalfBits_counter.1634, a
  149 0095 51 1C                   		mov	a, #28
- 150 0097 9F 00 00                		mov	!_ir_14bitMessage_inHalfBits_counter.1634, a
- 151 009a 30 C0 37                		movw	ax, #14272
- 152 009d BF 00 00                		movw	!_ir_txMessage, ax
- 153 00a0 8F 04 FF                		mov	a, !-252
- 154 00a3 31 1A                   		shr	a, 1
- 155 00a5 31 03 13                		bt	A.0, $.L15
- 156 00a8 AF 00 00                		movw	ax, !_ir_txMessage
- 157 00ab BD F2                   		movw	r10, ax
- 158 00ad 60                      		mov	a, x
- 159 00ae 6C 01                   		or	a, #1
- 160 00b0 9D F0                   		mov	r8, a
- 161 00b2 8D F3                   		mov	a, r11
- 162 00b4 9D F1                   		mov	r9, a
- 163 00b6 AD F0                   		movw	ax, r8
- 164 00b8 BF 00 00                		movw	!_ir_txMessage, ax
- 165                             	.L15:
- 166 00bb 8F 01 FF                		mov	a, !-255
- 167 00be 31 3A                   		shr	a, 3
- 168 00c0 31 03 13                		bt	A.0, $.L16
- 169 00c3 AF 00 00                		movw	ax, !_ir_txMessage
- 170 00c6 BD F2                   		movw	r10, ax
- 171 00c8 60                      		mov	a, x
- 172 00c9 6C 02                   		or	a, #2
- 173 00cb 9D F0                   		mov	r8, a
- 174 00cd 8D F3                   		mov	a, r11
- 175 00cf 9D F1                   		mov	r9, a
- 176 00d1 AD F0                   		movw	ax, r8
- 177 00d3 BF 00 00                		movw	!_ir_txMessage, ax
- 178                             	.L16:
- 179 00d6 8F 04 FF                		mov	a, !-252
- 180 00d9 31 1A                   		shr	a, 1
- 181 00db 31 05 20                		bf	A.0, $.L8
- 182 00de 8F 01 FF                		mov	a, !-255
- 183 00e1 31 3A                   		shr	a, 3
- 184 00e3 31 05 18                		bf	A.0, $.L8
- 185 00e6 AF 00 00                		movw	ax, !_ir_txMessage
- 186 00e9 7C 08                   		xor a, #8 
- 187 00eb 08                      		 xch a, x 
- 188 00ec 7C 00                   		 xor a, #0 
- 189 00ee 08                      		 xch a, x
- 190 00ef BF 00 00                		movw	!_ir_txMessage, ax
- 191 00f2 FC 00 00 00             		call	!!%code(_R_TAU0_Channel3_Stop)
- 192 00f6 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
- 193 00fa FC 00 00 00             		call	!!%code(_R_INTC2_Start)
- 194                             	.L8:
- 195 00fe 10 04                   		addw	sp, #4
- 196 0100 D7                      		ret
- 198                             		.section	.data.ir_14bitMessage_inHalfBits_counter.1634,"aw",@progbits
- 201                             	_ir_14bitMessage_inHalfBits_counter.1634:
- 202 0000 1C                      		.byte	28
- 203                             		.section	.data.ir_64bitMessage_inHalfBits_counter.1633,"aw",@progbits
- 206                             	_ir_64bitMessage_inHalfBits_counter.1633:
- 207 0000 80                      		.byte	-128
- 208                             		.section	.data.setup.1632,"aw",@progbits
- 211                             	_setup.1632:
- 212 0000 01                      		.byte	1
- 213                             		.comm	_ir_txMessage,2,2
- 214                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+ 150 0097 9F 00 00                		mov	!_ir_14bitMessage_inHalfBits_counter.1635, a
+ 151 009a D5 00 00                		cmp0	!_toggle_debounce_counter
+ 152 009d 61 F8                   		 sknz
+ 153 009f EC A6 00 00             		 br	!!.L15
+ 154 00a3 B0 00 00                		dec	!_toggle_debounce_counter
+ 155                             	.L15:
+ 156 00a6 30 88 31                		movw	ax, #12680
+ 157 00a9 BF 00 00                		movw	!_ir_txMessage, ax
+ 158 00ac 8F 04 FF                		mov	a, !-252
+ 159 00af 31 1A                   		shr	a, 1
+ 160 00b1 31 03 13                		bt	A.0, $.L16
+ 161 00b4 AF 00 00                		movw	ax, !_ir_txMessage
+ 162 00b7 BD F2                   		movw	r10, ax
+ 163 00b9 60                      		mov	a, x
+ 164 00ba 6C 01                   		or	a, #1
+ 165 00bc 9D F0                   		mov	r8, a
+ 166 00be 8D F3                   		mov	a, r11
+ 167 00c0 9D F1                   		mov	r9, a
+ 168 00c2 AD F0                   		movw	ax, r8
+ 169 00c4 BF 00 00                		movw	!_ir_txMessage, ax
+ 170                             	.L16:
+ 171 00c7 8F 01 FF                		mov	a, !-255
+ 172 00ca 31 3A                   		shr	a, 3
+ 173 00cc 31 03 13                		bt	A.0, $.L17
+ 174 00cf AF 00 00                		movw	ax, !_ir_txMessage
+ 175 00d2 BD F2                   		movw	r10, ax
+ 176 00d4 60                      		mov	a, x
+ 177 00d5 6C 02                   		or	a, #2
+ 178 00d7 9D F0                   		mov	r8, a
+ 179 00d9 8D F3                   		mov	a, r11
+ 180 00db 9D F1                   		mov	r9, a
+ 181 00dd AD F0                   		movw	ax, r8
+ 182 00df BF 00 00                		movw	!_ir_txMessage, ax
+ 183                             	.L17:
+ 184 00e2 D5 00 00                		cmp0	!_toggle_debounce_counter
+ 185 00e5 61 E8                   		 skz
+ 186 00e7 EC 18 01 00             		 br	!!.L8
+ 187 00eb 8F 04 FF                		mov	a, !-252
+ 188 00ee 31 1A                   		shr	a, 1
+ 189 00f0 31 05 25                		bf	A.0, $.L8
+ 190 00f3 8F 01 FF                		mov	a, !-255
+ 191 00f6 31 3A                   		shr	a, 3
+ 192 00f8 31 05 1D                		bf	A.0, $.L8
+ 193 00fb AF 00 00                		movw	ax, !_ir_txMessage
+ 194 00fe 7C 08                   		xor a, #8 
+ 195 0100 08                      		 xch a, x 
+ 196 0101 7C 00                   		 xor a, #0 
+ 197 0103 08                      		 xch a, x
+ 198 0104 BF 00 00                		movw	!_ir_txMessage, ax
+ 199 0107 51 03                   		mov	a, #3
+ 200 0109 9F 00 00                		mov	!_toggle_debounce_counter, a
+ 201 010c FC 00 00 00             		call	!!%code(_R_TAU0_Channel3_Stop)
+ 202 0110 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
+ 203 0114 FC 00 00 00             		call	!!%code(_R_INTC2_Start)
+ 204                             	.L8:
+ 205 0118 10 04                   		addw	sp, #4
+ 206 011a D7                      		ret
+ 208                             		.section	.data.ir_14bitMessage_inHalfBits_counter.1635,"aw",@progbits
+ 211                             	_ir_14bitMessage_inHalfBits_counter.1635:
+ 212 0000 1C                      		.byte	28
+ 213                             		.section	.data.ir_64bitMessage_inHalfBits_counter.1634,"aw",@progbits
+ 216                             	_ir_64bitMessage_inHalfBits_counter.1634:
+ 217 0000 80                      		.byte	-128
+ 218                             		.section	.data.setup.1633,"aw",@progbits
+ 221                             	_setup.1633:
+ 222 0000 01                      		.byte	1
+ 223                             		.global	_toggle_debounce_counter
+ 224                             		.section	.data.toggle_debounce_counter,"aw",@progbits
+ 227                             	_toggle_debounce_counter:
+ 228 0000 03                      		.byte	3
+ 229                             		.comm	_ir_txMessage,2,2
+ 230                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1

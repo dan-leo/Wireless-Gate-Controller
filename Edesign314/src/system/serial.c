@@ -7,6 +7,7 @@
 
 #include "serial.h"
 #include "motor_driver.h"
+#include "gate_controller.h"
 #include "debug.h"
 #include "lcd.h"
 
@@ -79,14 +80,14 @@ void serial_handler(){
 		echo('*');
 		echo('{');
 		break;
-	case '/': // send a command byte
+	case '/': // send a command byte to lcd
 		while (!rx_flag);
 		rx_flag = 0;
 		R_UART1_Receive(&serial_rx, 1);
 		writeByteLcd(0U, serial_rx);
 		echo(serial_rx);
 		return;
-	case '\\': // send a data byte
+	case '\\': // send a data byte to lcd
 		while (!rx_flag);
 		rx_flag = 0;
 		R_UART1_Receive(&serial_rx, 1);
@@ -138,20 +139,14 @@ void serial_handler(){
 	case 0xF8:
 		// close gate
 		echo(0xF8);
-		PHASE = 1;
-		nSLEEP = 1;
-		gate_position = UNKNOWN;
-		gate_is_moving = 1;
+		gate_close();
 		//if (gate_position == OPEN) R_INTC3_Stop();
 		print_lcd("unknown");
 		break;
 	case 0xF9:
 		// open gate
 		echo(0xF9);
-		PHASE = 0;
-		nSLEEP = 1;
-		gate_position = UNKNOWN;
-		gate_is_moving = 1;
+		gate_open();
 		//if (gate_position == CLOSED) R_INTC4_Stop();
 		print_lcd("unknown");
 		break;

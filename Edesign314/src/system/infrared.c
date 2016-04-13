@@ -20,7 +20,7 @@
 #define ir_txMessage_default 0x37C0
 
 /*
- * I try to make names self explanatory
+ * I try to make names self explanatory :)
  */
 #define ir_64bitMessage_inHalfBits_total 128
 #define ir_14bitMessage_inHalfBits_total 28
@@ -124,6 +124,7 @@ void ir_rxInterruptSR(){
 		ir_14bitMessage_inQuarterBits_counter = ir_14bitMessage_inQuarterBits_total;
 		ir_sampling_ticks_at_444us = ir_sampling_ticks_at_444us_total;
 		ir_rxMessage = ir_rxMessage_buffer;
+		ir_new_command_interrupt = 1;
 		ir_rxMessage_buffer = 0;
 		double_half_bit = 0x2;
 		R_TMR_RJ0_Stop();
