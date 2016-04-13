@@ -10,6 +10,7 @@
 #include "gate_controller.h"
 #include "debug.h"
 #include "lcd.h"
+#include "adc.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -117,9 +118,7 @@ void serial_handler(){
 		//					rx_tail = 0;
 		//					print_long_message(uart1RxBuf);
 		//				}
-		lcd_clear();
-		delay(100);
-		print_long_message(uart1RxBuf);
+		print_lcd(uart1RxBuf);
 		int k;
 		for (k = 0; k < rx_tail; k++){
 			uart1RxBuf[k] = 0;
@@ -129,12 +128,7 @@ void serial_handler(){
 	case 0xF7:
 		// read current
 		echo(0xF7);
-		if (gate_is_moving){
-			echo(0x0A);
-		}
-		else{
-			echo(0x0);
-		}
+		serial_print_adc(latest_current_reading);
 		break;
 	case 0xF8:
 		// close gate

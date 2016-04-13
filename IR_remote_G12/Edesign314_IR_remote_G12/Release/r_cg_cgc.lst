@@ -22,68 +22,21 @@
   22                             	r15	=	0xffef7
   23                             	r23	=	0xffeef
   24                             	r31	=	0xffee7
-  25                             		.section	.text.r_tau0_channel0_interrupt,"ax",@progbits
-  26                             		.global	_r_tau0_channel0_interrupt
-  28                             	_r_tau0_channel0_interrupt:
-  29                             		; start of function
-  30                             		; push 8: ax bc de hl
-  31 0000 61 CF                   		sel	rb0
-  32 0002 C1                      		push	ax
-  33 0003 C3                      		push	bc
-  34 0004 C5                      		push	de
-  35 0005 C7                      		push	hl
-  36 0006 71 00 01 FF             		set1	!-255.0
-  37 000a C6                      		pop	hl
-  38 000b C4                      		pop	de
-  39 000c C2                      		pop	bc
-  40 000d C0                      		pop	ax
-  41 000e 61 FC                   		reti
-  43                             		.section	.text.r_tau0_channel1_interrupt,"ax",@progbits
-  44                             		.global	_r_tau0_channel1_interrupt
-  46                             	_r_tau0_channel1_interrupt:
-  47                             		; start of function
-  48                             		; push 8: ax bc de hl
-  49 0000 61 CF                   		sel	rb0
-  50 0002 C1                      		push	ax
-  51 0003 C3                      		push	bc
-  52 0004 C5                      		push	de
-  53 0005 C7                      		push	hl
-  54 0006 71 08 01 FF             		clr1	!-255.0
-  55 000a C6                      		pop	hl
-  56 000b C4                      		pop	de
-  57 000c C2                      		pop	bc
-  58 000d C0                      		pop	ax
-  59 000e 61 FC                   		reti
-  61                             		.section	.text.r_tau0_channel3_interrupt,"ax",@progbits
-  62                             		.global	_r_tau0_channel3_interrupt
-  64                             	_r_tau0_channel3_interrupt:
-  65                             		; start of function
-  66                             		; push 16: ax bc de hl r8 r10 r12 r14
-  67 0000 61 CF                   		sel	rb0
-  68 0002 C1                      		push	ax
-  69 0003 C3                      		push	bc
-  70 0004 C5                      		push	de
-  71 0005 C7                      		push	hl
-  72 0006 61 DF                   		sel	rb1
-  73 0008 C1                      		push	ax ; r8
-  74 0009 C3                      		push	bc ; r10
-  75 000a C5                      		push	de ; r12
-  76 000b C7                      		push	hl ; r14
-  77 000c 61 CF                   		sel	rb0
-  78 000e FC 00 00 00             		call	!!%code(_ir_txInterruptSR)
-  79 0012 61 DF                   		sel	rb1
-  80 0014 C6                      		pop	hl ; r14
-  81 0015 C4                      		pop	de ; r12
-  82 0016 C2                      		pop	bc ; r10
-  83 0017 C0                      		pop	ax ; r8
-  84 0018 61 CF                   		sel	rb0
-  85 001a C6                      		pop	hl
-  86 001b C4                      		pop	de
-  87 001c C2                      		pop	bc
-  88 001d C0                      		pop	ax
-  89 001e 61 FC                   		reti
-  91                             		.comm	_ir_txMessage,2,2
-  92                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
- 0026 61 FC                   		reti
-  95                             		.comm	_ir_txMessage,2,2
-  96                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+  25                             		.section	.text.startup.main,"ax",@progbits
+  26                             		.global	_main
+  28                             	_main:
+  29                             	 ; 85 "../src/r_main.c" 1
+  30 0000 71 7A FA                		ei
+  31                             	 ; 0 "" 2
+  32 0003 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
+  33 0007 FC 00 00 00             		call	!!%code(_R_INTC2_Start)
+  34                             	.L2:
+  35 000b EC 0B 00 00             		br	!!.L2
+  37                             		.section	.text.R_MAIN_UserInit,"ax",@progbits
+  38                             		.global	_R_MAIN_UserInit
+  40                             	_R_MAIN_UserInit:
+  41                             	 ; 85 "../src/r_main.c" 1
+  42 0000 71 7A FA                		ei
+  43                             	 ; 0 "" 2
+  44 0003 D7                      		ret
+  46                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1

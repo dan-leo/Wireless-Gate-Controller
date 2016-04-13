@@ -26,5 +26,6 @@ volatile uint8_t last_gate_position;
 void gate_stop_handler();
 void gate_close();
 void gate_open();
+void gate_stop();
 
 #endif /* GATE_CONTROLLER_H_ */

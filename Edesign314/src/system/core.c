@@ -19,9 +19,9 @@ void core_setup(){
 	INTAD_FSM_state = AD_IDLE;
 
 	debug_adc_serial = 0;
-	debug_ir_receiver_lcd = 0;
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
+	debug_ir_lcd_request = 1;
 
 	// idle mode
 	IR_LED_TX = 1;
@@ -76,11 +76,6 @@ void core_main(){
 		if (timer1_interrupt){
 			timer1_interrupt = 0;
 			adc_get_multiple_channels();
-			if (debug_ir_receiver_lcd){
-				volatile uint8_t ascii_word[16];
-				word_to_ascii(ir_rxMessage, ascii_word);
-				print_lcd(ascii_word);
-			}
 		}
 
 		if (ir_new_command_interrupt){
@@ -92,9 +87,13 @@ void core_main(){
 				gate_close();
 			}
 			if (ir_rxMessage == IR_GATE_E_STOP){
-
+				gate_stop();
 			}
-
+			if (debug_ir_lcd_request){
+				uint8_t ascii_word[16];
+				word_to_ascii(ir_rxMessage, ascii_word);
+				print_lcd(ascii_word);
+			}
 		}
 	}
 }

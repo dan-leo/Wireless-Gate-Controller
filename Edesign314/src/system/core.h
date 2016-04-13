@@ -9,6 +9,7 @@
 #define CORE_H_
 
 #include "adc.h"
+#include "debug.h"
 #include "delay.h"
 #include "gate_controller.h"
 #include "infrared.h"

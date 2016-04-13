@@ -9,9 +9,9 @@
 #define DEBUG_H_
 
 
-uint8_t debug_adc_serial;
-uint8_t debug_ir_receiver_lcd;
-uint8_t debug_lcd;
-uint8_t debug_adc_lcd;
+volatile uint8_t debug_adc_serial;
+volatile uint8_t debug_lcd;
+volatile uint8_t debug_adc_lcd;
+volatile uint8_t debug_ir_lcd_request;
 
 #endif /* DEBUG_H_ */

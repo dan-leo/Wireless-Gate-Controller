@@ -62,6 +62,7 @@ void adc_get_multiple_channels(){
 	ascii_current[5] = '\0';
 	uint8_t initial_current;
 	initial_current = ADC_value[3] / 10;
+	latest_current_reading = initial_current;
 	ascii_current[0] = initial_current/10 + '0';
 	ascii_current[1] = (initial_current % 10) + '0';
 	ascii_current[2] = ' ';

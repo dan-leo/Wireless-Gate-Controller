@@ -58,3 +58,8 @@ void gate_open(){
 	gate_position = UNKNOWN;
 	gate_is_moving = 1;
 }
+
+void gate_stop(){
+	nSLEEP = 0;
+	gate_is_moving = 0;
+}

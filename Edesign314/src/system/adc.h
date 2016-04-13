@@ -22,6 +22,8 @@ volatile uint16_t ADC_value[NUM_CHANNELS];
 volatile uint8_t INTAD_FSM_state;
 volatile uint8_t adc_ready;
 
+volatile uint8_t latest_current_reading;
+
 uint16_t adc_get_reading();
 void adc_multi_channel_interrupt_service_routine();
 char *adc_ascii_current(uint16_t *adc_val);
