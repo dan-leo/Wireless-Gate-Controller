@@ -30,7 +30,7 @@ void core_setup(){
 
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
-	R_TAU0_Channel2_Start();
+	R_TAU0_Channel2_Start();  // 1kHz gate stop listener
 	// R_TAU0_Channel3_Start();
 
 	R_UART1_Start();

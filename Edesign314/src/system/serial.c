@@ -144,6 +144,32 @@ void serial_handler(){
 		//if (gate_position == CLOSED) R_INTC4_Stop();
 		print_lcd("unknown");
 		break;
+	case 0xFC:
+		// read IR cmd
+//		echo(0xFC);
+//		echo(0xFC);
+//		volatile uint16_t address = 0x3141;
+//		R_UART1_Send(&address, 2);
+
+        STMK1 = 1U;    /* disable INTST1 interrupt */
+        TXD1 = 0xFC;
+//        STMK1 = 0U;    /* enable INTST1 interrupt */
+//        STMK1 = 1U;    /* disable INTST1 interrupt */
+        delay(1000);
+        TXD1 = 0x31;
+//        STMK1 = 0U;    /* enable INTST1 interrupt */
+//        STMK1 = 1U;    /* disable INTST1 interrupt */
+        NOP();
+        TXD1 = 0x41;
+        delayNoInt(16000U);
+        TXD1 = 0xA5;
+        TXD1 = 0x5A;
+        delayNoInt(16000U);
+        STMK1 = 0U;    /* enable INTST1 interrupt */
+
+//		echo(0x41);
+//		echo(0x31);
+		break;
 	case 0xFF:
 		//read status
 		echo(0xFF);
