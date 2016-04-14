@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "lcd.h"
 #include "adc.h"
+#include "infrared.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -59,6 +60,11 @@ void serial_handler(){
 	R_UART1_Receive(&serial_rx,1);
 	// rx = rx_char_main;
 	uart1RxBuf[rx_tail] = serial_rx;
+
+	uint8_t address = (uint8_t)(ir_rxMessage >> 3);
+	uint8_t toggle = (uint8_t)((ir_rxMessage >> 11) & 0x1);
+	uint8_t data = (uint8_t)(ir_rxMessage & 0x3);
+	uint8_t data_byte = data | (toggle << 7);
 
 	switch (serial_rx){
 	case 0x81:
@@ -156,14 +162,15 @@ void serial_handler(){
 //        STMK1 = 0U;    /* enable INTST1 interrupt */
 //        STMK1 = 1U;    /* disable INTST1 interrupt */
         delay(1000);
-        TXD1 = 0x31;
+        TXD1 = address;
 //        STMK1 = 0U;    /* enable INTST1 interrupt */
 //        STMK1 = 1U;    /* disable INTST1 interrupt */
-        NOP();
-        TXD1 = 0x41;
+//        NOP();
+//        TXD1 = address;
         delayNoInt(16000U);
-        TXD1 = 0xA5;
-        TXD1 = 0x5A;
+        TXD1 = data_byte;
+//        NOP();
+//        TXD1 = data_byte;
         delayNoInt(16000U);
         STMK1 = 0U;    /* enable INTST1 interrupt */
 

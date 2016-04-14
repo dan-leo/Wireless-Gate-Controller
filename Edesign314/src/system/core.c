@@ -18,10 +18,10 @@ void core_setup(){
 	ADC_done = 0;
 	INTAD_FSM_state = AD_IDLE;
 
+	debug_ir_lcd_request = 1;
 	debug_adc_serial = 0;
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
-	debug_ir_lcd_request = 1;
 
 	// idle mode
 	IR_LED_TX = 1;

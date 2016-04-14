@@ -9,6 +9,10 @@
 
 //default ir tx message
 #define ir_txMessage_default 0x3188
+#define ir_txMessage_toggled 0x3988
+
+//volatile uint8_t toggle = 0;
+volatile uint8_t toggled = 0;
 
 /* I try to make names self explanatory :D
  */
@@ -67,20 +71,25 @@ void ir_txInterruptSR(){
 	else{
 		ir_64bitMessage_inHalfBits_counter = ir_64bitMessage_inHalfBits_total;
 		ir_14bitMessage_inHalfBits_counter = ir_14bitMessage_inHalfBits_total;
-		if(toggle_debounce_counter) toggle_debounce_counter--;
-		ir_txMessage = ir_txMessage_default;
+//		if(toggle_debounce_counter) toggle_debounce_counter--;
+/*		if (toggle_debounce_counter){
+			return;
+		}
+		ir_txMessage &= 0xFC;*/
+		if (toggled) ir_txMessage = ir_txMessage_toggled;
+		else ir_txMessage = ir_txMessage_default;
+
 		if (!IR_BUTTON_1){
 			ir_txMessage |= 0x1;
 		}
 		if (!IR_BUTTON_2){
 			ir_txMessage |= 0x2;
 		}
-		if (toggle_debounce_counter){
-			return;
-		}
 		if (IR_BUTTON_1 && IR_BUTTON_2){
-			ir_txMessage ^= 0x800;
+
 			toggle_debounce_counter = toggle_button_bounces;
+//			toggle = 1;
+			toggled ^= 1;
 			R_TAU0_Channel3_Stop();
 			R_INTC1_Start();
 			R_INTC2_Start();
@@ -90,7 +99,8 @@ void ir_txInterruptSR(){
 
 void button_interrupt(uint8_t button){
 	ir_txMessage |= button;
-
+//	if (toggle) ir_txMessage ^= 0x800;
+//	toggle = 0;
 	// start manchester timer
 	R_TAU0_Channel3_Start();
 
