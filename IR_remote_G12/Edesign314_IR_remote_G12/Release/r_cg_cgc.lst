@@ -22,21 +22,9 @@
   22                             	r15	=	0xffef7
   23                             	r23	=	0xffeef
   24                             	r31	=	0xffee7
-  25                             		.section	.text.startup.main,"ax",@progbits
-  26                             		.global	_main
-  28                             	_main:
-  29                             	 ; 85 "../src/r_main.c" 1
-  30 0000 71 7A FA                		ei
-  31                             	 ; 0 "" 2
-  32 0003 FC 00 00 00             		call	!!%code(_R_INTC1_Start)
-  33 0007 FC 00 00 00             		call	!!%code(_R_INTC2_Start)
-  34                             	.L2:
-  35 000b EC 0B 00 00             		br	!!.L2
-  37                             		.section	.text.R_MAIN_UserInit,"ax",@progbits
-  38                             		.global	_R_MAIN_UserInit
-  40                             	_R_MAIN_UserInit:
-  41                             	 ; 85 "../src/r_main.c" 1
-  42 0000 71 7A FA                		ei
-  43                             	 ; 0 "" 2
-  44 0003 D7                      		ret
-  46                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
+  25                             		.section	.text.R_CGC_Get_ResetSource,"ax",@progbits
+  26                             		.global	_R_CGC_Get_ResetSource
+  28                             	_R_CGC_Get_ResetSource:
+  29 0000 8F A8 FF                		mov	a, !-88
+  30 0003 D7                      		ret
+  32                             		.ident	"GCC: (GCC_Build_1.22) 4.9-GNURL78_v15.02 20140916 (prerelease (renesas-14r1-14)) (GNUPro 1
