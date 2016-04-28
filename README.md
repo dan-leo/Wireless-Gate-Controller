@@ -18,19 +18,16 @@ Before I built the remote, I soldered in a transmitter/receiver led pair and a b
 for testing purposes and so that coding is faster.
 
 
---* Variable motor speed works
-<br>
---* ADC current reading + display reading works.
-<br>
---* Infrared tx (manchester encoding) works on G12. (tx also on G14 -- just for debugging/testing purposes).
-<br>
---* Receive also works and displays bits on lcd.
+* Variable motor speed works
+* ADC current reading + display reading works.
+* Infrared tx (manchester encoding) works on G12. (tx also on G14 -- just for debugging/testing purposes).
+* Receive also works and displays bits on lcd.
 
 Full marks again for the third demo.
 
 TODO:
---* Meet specs for fourth demo.
---* Possibly add a card reader.
+* Meet specs for fourth demo.
+* Possibly add a card reader.
 
 Debugging: have a look at the debug.h folder and 
 change variables to enable certain serial/lcd debugging outputs
