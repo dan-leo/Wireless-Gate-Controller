@@ -8,7 +8,7 @@ It is built on a prototype board developed by Stellenbosch University. The routi
 is that students develop their own wiring/designs.
 
 Of the main hardware, it has a renesas RL78/G14 as the brains, a Powertip 16x1 lcd for user feedback, external FT230XS uart chip to communicate with an external test program at 9600 baud, 
-a DRV8801 motor driver (40kHz PWM), a TSOP348X infra-red receiver, and a 1kHz buzzer for warning conditions.
+a DRV8801 motor driver (40kHz PWM), a TSOP348X infra-red receiver, and a 2kHz buzzer for warning conditions.
 
 There also exists an infra-red remote to control the gate (open/close/emergency stop). The heart is a Renesas RL78/G12 1026A processor. 
 I call it the heart rather affectionately since I had a watchdog timer going off which gave it a pretty heartbeat.
@@ -44,6 +44,25 @@ CN2 | Signal Name | RL78/G14 Pin Name | Function
 2 | `VDD` | VDD / EVDD | 5V external input
 8 | `P15` | P15_SCK20_Z_SCL20_TRDIOD0 | This is the 40kHz pwm enable for the motor (directed to the enable pin of the DRV8801)
 9 | `P16` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This interrupt pin is triggered by data from the IR receiver 
-15| `P51` | P51_INTP2_SO00_TXD0_TOOLTXD_TRGIOB | A button triggers this hardware interrupt which in turn sends a test manchestor string.
+15| `P51` | P51_INTP2_SO00_TXD0_TOOLTXD_TRGIOB | *For testing.* A button triggers this hardware interrupt which in turn sends a test manchestor string.
+23| `P76` | P76_KR6_INTP10_RXD2 | LCD Register select
+24| `P75` | P75_KR5_INTP9_SCK01_SCL01 | LCD Read /Write
+25| `P74` | P74_KR4_INTP8_SI01_SDA01 | LCD Enable
+26| `P73` | P73_KR3_SO01 | LCD Data channel 3
+27| `P72` | P72_KR2_SO21 | LCD Data channel 2
+28| `P71` | P71_KR1_SI21_SDA21 | LCD Data channel 1
+29| `P70` | P70_KR0_SCK21_SCL21 | LCD Data channel 0
 
-
+CN3 | Signal Name | RL78/G14 Pin Name | Function
+:---: | :---: | --- | ---
+1 | `GND` | VSS / EVSS | Ground
+2 | `VDD` | VDD / EVDD | 5V external input
+3 | `P140`| P140/PCLBUZ0/INTP6 | 2kHZ buzzer output
+7 | `P02` | P02/ANI17/SO10/TxD1 | Serial output to external test program
+8 | `P03` | P03/ANI16/SI10/RxD1/SDA10 | Serial input from external test program
+11| `P20` | P20_ANI0_AVREFP | *For testing.* Here is where a manchestor string is output to a built-in IR led.
+22| `P42` | P42 | This digital output controls the phase/direction that the gate motor is turning.
+23| `P41` | P41 | This digital output can sleep the motor driver (nSleep).
+27| `P06` | P06 | Digital in which listens for when the gate closes/is closed (port is polled ~ debouncing).
+28| `P05` | P05 | Digital in which listens for when the gate opens/is opened (port is polled ~ debouncing).
+29| `P30` | P30/INTP3/RTC1HZ/SCK00/SCL00/TRJO0 | *Unused.* Hardware interrupt which listens for when the gate opens/closes.
