@@ -18,21 +18,19 @@ Before I built the remote, I soldered in a transmitter/receiver led pair and a b
 for testing purposes and so that coding is faster.
 
 
-
-ADC current reading + display reading works.
+--* Variable motor speed works
 <br>
-Infrared tx (manchester encoding) works on G12. (tx also on G14 -- just for debugging purposes).
+--* ADC current reading + display reading works.
 <br>
-Receive also works and displays bits on lcd.
+--* Infrared tx (manchester encoding) works on G12. (tx also on G14 -- just for debugging/testing purposes).
+<br>
+--* Receive also works and displays bits on lcd.
 
 Full marks again for the third demo.
 
-TODO: 
-add pinout here<br>
-make this all more user friendly!! :)
-
-Meet specs for fourth demo.
-Possibly add a card reader.
+TODO:
+--* Meet specs for fourth demo.
+--* Possibly add a card reader.
 
 Debugging: have a look at the debug.h folder and 
 change variables to enable certain serial/lcd debugging outputs
@@ -57,10 +55,14 @@ CN3 | Signal Name | RL78/G14 Pin Name | Function
 :---: | :---: | --- | ---
 1 | `GND` | VSS / EVSS | Ground
 2 | `VDD` | VDD / EVDD | 5V external input
-3 | `P140`| P140/PCLBUZ0/INTP6 | 2kHZ buzzer output
-7 | `P02` | P02/ANI17/SO10/TxD1 | Serial output to external test program
-8 | `P03` | P03/ANI16/SI10/RxD1/SDA10 | Serial input from external test program
-11| `P20` | P20_ANI0_AVREFP | *For testing.* Here is where a manchestor string is output to a built-in IR led.
+3 | `P140`| P140_PCLBUZ0_INTP6 | 2kHZ buzzer output
+7 | `P02` | P02_ANI17_SO10_TxD1 | Serial output to external test program
+8 | `P03` | P03_ANI16_SI10_RxD1_SDA10 | Serial input from external test program
+10| `P130`| P130 | *For testing.* Here is where a manchestor string is output to a built-in IR led.
+11| `P20` | P20_ANI0_AVREFP | *Unused* ADC input
+12| `P21` | P21_ANI0_AVREFM | *Unused* ADC input TODO: use potentiometer to cycle through menu.
+13| `P22` | P22_ANI2_ANO0 | This reads a potentiometer built-in the RL78 G14. It controls the speed of the gate motor.
+14| `P23` | P23_ANI3_ANO1 | This reads in a current value from 0 - 100mA, converted to a value between 0 - 5 V, with 10 bit accuracy.
 22| `P42` | P42 | This digital output controls the phase/direction that the gate motor is turning.
 23| `P41` | P41 | This digital output can sleep the motor driver (nSleep).
 27| `P06` | P06 | Digital in which listens for when the gate closes/is closed (port is polled ~ debouncing).
