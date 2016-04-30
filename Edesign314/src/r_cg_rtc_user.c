@@ -23,11 +23,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_main.c
+* File Name    : r_cg_rtc_user.c
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements main function.
+* Description  : This file implements device driver for RTC module.
 * Creation Date: 2016-04-30
 ***********************************************************************************************************************/
 
@@ -35,16 +35,8 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_cg_cgc.h"
-#include "r_cg_port.h"
-#include "r_cg_intc.h"
-#include "r_cg_serial.h"
-#include "r_cg_adc.h"
-#include "r_cg_timer.h"
 #include "r_cg_rtc.h"
-#include "r_cg_pclbuz.h"
 /* Start user code for include. Do not edit comment generated here */
-#include "system/core.h"
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
 
@@ -53,39 +45,6 @@ Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
-void R_MAIN_UserInit(void);
-
-/***********************************************************************************************************************
-* Function Name: main
-* Description  : This function implements main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void main(void)
-{
-    R_MAIN_UserInit();
-    /* Start user code. Do not edit comment generated here */
-	core_setup();
-	core_main();
-	while (1U)
-	{
-		;
-	}
-	/* End user code. Do not edit comment generated here */
-}
-
-
-/***********************************************************************************************************************
-* Function Name: R_MAIN_UserInit
-* Description  : This function adds user code before implementing main function.
-* Arguments    : None
-* Return Value : None
-***********************************************************************************************************************/
-void R_MAIN_UserInit(void)
-{
-    /* Start user code. Do not edit comment generated here */
-	/* End user code. Do not edit comment generated here */
-}
 
 /* Start user code for adding. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

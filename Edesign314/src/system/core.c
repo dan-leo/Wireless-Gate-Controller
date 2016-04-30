@@ -28,6 +28,7 @@ void core_setup(){
 
 	nSLEEP = 0;
 
+	R_RTC_Start();
 	R_TAU0_Channel0_Start();
 	R_TAU0_Channel1_Lower8bits_Start();
 	R_TAU0_Channel2_Start();  // 1kHz gate stop listener
@@ -55,7 +56,11 @@ void core_setup(){
 	/* Peripheral start function calls */
 	R_ADC_Set_OperationOn(); /* Enable ADC voltage comparator */
 
+	PFDL_GetVersionString();
+
 	motor_power(28);
+
+	PFDL_GetVersionString();
 }
 
 void core_main(){

@@ -23,11 +23,11 @@
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
-* File Name    : r_cg_adc.c
+* File Name    : r_cg_rtc.c
 * Version      : CodeGenerator for RL78/G14 V2.02.00.01 [25 Dec 2013]
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
-* Description  : This file implements device driver for ADC module.
+* Description  : This file implements device driver for RTC module.
 * Creation Date: 2016-04-30
 ***********************************************************************************************************************/
 
@@ -35,7 +35,7 @@
 Includes
 ***********************************************************************************************************************/
 #include "r_cg_macrodriver.h"
-#include "r_cg_adc.h"
+#include "r_cg_rtc.h"
 /* Start user code for include. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 #include "r_cg_userdefine.h"
@@ -47,90 +47,151 @@ Global variables and functions
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
-* Function Name: R_ADC_Create
-* Description  : This function initializes the AD converter.
+* Function Name: R_RTC_Create
+* Description  : This function initializes the real-time clock module.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_ADC_Create(void)
-{    
-    ADCEN = 1U;  /* supply AD clock */
-    ADM0 = _00_AD_ADM0_INITIALVALUE;  /* disable AD conversion and clear ADM0 register */
-    ADMK = 1U;  /* disable INTAD interrupt */
-    ADIF = 0U;  /* clear INTAD interrupt flag */
-    /* Set INTAD high priority */
-    ADPR1 = 0U;
-    ADPR0 = 0U;
-    /* The reset status of ADPC is analog input, so it's unnecessary to set. */
-    /* Set ANI0 - ANI7 pin as analog input */
-    PM2 |= 0xFFU;
-    ADM0 = _08_AD_CONVERSION_CLOCK_32 | _00_AD_TIME_MODE_NORMAL_1 | _40_AD_OPERMODE_SCAN;
-    ADM1 = _00_AD_TRIGGER_SOFTWARE | _20_AD_CONVMODE_ONESELECT;
-    ADM2 = _00_AD_POSITIVE_VDD | _00_AD_NEGATIVE_VSS | _00_AD_AREA_MODE_1 | _00_AD_RESOLUTION_10BIT;          
-    ADUL = _FF_AD_ADUL_VALUE;
-    ADLL = _00_AD_ADLL_VALUE;
-    ADS = _00_AD_INPUT_CHANNEL_0_3;
-    ADCE = 1U;  /* enable AD comparator */
+void R_RTC_Create(void)
+{
+    RTCEN = 1U;    /* supply RTC clock */
+    RTCE = 0U;     /* disable RTC clock operation */
+    RTCMK = 1U;    /* disable INTRTC interrupt */
+    RTCIF = 0U;    /* clear INTRTC interrupt flag */
+    RTCC0 = _00_RTC_RTC1HZ_DISABLE | _08_RTC_24HOUR_SYSTEM | _00_RTC_INTRTC_NOT_GENERATE;
+    /* Set real-time clock */
+    SEC = _00_RTC_COUNTER_SEC;
+    MIN = _00_RTC_COUNTER_MIN;
+    HOUR = _08_RTC_COUNTER_HOUR;
+    WEEK = _05_RTC_COUNTER_WEEK;
+    DAY = _06_RTC_COUNTER_DAY;
+    MONTH = _05_RTC_COUNTER_MONTH;
+    YEAR = _16_RTC_COUNTER_YEAR;
 }
 
 /***********************************************************************************************************************
-* Function Name: R_ADC_Start
-* Description  : This function starts the AD converter.
+* Function Name: R_RTC_Start
+* Description  : This function enables the real-time clock.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_ADC_Start(void)
+void R_RTC_Start(void)
 {
-    ADIF = 0U;  /* clear INTAD interrupt flag */
-    ADMK = 0U;  /* enable INTAD interrupt */
-    ADCS = 1U;  /* enable AD conversion */
+    RTCE = 1U;     /* enable RTC clock operation */
 }
 
 /***********************************************************************************************************************
-* Function Name: R_ADC_Stop
-* Description  : This function stops the AD converter.
+* Function Name: R_RTC_Stop
+* Description  : This function disables the real-time clock.
 * Arguments    : None
 * Return Value : None
 ***********************************************************************************************************************/
-void R_ADC_Stop(void)
+void R_RTC_Stop(void)
 {
-    ADCS = 0U;  /* disable AD conversion */
-    ADMK = 1U;  /* disable INTAD interrupt */
-    ADIF = 0U;  /* clear INTAD interrupt flag */
+    RTCE = 0U;    /* disable RTC clock operation */
 }
 
 /***********************************************************************************************************************
-* Function Name: R_ADC_Set_OperationOn
-* Description  : This function enables comparator operation.
-* Arguments    : None
-* Return Value : None
+* Function Name: R_RTC_Get_CounterValue
+* Description  : This function reads the results of real-time clock and store them in the variables.
+* Arguments    : counter_read_val -
+*                    the current real-time clock value(BCD code)
+* Return Value : status -
+*                    MD_OK, MD_BUSY1 or MD_BUSY2
 ***********************************************************************************************************************/
-void R_ADC_Set_OperationOn(void)
+MD_STATUS R_RTC_Get_CounterValue(rtc_counter_value_t * const counter_read_val)
 {
-    ADCE = 1U;  /* enable AD comparator */
+    MD_STATUS status = MD_OK;
+    uint32_t  w_count;
+    
+    RTCC1 |= _01_RTC_COUNTER_PAUSE;
+
+    /* Change the waiting time according to the system */
+    for (w_count = 0U; w_count < RTC_WAITTIME; w_count++)
+    {
+        NOP();
+    }
+
+    if (0U == RWST)
+    {
+        status = MD_BUSY1;
+    }
+    else
+    {
+        counter_read_val->sec = SEC;
+        counter_read_val->min = MIN;
+        counter_read_val->hour = HOUR;
+        counter_read_val->week = WEEK;
+        counter_read_val->day = DAY;
+        counter_read_val->month = MONTH;
+        counter_read_val->year = YEAR;
+
+        RTCC1 &= (uint8_t)~_01_RTC_COUNTER_PAUSE;
+
+        /* Change the waiting time according to the system */
+        for (w_count = 0U; w_count < RTC_WAITTIME; w_count++)
+        {
+            NOP();
+        }
+
+        if (1U == RWST)
+        {
+            status = MD_BUSY2;
+        }
+    }
+
+    return (status);
 }
 
 /***********************************************************************************************************************
-* Function Name: R_ADC_Set_OperationOff
-* Description  : This function stops comparator operation.
-* Arguments    : None
-* Return Value : None
+* Function Name: R_RTC_Set_CounterValue
+* Description  : This function changes the real-time clock value.
+* Arguments    : counter_write_val -
+*                    the expected real-time clock value(BCD code)
+* Return Value : status -
+*                    MD_OK, MD_BUSY1 or MD_BUSY2
 ***********************************************************************************************************************/
-void R_ADC_Set_OperationOff(void)
+MD_STATUS R_RTC_Set_CounterValue(rtc_counter_value_t counter_write_val)
 {
-    ADCE = 0U;  /* disable AD comparator */
-}
+    MD_STATUS status = MD_OK;
+    uint32_t  w_count;
+    
+    RTCC1 |= _01_RTC_COUNTER_PAUSE;
 
-/***********************************************************************************************************************
-* Function Name: R_ADC_Get_Result
-* Description  : This function returns the conversion result in the buffer.
-* Arguments    : buffer -
-*                    the address where to write the conversion result
-* Return Value : None
-***********************************************************************************************************************/
-void R_ADC_Get_Result(uint16_t * const buffer)
-{
-    *buffer = (uint16_t)(ADCR >> 6U);
+    /* Change the waiting time according to the system */
+    for (w_count = 0U; w_count < RTC_WAITTIME; w_count++)
+    {
+        NOP();
+    }
+
+    if (0U == RWST)
+    {
+        status = MD_BUSY1;
+    }
+    else
+    {
+        SEC = counter_write_val.sec;
+        MIN = counter_write_val.min;
+        HOUR = counter_write_val.hour;
+        WEEK = counter_write_val.week;
+        DAY = counter_write_val.day;
+        MONTH = counter_write_val.month;
+        YEAR = counter_write_val.year;
+        RTCC1 &= (uint8_t)~_01_RTC_COUNTER_PAUSE;
+
+        /* Change the waiting time according to the system */
+        for (w_count = 0U; w_count < RTC_WAITTIME; w_count++)
+        {
+            NOP();
+        }
+
+        if (1U == RWST)
+        {
+            status = MD_BUSY2;
+        }
+    }
+
+    return (status);
 }
 
 /* Start user code for adding. Do not edit comment generated here */

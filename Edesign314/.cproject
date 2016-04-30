@@ -40,6 +40,7 @@
 									<listOptionValue builtIn="false" value="&quot;${TCINSTALL}/rl78-elf/optlibinc&quot;"/>
 								</option>
 								<option id="com.renesas.cdt.core.Compiler.option.CPUSeries.498527873" name="Cpu Series" superClass="com.renesas.cdt.core.Compiler.option.CPUSeries" value="R5F104LE" valueType="string"/>
+								<option id="com.renesas.cdt.core.Compiler.option.deviceShortName.1159632689" superClass="com.renesas.cdt.core.Compiler.option.deviceShortName" value="R5F104LE" valueType="string"/>
 								<inputType id="%Base.Compiler.C.InputType.Id.438712762" name="C Input" superClass="%Base.Compiler.C.InputType.Id"/>
 								<inputType id="Base.Compiler.CPP.InputType.Id.1900114268" name="C++ Input" superClass="Base.Compiler.CPP.InputType.Id"/>
 							</tool>
@@ -109,6 +110,11 @@
 									<listOptionValue builtIn="false" value="-falign-jumps"/>
 									<listOptionValue builtIn="false" value="-funit-at-a-time"/>
 								</option>
+								<option id="com.renesas.cdt.core.LibraryGenerator.option.ctype.1859715704" superClass="com.renesas.cdt.core.LibraryGenerator.option.ctype" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.core.LibraryGenerator.option.math.789313805" superClass="com.renesas.cdt.core.LibraryGenerator.option.math" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.core.LibraryGenerator.option.stdio.1595709845" superClass="com.renesas.cdt.core.LibraryGenerator.option.stdio" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.core.LibraryGenerator.option.stdlib.1732341410" superClass="com.renesas.cdt.core.LibraryGenerator.option.stdlib" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.core.LibraryGenerator.option.string.335665185" superClass="com.renesas.cdt.core.LibraryGenerator.option.string" value="true" valueType="boolean"/>
 							</tool>
 							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="com.renesas.cdt.rl78.hardwaredebug.win32.tool.compiler.Id.1796259007" name="Compiler" superClass="com.renesas.cdt.rl78.hardwaredebug.win32.tool.compiler.Id">
 								<option defaultValue="true" id="com.renesas.cdt.core.Compiler.option.misc2.623159409" name="Don't search standard system directories for header files(-nostdinc)" superClass="com.renesas.cdt.core.Compiler.option.misc2" valueType="boolean"/>
@@ -119,6 +125,7 @@
 									<listOptionValue builtIn="false" value="&quot;${TCINSTALL}/rl78-elf/optlibinc&quot;"/>
 								</option>
 								<option id="com.renesas.cdt.core.Compiler.option.CPUSeries.528202863" name="Cpu Series" superClass="com.renesas.cdt.core.Compiler.option.CPUSeries" value="R5F104LE" valueType="string"/>
+								<option id="com.renesas.cdt.core.Compiler.option.deviceShortName.96109978" superClass="com.renesas.cdt.core.Compiler.option.deviceShortName" value="R5F104LE" valueType="string"/>
 								<inputType id="%Base.Compiler.C.InputType.Id.2091603359" name="C Input" superClass="%Base.Compiler.C.InputType.Id"/>
 								<inputType id="Base.Compiler.CPP.InputType.Id.1268530765" name="C++ Input" superClass="Base.Compiler.CPP.InputType.Id"/>
 							</tool>
@@ -142,11 +149,41 @@
 									<listOptionValue builtIn="false" value="-e_PowerON_Reset"/>
 								</option>
 								<option id="com.renesas.cdt.core.Linker.option.linkOrderList.93637355" name="" superClass="com.renesas.cdt.core.Linker.option.linkOrderList" valueType="stringList">
-									<listOptionValue builtIn="false" value="&quot;.\src\Edesign314.o&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\hardware_setup.o&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\interrupt_handlers.o&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\reset_program.o&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;.\src\vector_table.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\adc.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\core.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\delay.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\gate_controller.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\infrared.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\io.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\lcd.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\math.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\motor_driver.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\serial.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/system\utility.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_adc.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_adc_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_cgc.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_cgc_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_intc.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_intc_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_pclbuz.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_pclbuz_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_port.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_port_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_rtc.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_rtc_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_serial.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_serial_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_timer.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_timer_user.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_cg_vector_table.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_hardware_setup.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_main.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src\r_reset_program.o&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
+								</option>
+								<option id="com.renesas.cdt.core.Linker.option.additionalInputFiles.2125032087" superClass="com.renesas.cdt.core.Linker.option.additionalInputFiles" valueType="userObjs">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
 								</option>
 							</tool>
 							<tool errorParsers="" id="com.renesas.cdt.rl78.hardwaredebug.win32.tool.objcopy.Id.1590220100" name="Objcopy" superClass="com.renesas.cdt.rl78.hardwaredebug.win32.tool.objcopy.Id"/>
