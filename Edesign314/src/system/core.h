@@ -8,16 +8,7 @@
 #ifndef CORE_H_
 #define CORE_H_
 
-#include "adc.h"
-#include "debug.h"
-#include "delay.h"
-#include "gate_controller.h"
-#include "infrared.h"
-#include "io.h"
-#include "math.h"
-#include "motor_driver.h"
-#include "serial.h"
-#include "utility.h"
+#include "globals.h"
 
 void core_setup();
 

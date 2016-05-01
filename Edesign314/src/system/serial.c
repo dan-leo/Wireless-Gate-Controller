@@ -6,12 +6,7 @@
  */
 
 #include "serial.h"
-#include "motor_driver.h"
-#include "gate_controller.h"
-#include "debug.h"
-#include "lcd.h"
-#include "adc.h"
-#include "infrared.h"
+#include "globals.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -28,6 +23,8 @@ volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
 uint8_t rx_tail;
 
 extern volatile uint8_t rx_flag;
+
+void serial_clear_tx_buf();
 
 
 /**
@@ -49,6 +46,16 @@ void serial_print_adc(uint16_t reading){
  */
 void echo(uint8_t c){
 	R_UART1_Send(&c,1);
+}
+
+/**
+ * clear serial tx buffer
+ */
+void serial_clear_tx_buf(){
+	uint8_t pos;
+	for (pos = 0; pos < TX_BUF_LEN; pos++){
+		uart1TxBuf[pos] = 0;
+	}
 }
 
 /**
@@ -115,6 +122,23 @@ void serial_handler(){
 		echo(0xF1);
 		R_PCLBUZ0_Stop();
 		break;
+	case 0xF3:
+		// read time
+		// F3 > F3 04  10  08  01  05
+		// Read_Clock = 16 Apr 8:1:5 (h:m:s)
+		serial_clear_tx_buf();
+
+		R_RTC_Get_CounterValue(&time_now);
+
+		uart1TxBuf[0] = 0xF3;
+		uart1TxBuf[1] = toHex(time_now.month);
+		uart1TxBuf[2] = toHex(time_now.day);
+		uart1TxBuf[3] = toHex(time_now.hour);
+		uart1TxBuf[4] = toHex(time_now.min);
+		uart1TxBuf[5] = toHex(time_now.sec);
+
+		R_UART1_Send(uart1TxBuf, 6);
+		break;
 	case 0xF4:
 		//				if (rx_tail < 16){
 		//					rx_tail = 0;
@@ -152,30 +176,14 @@ void serial_handler(){
 		break;
 	case 0xFC:
 		// read IR cmd
-//		echo(0xFC);
-//		echo(0xFC);
-//		volatile uint16_t address = 0x3141;
-//		R_UART1_Send(&address, 2);
-
-        STMK1 = 1U;    /* disable INTST1 interrupt */
-        TXD1 = 0xFC;
-//        STMK1 = 0U;    /* enable INTST1 interrupt */
-//        STMK1 = 1U;    /* disable INTST1 interrupt */
-        delay(1000);
-        TXD1 = address;
-//        STMK1 = 0U;    /* enable INTST1 interrupt */
-//        STMK1 = 1U;    /* disable INTST1 interrupt */
-//        NOP();
-//        TXD1 = address;
-        delayNoInt(16000U);
-        TXD1 = data_byte;
-//        NOP();
-//        TXD1 = data_byte;
-        delayNoInt(16000U);
-        STMK1 = 0U;    /* enable INTST1 interrupt */
-
-//		echo(0x41);
-//		echo(0x31);
+		STMK1 = 1U;    /* disable INTST1 interrupt */
+		TXD1 = 0xFC;
+		delay(1000);
+		TXD1 = address;
+		delayNoInt(16000U);
+		TXD1 = data_byte;
+		delayNoInt(16000U);
+		STMK1 = 0U;    /* enable INTST1 interrupt */
 		break;
 	case 0xFF:
 		//read status

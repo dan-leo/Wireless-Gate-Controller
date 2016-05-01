@@ -13,6 +13,7 @@
 #include "../r_cg_macrodriver.h"
 #include "debug.h"
 #include "pins.h"
+#include "time.h"
 
 uint8_t serial_rx;
 uint8_t serial_test_mode;

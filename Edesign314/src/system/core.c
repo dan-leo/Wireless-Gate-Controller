@@ -56,11 +56,13 @@ void core_setup(){
 	/* Peripheral start function calls */
 	R_ADC_Set_OperationOn(); /* Enable ADC voltage comparator */
 
-	PFDL_GetVersionString();
+	datalog_t d;
+	d.cmd = remote_opening | remote_closing;
+	uint8_t v[30];
+
+	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
 	motor_power(28);
-
-	PFDL_GetVersionString();
 }
 
 void core_main(){

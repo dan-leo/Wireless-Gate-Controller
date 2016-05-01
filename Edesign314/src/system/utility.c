@@ -37,3 +37,10 @@ void word_to_ascii(uint16_t word, uint8_t *lcd_word){
 		lcd_word[k] = number + '0';
 	}
 }
+
+/**
+ * takes in a binary coded decimal
+ */
+uint8_t toHex(uint8_t decimal){
+	return (decimal & 0x0F) + ((decimal >> 4) * 10);
+}
