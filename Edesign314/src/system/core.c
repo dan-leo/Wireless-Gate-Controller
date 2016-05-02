@@ -65,7 +65,7 @@ void core_setup(){
 	d.cmd = remote_opening | remote_closing;
 	uint8_t v[30];
 
-	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
+	/*char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
 	uint8_t ret;
 
@@ -90,7 +90,7 @@ void core_setup(){
 	uint8_t write_addr1 = g_write_address;
 	ret = R_FDL_BlankCheck();
 	uint8_t write_addr = g_write_address;
-	PFDL_Close();
+	PFDL_Close();*/
 
 	motor_power(28);
 }
