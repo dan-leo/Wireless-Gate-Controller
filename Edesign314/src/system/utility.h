@@ -17,5 +17,6 @@ char *toString(char *message, uint8_t len);
 char *strcat_v2(char *dest, const char *src);
 void word_to_ascii(uint16_t word, uint8_t *lcd_word);
 uint8_t toHex(uint8_t decimal);
+uint8_t toBCD(uint8_t hex);
 
 #endif /* UTILITY_H_ */

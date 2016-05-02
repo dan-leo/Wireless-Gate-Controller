@@ -121,17 +121,20 @@ void lcd_clear(){
 	delayNoInt(40);					// Start timer with 40 usec delay
 }
 
-void print_lcd(uint8_t *message){
+void print_lcd(volatile uint8_t *message){
 	uint8_t len = strlen(message);
 	lcd_clear();
-	delay(10000);
+	delay(1000);
 
-	int i;
+	volatile uint8_t i = 0;
 	//if (len > lcd_message_max) len = lcd_message_max;
 	for (i = 0; i < len; i++)
 	{
 		if (message[i] <= 0x7F){
-			writeByteLcd(1U, message[i]);
+			writeByteLcd(1, message[i]);
+		}
+		else{
+			writeByteLcd(1, ' ');
 		}
 		delay(100);
 		if (i == 7){

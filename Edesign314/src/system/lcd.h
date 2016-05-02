@@ -52,7 +52,7 @@ void writeNibbleLcd(uint8_t reg, uint8_t nibble);
 void writeByteLcd(uint8_t reg, uint8_t value);
 
 void lcd_clear();
-void print_lcd(uint8_t *message);
+void print_lcd(volatile uint8_t *message);
 void print_long_message(char * message);
 
 #endif /* LCD_H_ */

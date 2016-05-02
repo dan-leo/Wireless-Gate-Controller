@@ -44,3 +44,15 @@ void word_to_ascii(uint16_t word, uint8_t *lcd_word){
 uint8_t toHex(uint8_t decimal){
 	return (decimal & 0x0F) + ((decimal >> 4) * 10);
 }
+
+/**
+ * converts from hex to binary coded decimal
+ * max input/output is 99
+ */
+uint8_t toBCD(uint8_t hex){
+	uint8_t nibble_l = hex % 10;
+	uint8_t nibble_h = ((hex / 10) % 10) << 4;
+	uint8_t byte = nibble_h | nibble_l;
+	return byte;
+	//return (hex % 10) | ((hex / 10) << 4);
+}

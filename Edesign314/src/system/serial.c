@@ -25,7 +25,7 @@ uint8_t rx_tail;
 extern volatile uint8_t rx_flag;
 
 void serial_clear_tx_buf();
-
+void serial_clear_tx_buf();
 
 /**
  * Print adc result to serial terminal
@@ -59,13 +59,23 @@ void serial_clear_tx_buf(){
 }
 
 /**
+ * clear serial rx buffer
+ */
+void serial_clear_rx_buf(){
+	int k;
+	for (k = 0; k < RX_BUF_LEN; k++){
+		uart1RxBuf[k] = 0;
+	}
+	rx_tail = 0;
+}
+
+/**
  * handle all serial comms
  */
 void serial_handler(){
 	PM7^=0x80;
 	//DI();
 	R_UART1_Receive(&serial_rx,1);
-	// rx = rx_char_main;
 	uart1RxBuf[rx_tail] = serial_rx;
 
 	uint8_t address = (uint8_t)(ir_rxMessage >> 3);
@@ -122,6 +132,18 @@ void serial_handler(){
 		echo(0xF1);
 		R_PCLBUZ0_Stop();
 		break;
+	case 0xF2:
+		// set time
+		time_now.sec = toBCD(uart1RxBuf[rx_tail - 1]);
+		time_now.min = toBCD(uart1RxBuf[rx_tail - 2]);
+		time_now.hour = toBCD(uart1RxBuf[rx_tail - 3]);
+		time_now.day = toBCD(uart1RxBuf[rx_tail - 4]);
+		time_now.month = toBCD(uart1RxBuf[rx_tail - 5]);
+		R_RTC_Stop();
+		R_RTC_Set_CounterValue(time_now);
+		R_RTC_Start();
+		serial_clear_rx_buf();
+		break;
 	case 0xF3:
 		// read time
 		// F3 > F3 04  10  08  01  05
@@ -148,13 +170,10 @@ void serial_handler(){
 		//					rx_tail = 0;
 		//					print_long_message(uart1RxBuf);
 		//				}
+		uart1RxBuf[rx_tail + 1] = '\0';
 		print_lcd(uart1RxBuf);
-		int k;
-		for (k = 0; k < rx_tail; k++){
-			uart1RxBuf[k] = 0;
-		}
-		rx_tail = 0;
-		break;
+		serial_clear_rx_buf();
+		return;
 	case 0xF7:
 		// read current
 		echo(0xF7);
