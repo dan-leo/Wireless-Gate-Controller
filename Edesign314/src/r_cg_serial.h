@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for Serial module.
-* Creation Date: 2016-04-30
+* Creation Date: 2016-05-02
 ***********************************************************************************************************************/
 
 #ifndef SERIAL_H

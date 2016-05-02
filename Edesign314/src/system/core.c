@@ -62,6 +62,8 @@ void core_setup(){
 
 	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
+
+
 	motor_power(28);
 }
 

@@ -134,6 +134,7 @@ void serial_handler(){
 		break;
 	case 0xF2:
 		// set time
+		echo(0xF2);
 		time_now.sec = toBCD(uart1RxBuf[rx_tail - 1]);
 		time_now.min = toBCD(uart1RxBuf[rx_tail - 2]);
 		time_now.hour = toBCD(uart1RxBuf[rx_tail - 3]);

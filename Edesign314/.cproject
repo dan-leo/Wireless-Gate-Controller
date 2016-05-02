@@ -181,6 +181,7 @@
 									<listOptionValue builtIn="false" value="&quot;.\src\r_main.o&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\r_reset_program.o&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;.\src/flash\flash.o&quot;"/>
 								</option>
 								<option id="com.renesas.cdt.core.Linker.option.additionalInputFiles.2125032087" name="Additional input files" superClass="com.renesas.cdt.core.Linker.option.additionalInputFiles" valueType="userObjs">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
@@ -204,5 +205,12 @@
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/Edesign314"/>
+		</configuration>
+		<configuration configurationName="HardwareDebug">
+			<resource resourceType="PROJECT" workspacePath="/Edesign314"/>
+		</configuration>
+	</storageModule>
 </cproject>
