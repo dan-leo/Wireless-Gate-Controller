@@ -7,6 +7,11 @@
 
 #include "core.h"
 
+volatile uint8_t g_read_value	= 0x00;
+volatile uint8_t g_write_value   = 0x00;
+volatile uint8_t g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
+
+
 extern volatile uint8_t timer1_interrupt;
 
 //this variable gets modified every 1ms by the timer interrupt
@@ -64,7 +69,8 @@ void core_setup(){
 
 	uint8_t ret;
 
-	flash_setup();
+//	flash_setup();
+	g_read_value = 9;
 
 	R_FDL_Init();
 	R_FDL_Read();

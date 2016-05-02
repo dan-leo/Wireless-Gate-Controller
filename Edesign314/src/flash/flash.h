@@ -24,9 +24,9 @@
 #define FDL_FRQ                 (16U)                                   /* Setting frequency (MHz)                   */
 #define FDL_VOL                 (0x00U)                                 /* Voltage mode                              */
 
-volatile uint8_t  g_read_value;
-volatile uint8_t  g_write_value;
-volatile uint16_t g_write_address;
+//volatile uint8_t  g_read_value;
+//volatile uint8_t  g_write_value;
+//volatile uint16_t g_write_address;
 
 void 	flash_setup(void);
 void    R_FDL_Init(void);
