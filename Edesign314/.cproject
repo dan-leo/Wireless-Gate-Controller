@@ -180,11 +180,8 @@
 									<listOptionValue builtIn="false" value="&quot;.\src\r_hardware_setup.o&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\r_main.o&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;.\src\r_reset_program.o&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
 								</option>
-								<option id="com.renesas.cdt.core.Linker.option.additionalInputFiles.2125032087" name="Additional input files" superClass="com.renesas.cdt.core.Linker.option.additionalInputFiles" valueType="userObjs">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/src/flash/pfdl.a}&quot;"/>
-								</option>
+								<option id="com.renesas.cdt.core.Linker.option.additionalInputFiles.2125032087" name="Additional input files" superClass="com.renesas.cdt.core.Linker.option.additionalInputFiles" valueType="userObjs"/>
 							</tool>
 							<tool errorParsers="" id="com.renesas.cdt.rl78.hardwaredebug.win32.tool.objcopy.Id.1590220100" name="Objcopy" superClass="com.renesas.cdt.rl78.hardwaredebug.win32.tool.objcopy.Id"/>
 						</toolChain>

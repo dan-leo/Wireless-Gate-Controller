@@ -40,6 +40,14 @@
     <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="4"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".vects"/>
   </sections>
+  <sections name=".option_bytes">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="192"/>
+    <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" name=".option_bytes"/>
+  </sections>
+  <sections name=".security_id">
+    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="196"/>
+    <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" name=".security_id"/>
+  </sections>
   <sections name=".lowtext">
     <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="216"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".plt"/>
@@ -47,46 +55,46 @@
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
   </sections>
   <sections name=".text">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.2"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.4"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".text"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".text.*"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="etext"/>
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
   </sections>
   <sections name=".init">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.3"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.5"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".init"/>
   </sections>
   <sections name=".fini">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.4"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.6"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".fini"/>
   </sections>
   <sections name=".got">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.5"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.7"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".got"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".got.plt"/>
   </sections>
   <sections name=".rodata MAX(., 0x2000)">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.6"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.8"/>
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".rodata"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".rodata.*"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="_erodata"/>
   </sections>
   <sections name=".eh_frame_hdr">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.7"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.9"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".eh_frame_hdr"/>
   </sections>
   <sections name=".eh_frame">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.8"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.10"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".eh_frame"/>
   </sections>
   <sections name=".jcr">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.9"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.11"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".jcr"/>
   </sections>
   <sections name=".tors">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.10"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.12"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="__CTOR_LIST__"/>
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="___ctors"/>
@@ -109,10 +117,10 @@
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".data.*"/>
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="_edata"/>
-    <reservedMemAddress xsi:type="com.renesas.linkersection.model:ReferencedLabelAddress" label="//@sections.11/@contents.12"/>
+    <reservedMemAddress xsi:type="com.renesas.linkersection.model:ReferencedLabelAddress" label="//@sections.13/@contents.12"/>
   </sections>
   <sections name=".bss">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.12"/>
+    <sectionAddress xsi:type="com.renesas.linkersection.model:ReferencedSectionAddress" referencedSection="//@sections.14"/>
     <contents xsi:type="com.renesas.linkersection.model:Keyword" text=". = ALIGN(2)"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="_bss"/>
     <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" specificSection="true" name=".bss"/>
@@ -126,13 +134,5 @@
   <sections name=".stack" isNoLoad="true">
     <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="1048064"/>
     <contents xsi:type="com.renesas.linkersection.model:Label" rhs="= .;" lhs="_stack"/>
-  </sections>
-  <sections name=".option_bytes">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="192"/>
-    <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" name=".option_bytes"/>
-  </sections>
-  <sections name=".security_id">
-    <sectionAddress xsi:type="com.renesas.linkersection.model:FixedAddress" fixedAddress="196"/>
-    <contents xsi:type="com.renesas.linkersection.model:WildCardExpression" name=".security_id"/>
   </sections>
 </com.renesas.linkersection.model:SectionContainer>

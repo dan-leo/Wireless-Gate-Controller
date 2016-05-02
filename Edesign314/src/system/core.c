@@ -60,7 +60,7 @@ void core_setup(){
 	d.cmd = remote_opening | remote_closing;
 	uint8_t v[30];
 
-	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
+//	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
 	motor_power(28);
 }
