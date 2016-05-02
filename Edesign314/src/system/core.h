@@ -9,6 +9,7 @@
 #define CORE_H_
 
 #include "globals.h"
+#include "../flash/flash.h"
 
 void core_setup();
 

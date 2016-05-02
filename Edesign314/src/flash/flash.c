@@ -17,6 +17,7 @@
 ***********************************************************************************************************************/
 void flash_setup(void)
 {
+	g_read_value	= 0x00;
 	g_write_value   = 0x00;
 	g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
 }
@@ -269,7 +270,7 @@ uint8_t R_FDL_ExecuteWrite(void)
     }
 
     PFDL_Close();                                                                       /* Close FDL */
-    P5_bit.no2 = 1U;                                                                    /* LED0 off */
+    P7_bit.no7 = 1U;                                                                    /* LED0 off */
     return ret;
 }
 
@@ -286,7 +287,7 @@ uint8_t R_FDL_ClearDataFlash(void)
 {
     uint8_t        ret;
 
-    P5_bit.no2 = 0U;                                                                    /* LED0 on */
+    P7_bit.no7 = 0U;                                                                    /* LED0 on */
     R_FDL_Init();                                                                       /* FDL initialization */
     ret  = R_FDL_Erase();                                                               /* Erase data of target block */
 
@@ -302,6 +303,6 @@ uint8_t R_FDL_ClearDataFlash(void)
     }
 
     PFDL_Close();                                                                       /* Close FDL */
-    P5_bit.no2 = 1U;                                                                    /* LED0 off */
+    P7_bit.no7 = 1U;                                                                    /* LED0 off */
     return ret;
 }

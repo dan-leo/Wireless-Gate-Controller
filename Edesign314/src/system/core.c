@@ -62,7 +62,29 @@ void core_setup(){
 
 	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
+	uint8_t ret;
 
+	flash_setup();
+
+	R_FDL_Init();
+	R_FDL_Read();
+	uint8_t read = g_read_value;
+	PFDL_Close();
+
+	R_FDL_ClearDataFlash();
+
+	R_FDL_Init();
+	R_FDL_Read();
+	uint8_t read1 = g_read_value;
+	PFDL_Close();
+
+
+	R_FDL_ChangeAddress();
+	R_FDL_ChangeAddress();
+	uint8_t write_addr1 = g_write_address;
+	ret = R_FDL_BlankCheck();
+	uint8_t write_addr = g_write_address;
+	PFDL_Close();
 
 	motor_power(28);
 }
