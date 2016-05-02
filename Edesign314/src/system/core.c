@@ -7,9 +7,9 @@
 
 #include "core.h"
 
-volatile uint8_t g_read_value	= 0x00;
-volatile uint8_t g_write_value   = 0x00;
-volatile uint8_t g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
+//volatile uint8_t g_read_value	= 0x00;
+//volatile uint8_t g_write_value   = 0x00;
+//volatile uint8_t g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
 
 
 extern volatile uint8_t timer1_interrupt;
@@ -23,7 +23,7 @@ void core_setup(){
 	ADC_done = 0;
 	INTAD_FSM_state = AD_IDLE;
 
-	debug_ir_lcd_request = 1;
+	debug_ir_lcd_request = 0;
 	debug_adc_serial = 0;
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
@@ -61,16 +61,15 @@ void core_setup(){
 	/* Peripheral start function calls */
 	R_ADC_Set_OperationOn(); /* Enable ADC voltage comparator */
 
-	datalog_t d;
-	d.cmd = remote_opening | remote_closing;
-	uint8_t v[30];
-
-	/*char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
+	char *s  = PFDL_GetVersionString(); // DRL78T04U1301GV105
 
 	uint8_t ret;
 
 //	flash_setup();
-	g_read_value = 9;
+/*	g_read_value = 9;
+
+	g_write_value = 'z';
+	R_FDL_ExecuteWrite();
 
 	R_FDL_Init();
 	R_FDL_Read();
@@ -117,14 +116,30 @@ void core_main(){
 
 		if (ir_new_command_interrupt){
 			ir_new_command_interrupt = 0;
+			datalog_t new_event;
 			if (ir_rxMessage == IR_GATE_OPEN){
 				gate_open();
+				new_event.cmd = cmd_remote_opening;
+				new_event.event = event_open;
+				new_event.status = status_remote_open;
+				eventAdd(new_event);
+				eventPrint(event_datalogs[event_index]);
 			}
 			if (ir_rxMessage == IR_GATE_CLOSE){
 				gate_close();
+				new_event.cmd = cmd_remote_closing;
+				new_event.event = event_close;
+				new_event.status = status_remote_close;
+				eventAdd(new_event);
+				eventPrint(event_datalogs[event_index]);
 			}
 			if (ir_rxMessage == IR_GATE_E_STOP){
 				gate_stop();
+				new_event.cmd = cmd_ESTOP_pressed;
+				new_event.event = event_emergency_stopped;
+				new_event.status = status_emergency_stopped;
+				eventAdd(new_event);
+				eventPrint(event_datalogs[event_index]);
 			}
 			if (debug_ir_lcd_request){
 				uint8_t ascii_word[16];

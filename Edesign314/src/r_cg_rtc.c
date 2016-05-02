@@ -58,7 +58,10 @@ void R_RTC_Create(void)
     RTCE = 0U;     /* disable RTC clock operation */
     RTCMK = 1U;    /* disable INTRTC interrupt */
     RTCIF = 0U;    /* clear INTRTC interrupt flag */
-    RTCC0 = _00_RTC_RTC1HZ_DISABLE | _08_RTC_24HOUR_SYSTEM | _00_RTC_INTRTC_NOT_GENERATE;
+    /* Set INTRTC low priority */
+    RTCPR1 = 1U;
+    RTCPR0 = 1U;
+    RTCC0 = _00_RTC_RTC1HZ_DISABLE | _08_RTC_24HOUR_SYSTEM | _02_RTC_INTRTC_CLOCK_1;
     /* Set real-time clock */
     SEC = _00_RTC_COUNTER_SEC;
     MIN = _00_RTC_COUNTER_MIN;
@@ -77,6 +80,8 @@ void R_RTC_Create(void)
 ***********************************************************************************************************************/
 void R_RTC_Start(void)
 {
+    RTCIF = 0U;    /* clear INTRTC interrupt flag */
+    RTCMK = 0U;    /* enable INTRTC interrupt */
     RTCE = 1U;     /* enable RTC clock operation */
 }
 
@@ -89,6 +94,8 @@ void R_RTC_Start(void)
 void R_RTC_Stop(void)
 {
     RTCE = 0U;    /* disable RTC clock operation */
+    RTCMK = 1U;   /* disable INTRTC interrupt */
+    RTCIF = 0U;   /* clear INTRTC interrupt flag */
 }
 
 /***********************************************************************************************************************
@@ -192,6 +199,47 @@ MD_STATUS R_RTC_Set_CounterValue(rtc_counter_value_t counter_write_val)
     }
 
     return (status);
+}
+
+/***********************************************************************************************************************
+* Function Name: R_RTC_Set_ConstPeriodInterruptOn
+* Description  : This function enables constant-period interrupt.
+* Arguments    : period -
+*                    the constant period of INTRTC
+* Return Value : status -
+*                    MD_OK or MD_ARGERROR
+***********************************************************************************************************************/
+MD_STATUS R_RTC_Set_ConstPeriodInterruptOn(rtc_int_period_t period)
+{
+    MD_STATUS status = MD_OK;
+
+    if ((period < HALFSEC) || (period > ONEMONTH))
+    {
+        status = MD_ARGERROR;
+    }
+    else
+    {
+        RTCMK = 1U;    /* disable INTRTC */
+        RTCC0 = (RTCC0 & _F8_RTC_INTRTC_CLEAR) | period;
+        RTCC1 &= (uint8_t)~_08_RTC_INTC_GENERATE_FLAG;
+        RTCIF = 0U;    /* clear INTRTC interrupt flag */
+        RTCMK = 0U;    /* enable INTRTC interrupt */
+    }
+
+    return (status);
+}
+
+/***********************************************************************************************************************
+* Function Name: R_RTC_Set_ConstPeriodInterruptOff
+* Description  : This function disables constant-period interrupt.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void R_RTC_Set_ConstPeriodInterruptOff(void)
+{
+    RTCC0 &= _F8_RTC_INTRTC_CLEAR;
+    RTCC1 &= (uint8_t)~_08_RTC_INTC_GENERATE_FLAG;
+    RTCIF = 0U;        /* clear INTRTC interrupt flag */
 }
 
 /* Start user code for adding. Do not edit comment generated here */

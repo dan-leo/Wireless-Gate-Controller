@@ -8,22 +8,22 @@
 #include "flash.h"
 #include "pfdl_types.h"
 
-extern volatile uint8_t g_read_value;
-extern volatile uint8_t g_write_value;
-extern volatile uint8_t g_write_address;
+//extern volatile uint8_t g_read_value;
+//extern volatile uint8_t g_write_value;
+//extern volatile uint8_t g_write_address;
 
-///***********************************************************************************************************************
-//* Function Name: flash_setup
-//* Description  : This sets up parameters.
-//* Arguments    : None
-//* Return Value : None
-//***********************************************************************************************************************/
-//void flash_setup(void)
-//{
-//	g_read_value	= 0x00;
-//	g_write_value   = 0x00;
-//	g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
-//}
+/***********************************************************************************************************************
+* Function Name: flash_setup
+* Description  : This sets up parameters.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void flash_setup(void)
+{
+	g_read_value	= 0x00;
+	g_write_value   = 0x00;
+	g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
+}
 
 
 /***********************************************************************************************************************

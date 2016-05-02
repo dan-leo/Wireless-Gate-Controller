@@ -7,7 +7,7 @@ It opens a gate, quite simply.
 It is built on a prototype board developed by Stellenbosch University. The routing is minimal, however, and the idea
 is that students develop their own wiring/designs.
 
-Of the main hardware, it has a renesas RL78/G14 as the brains, a Powertip 16x1 lcd for user feedback, external FT230XS uart chip to communicate with an external test program at 9600 baud, 
+Of the main hardware, it has a Renesas RL78/G14 as the brains, a Powertip 16x1 lcd for user feedback, external FT230XS uart chip to communicate with an external test program at 9600 baud, 
 a DRV8801 motor driver (40kHz PWM), a TSOP348X infra-red receiver, and a 2kHz buzzer for warning conditions.
 
 There also exists an infra-red remote to control the gate (open/close/emergency stop). The heart is a Renesas RL78/G12 1026A processor. 
@@ -30,7 +30,7 @@ TODO:
 * Possibly add a card reader.
 
 Debugging: have a look at the debug.h folder and 
-change variables to enable certain serial/lcd debugging outputs
+change variables in core_setup() to enable certain serial/lcd debugging outputs
 
 
 CN2 | Signal Name | RL78/G14 Pin Name | Function

@@ -67,6 +67,8 @@ void r_tau0_channel2_interrupt(void) __attribute__ ((interrupt));
 void r_tau0_channel3_interrupt(void) __attribute__ ((interrupt));
 //0x34
 void r_adc_interrupt(void) __attribute__ ((interrupt));
+//0x36
+void r_rtc_interrupt(void) __attribute__ ((interrupt));
 //0x40
 void r_tmr_rj0_interrupt(void) __attribute__ ((interrupt));
 //0x56

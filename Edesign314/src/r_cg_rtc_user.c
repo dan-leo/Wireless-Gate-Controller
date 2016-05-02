@@ -46,5 +46,32 @@ Global variables and functions
 /* Start user code for global. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
 
+/***********************************************************************************************************************
+* Function Name: r_rtc_interrupt
+* Description  : This function is INTRTC interrupt service routine.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+void r_rtc_interrupt(void)
+{
+    if (1U == RIFG)
+    {
+        RTCC1 &= (uint8_t)~_08_RTC_INTC_GENERATE_FLAG;    /* clear RIFG */
+        r_rtc_callback_constperiod();
+    }
+}
+
+/***********************************************************************************************************************
+* Function Name: r_rtc_callback_constperiod
+* Description  : This function is real-time clock constant-period interrupt service handler.
+* Arguments    : None
+* Return Value : None
+***********************************************************************************************************************/
+static void r_rtc_callback_constperiod(void)
+{
+    /* Start user code. Do not edit comment generated here */
+    /* End user code. Do not edit comment generated here */
+}
+
 /* Start user code for adding. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

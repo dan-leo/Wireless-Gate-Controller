@@ -10,6 +10,7 @@
 
 #include "globals.h"
 #include "../flash/flash.h"
+#include "../event/event.h"
 
 void core_setup();
 

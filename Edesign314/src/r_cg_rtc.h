@@ -102,6 +102,8 @@ Macro definitions
 #define _00_RTC_COUNTER_SEC           (0x00U)
 #define RTC_WAITTIME                  (320U)   /* change the waiting time according to the system */
 
+#include "r_cg_macrodriver.h"
+
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
@@ -144,6 +146,9 @@ void R_RTC_Start(void);
 void R_RTC_Stop(void);
 MD_STATUS R_RTC_Get_CounterValue(rtc_counter_value_t * const counter_read_val);
 MD_STATUS R_RTC_Set_CounterValue(rtc_counter_value_t counter_write_val);
+MD_STATUS R_RTC_Set_ConstPeriodInterruptOn(rtc_int_period_t period);
+void R_RTC_Set_ConstPeriodInterruptOff(void);
+static void r_rtc_callback_constperiod(void);
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */
