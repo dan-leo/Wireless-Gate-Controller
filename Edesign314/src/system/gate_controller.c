@@ -7,6 +7,7 @@
 
 
 #include "gate_controller.h"
+#include "../event/event.h"
 
 
 /**
@@ -21,8 +22,13 @@ void gate_stop_handler(){
 			gate_is_moving = 0;
 			gate_position = OPEN;
 			last_gate_position = OPEN;
-			//					R_INTC4_Start();
-			print_lcd("opened");
+			//	R_INTC4_Start();
+			// print_lcd("opened");
+			new_event.cmd = cmd_unspecified;
+			new_event.event = event_opened;
+			new_event.status = status_gate_opened;
+			eventAdd(new_event);
+			eventPrint(event_datalogs[event_index]);
 		}
 	}
 	if (SW_CLOSED && !SW_OPENED){
@@ -32,15 +38,20 @@ void gate_stop_handler(){
 			gate_is_moving = 0;
 			gate_position = CLOSED;
 			last_gate_position = CLOSED;
-			//					R_INTC3_Start();
-			print_lcd("closed");
+			//	R_INTC3_Start();
+			// print_lcd("closed");
+			new_event.cmd = cmd_unspecified;
+			new_event.event = event_closed;
+			new_event.status = status_gate_closed;
+			eventAdd(new_event);
+			eventPrint(event_datalogs[event_index]);
 		}
 	}
 	if (!(SW_OPENED || SW_CLOSED)){
 		if (last_gate_position != UNKNOWN){
 			last_gate_position = UNKNOWN;
 			gate_position = UNKNOWN;
-			print_lcd("unknown");
+			// print_lcd("unknown");
 		}
 	}
 }

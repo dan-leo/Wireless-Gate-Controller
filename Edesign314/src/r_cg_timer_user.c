@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for TAU module.
-* Creation Date: 2016-05-02
+* Creation Date: 2016-05-04
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -101,7 +101,7 @@ void r_tmr_rj0_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	// 444us timer to receive ir stream
-	P5_bit.no4 ^= 1; // debug output on a pin
+	//	P5_bit.no4 ^= 1; // debug output on a pin
 	ir_rxInterruptSR();
     /* End user code. Do not edit comment generated here */
 }

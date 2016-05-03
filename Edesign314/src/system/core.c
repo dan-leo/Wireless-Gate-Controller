@@ -65,8 +65,8 @@ void core_setup(){
 
 	uint8_t ret;
 
-//	flash_setup();
-/*	g_read_value = 9;
+	/*flash_setup();
+	g_read_value = 9;
 
 	g_write_value = 'z';
 	R_FDL_ExecuteWrite();
@@ -82,7 +82,6 @@ void core_setup(){
 	R_FDL_Read();
 	uint8_t read1 = g_read_value;
 	PFDL_Close();
-
 
 	R_FDL_ChangeAddress();
 	R_FDL_ChangeAddress();
@@ -102,10 +101,44 @@ void core_main(){
 			serial_handler();
 		}
 
-		// 1kHz gate stop button checker
+		// 1kHz button checker
 		if (timer2_interrupt){
 			timer2_interrupt = 0;
+			static buttons last_keypad_button_press = 0;
 			gate_stop_handler();
+			if (!BT_EMER_STOP){
+				if (last_keypad_button_press != BT_EMER_STOP_enum){
+					last_keypad_button_press = BT_EMER_STOP_enum;
+					gate_stop();
+					new_event.cmd = cmd_ESTOP_pressed;
+					new_event.event = event_emergency_stopped;
+					new_event.status = status_emergency_stopped;
+					eventAdd(new_event);
+					eventPrint(event_datalogs[event_index]);
+				}
+			}
+			if (!BT_OPEN){
+				if (last_keypad_button_press != BT_OPEN_enum){
+					last_keypad_button_press = BT_OPEN_enum;
+					gate_open();
+					new_event.cmd = cmd_remote_opening;
+					new_event.event = event_open;
+					new_event.status = status_base;
+					eventAdd(new_event);
+					eventPrint(event_datalogs[event_index]);
+				}
+			}
+			if (!BT_CLOSE){
+				if (last_keypad_button_press != BT_CLOSE_enum){
+					last_keypad_button_press = BT_CLOSE_enum;
+					gate_close();
+					new_event.cmd = cmd_remote_closing;
+					new_event.event = event_close;
+					new_event.status = status_base;
+					eventAdd(new_event);
+					eventPrint(event_datalogs[event_index]);
+				}
+			}
 		}
 
 		// 10 Hz adc reader
@@ -116,7 +149,6 @@ void core_main(){
 
 		if (ir_new_command_interrupt){
 			ir_new_command_interrupt = 0;
-			datalog_t new_event;
 			if (ir_rxMessage == IR_GATE_OPEN){
 				gate_open();
 				new_event.cmd = cmd_remote_opening;

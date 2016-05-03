@@ -216,7 +216,7 @@ uint8_t R_FDL_ExecuteWrite(void)
 {
     uint8_t ret = 0U;
 
-    P5_bit.no2 = 0U;                                                                    /* LED0 on */
+//    P5_bit.no2 = 0U;                                                                    /* LED0 on */
     R_FDL_Init();                                                                       /* FDL initialization */
     ret  = R_FDL_BlankCheck();                                                          /* Blank check process */
 

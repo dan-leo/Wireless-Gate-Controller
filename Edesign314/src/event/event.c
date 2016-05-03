@@ -8,10 +8,10 @@
 #include "event.h"
 
 void eventAdd(datalog_t event){
-	static uint8_t setup = 1;
-	if (setup){
+	static uint8_t constructor = 1;
+	if (constructor){
 		event_index = -1;
-		setup--;
+		constructor--;
 	}
 	event_index++;
 	event_index%=max_events;
@@ -42,7 +42,26 @@ void eventPrint(datalog_t event){
 	case event_close:
 		lcd_event_string = "   close";
 		break;
+	case event_opened:
+		lcd_event_string = "  opened";
+		break;
+	case event_closed:
+		lcd_event_string = "  closed";
+		break;
+	case event_emergency_stopped:
+		lcd_event_string = "Estopped";
+		break;
+	case event_autoclose:
+		lcd_event_string = "autclose";
+		break;
+	case event_autoclosed:
+		lcd_event_string = "auclosed";
+		break;
+	case event_mech_interference:
+		lcd_event_string = "  object";
+		break;
 	}
+
 	uint8_t i;
 	for (i = 8; i < 16; i++){
 		lcd_event[i] = lcd_event_string[i - 8];

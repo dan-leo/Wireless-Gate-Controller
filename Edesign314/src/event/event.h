@@ -23,6 +23,9 @@
 volatile int8_t event_index;
 volatile datalog_t event_datalogs[max_events];
 
+// new event buffer
+datalog_t new_event;
+
 void eventAdd(datalog_t event);
 void eventPrint(datalog_t event);
 

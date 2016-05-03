@@ -28,7 +28,7 @@
 * Device(s)    : R5F104LE
 * Tool-Chain   : GCCRL78
 * Description  : This file implements device driver for INTC module.
-* Creation Date: 2016-05-02
+* Creation Date: 2016-05-04
 ***********************************************************************************************************************/
 
 #ifndef INTC_H
