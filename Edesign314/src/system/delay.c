@@ -7,6 +7,8 @@
 
 #include "delay.h"
 
+void startTMR0(int delay);
+
 void startTMR0(int delay)
 {
 	TMIF00 = 0U; // Clear any interrupt flag
@@ -25,8 +27,13 @@ void delayNoInt(uint16_t delay){
 	EI();
 }
 
+void delayMillis(uint16_t milliseconds){
+	int i;
+	for (i = 0; i < milliseconds; i++){
+		delayNoInt(1000);
+	}
+}
+
 void delay(uint16_t delay){
-	// DI();
 	for ( ; delay > 0 ; delay--);
-	// EI();
 }

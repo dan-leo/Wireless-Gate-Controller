@@ -8,9 +8,13 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+#define true 1
+#define false 0
+
 #include "../r_cg_rtc.h"
 
 #include "adc.h"
+#include "buzzer.h"
 #include "debug.h"
 #include "delay.h"
 #include "gate_controller.h"
@@ -23,27 +27,10 @@
 #include "time.h"
 #include "utility.h"
 
-uint8_t mode;
-
-#define def_event_open				0
-#define def_event_close				1
-#define def_event_opened			2
-#define def_event_closed			3
-#define def_event_emergency_stopped	4
-#define def_event_autoclose			5
-#define def_event_autoclosed		6
-#define def_event_mech_interference	7
-
-#define EVENT_STR(def_event_str) \
-    (def_event_open       						== def_event_str ? "    open"  	: \
-     (def_event_close     						== def_event_str ? "   close"  	: \
-      (def_event_opened   						== def_event_str ? "  opened"  	: \
-    	(def_event_closed   					== def_event_str ? "  closed"  	: \
-    	  (def_event_emergency_stopped  	 	== def_event_str ? "  estopped"  : \
-    		(def_event_autoclose   				== def_event_str ? "  autclose"  : \
-    		  (def_event_autoclosed   			== def_event_str ? "  auclosed"  : \
-    		    (def_event_mech_interference 	== def_event_str ? "object" : "unknown"))))
-
+typedef enum mode_t {
+	TEST_MODE,
+	NORMAL_MODE
+} mode_t;
 
 typedef enum status_b {
 	status_base 				= 0b10000000,
@@ -104,6 +91,8 @@ typedef struct datalog_t {
 	status_b status;
 	event_string event;
 } datalog_t;
+
+volatile mode_t mode;
 
 // set time
 // 04  10  08  01  05  F2

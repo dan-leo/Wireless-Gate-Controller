@@ -16,7 +16,6 @@
 #include "time.h"
 
 uint8_t serial_rx;
-uint8_t serial_test_mode;
 
 void serial_print_adc(uint16_t reading);
 void echo(uint8_t c);

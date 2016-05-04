@@ -45,8 +45,8 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 /* Start user code for global. Do not edit comment generated here */
-volatile uint8_t timer1_interrupt;
-volatile uint8_t timer2_interrupt;
+volatile uint8_t timer_adc_reader_10Hz_interrupt;
+volatile uint8_t timer_button_checker_1kHz_interrupt;
 /* End user code. Do not edit comment generated here */
 
 /***********************************************************************************************************************
@@ -59,7 +59,7 @@ void r_tau0_channel1_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	// 10 Hz adc reader
-	timer1_interrupt = 1;
+	timer_adc_reader_10Hz_interrupt = 1;
     /* End user code. Do not edit comment generated here */
 }
 
@@ -73,7 +73,7 @@ void r_tau0_channel2_interrupt(void)
 {
     /* Start user code. Do not edit comment generated here */
 	// 1kHz gate stop button checker
-	timer2_interrupt = 1;
+	timer_button_checker_1kHz_interrupt = 1;
     /* End user code. Do not edit comment generated here */
 }
 

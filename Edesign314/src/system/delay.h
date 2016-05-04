@@ -13,8 +13,8 @@
 #include "../r_cg_macrodriver.h"
 
 void delayNoInt(uint16_t delay);
-void startTMR0(int delay);
 void delay(uint16_t delay);
+void delayMillis(uint16_t milliseconds);
 
 
 #endif /* TIME_H_ */

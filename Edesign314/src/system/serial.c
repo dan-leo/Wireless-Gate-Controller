@@ -7,6 +7,7 @@
 
 #include "serial.h"
 #include "globals.h"
+#include "../event/event.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -86,15 +87,19 @@ void serial_handler(){
 	switch (serial_rx){
 	case 0x81:
 		echo(0x81);
-		serial_test_mode = 1;
+		mode = TEST_MODE;
 		rx_tail=0;
 		print_lcd("test_mode");
+		R_TAU0_Channel1_Lower8bits_Stop();
+		beep(3);
+
 		break;
 	case 0x80:
 		echo(0x80);
-		serial_test_mode = 0;
+		mode = NORMAL_MODE;
 		rx_tail=0;
 		print_lcd("normal_mode");
+		R_TAU0_Channel1_Lower8bits_Start();
 		break;
 	case '*':
 		// debug output to serial
@@ -175,6 +180,9 @@ void serial_handler(){
 		print_lcd(uart1RxBuf);
 		serial_clear_rx_buf();
 		return;
+	case 0xF6:
+		eventSerialRead();
+		break;
 	case 0xF7:
 		// read current
 		echo(0xF7);

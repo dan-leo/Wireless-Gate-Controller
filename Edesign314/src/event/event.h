@@ -26,7 +26,10 @@ volatile datalog_t event_datalogs[max_events];
 // new event buffer
 datalog_t new_event;
 
+void eventInit();
 void eventAdd(datalog_t event);
 void eventPrint(datalog_t event);
+void eventButtonHandler();
+void eventSerialRead();
 
 #endif /* EVENT_H_ */

@@ -12,14 +12,15 @@
 //volatile uint8_t g_write_address = TARGET_BLOCK * BLOCK_SIZE; // zero
 
 
-extern volatile uint8_t timer1_interrupt;
+extern volatile uint8_t timer_adc_reader_10Hz_interrupt;
 
 //this variable gets modified every 1ms by the timer interrupt
-extern volatile uint8_t timer2_interrupt;
+extern volatile uint8_t timer_button_checker_1kHz_interrupt;
 
 extern volatile uint8_t rx_flag;
 
 void core_setup(){
+	mode = NORMAL_MODE;
 	ADC_done = 0;
 	INTAD_FSM_state = AD_IDLE;
 
@@ -50,6 +51,7 @@ void core_setup(){
 	// R_TMR_RJ0_Start();
 
 	initLcd();
+	eventInit();
 
 	//	print_long_message("Robinson DL 18361137");
 	delay(100);
@@ -102,10 +104,11 @@ void core_main(){
 		}
 
 		// 1kHz button checker
-		if (timer2_interrupt){
-			timer2_interrupt = 0;
+		if (timer_button_checker_1kHz_interrupt){
+			timer_button_checker_1kHz_interrupt = 0;
 			static buttons last_keypad_button_press = 0;
 			gate_stop_handler();
+			eventButtonHandler();
 			if (!BT_EMER_STOP){
 				if (last_keypad_button_press != BT_EMER_STOP_enum){
 					last_keypad_button_press = BT_EMER_STOP_enum;
@@ -142,28 +145,30 @@ void core_main(){
 		}
 
 		// 10 Hz adc reader
-		if (timer1_interrupt){
-			timer1_interrupt = 0;
+		if (timer_adc_reader_10Hz_interrupt){
+			timer_adc_reader_10Hz_interrupt = 0;
 			adc_get_multiple_channels();
 		}
 
 		if (ir_new_command_interrupt){
 			ir_new_command_interrupt = 0;
 			if (ir_rxMessage == IR_GATE_OPEN){
-				gate_open();
+				if (mode == NORMAL_MODE) gate_open();
 				new_event.cmd = cmd_remote_opening;
 				new_event.event = event_open;
 				new_event.status = status_remote_open;
 				eventAdd(new_event);
 				eventPrint(event_datalogs[event_index]);
+				beep(2);
 			}
 			if (ir_rxMessage == IR_GATE_CLOSE){
-				gate_close();
+				if (mode == NORMAL_MODE) gate_close();
 				new_event.cmd = cmd_remote_closing;
 				new_event.event = event_close;
 				new_event.status = status_remote_close;
 				eventAdd(new_event);
 				eventPrint(event_datalogs[event_index]);
+				beep(2);
 			}
 			if (ir_rxMessage == IR_GATE_E_STOP){
 				gate_stop();
@@ -172,6 +177,7 @@ void core_main(){
 				new_event.status = status_emergency_stopped;
 				eventAdd(new_event);
 				eventPrint(event_datalogs[event_index]);
+				beep(5);
 			}
 			if (debug_ir_lcd_request){
 				uint8_t ascii_word[16];
