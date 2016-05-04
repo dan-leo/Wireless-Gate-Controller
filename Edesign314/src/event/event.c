@@ -11,6 +11,7 @@
 #include "../system/serial.h"
 #include "../r_cg_serial.h"
 #include "../system/delay.h"
+#include "../system/buzzer.h"
 
 
 //typedef enum menu_buttons_e {
@@ -96,15 +97,19 @@ void eventPrint(datalog_t event){
 void eventButtonHandler(){
 		if (!BT_MENU_DOWN && ready){
 			ready = false;
+			scrolling = 1;
 			event_index_on_lcd--;
 			event_index_on_lcd%=events;
 			if (events) eventPrint(event_datalogs[event_index_on_lcd]);
+			beep(1);
 		}
 		else if (!BT_MENU_UP && ready){
 			ready = false;
+			scrolling = 1;
 			event_index_on_lcd++;
 			event_index_on_lcd%=events;
 			if (events) eventPrint(event_datalogs[event_index_on_lcd]);
+			beep(1);
 		}
 		if (BT_MENU_DOWN && BT_MENU_UP){
 			ready = true;

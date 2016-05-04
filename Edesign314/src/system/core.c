@@ -29,6 +29,8 @@ void core_setup(){
 	debug_lcd = 0;
 	debug_adc_lcd = 0;
 
+	scrolling = 0;
+
 	// idle mode
 	IR_LED_TX = 1;
 
@@ -113,33 +115,39 @@ void core_main(){
 				if (last_keypad_button_press != BT_EMER_STOP_enum){
 					last_keypad_button_press = BT_EMER_STOP_enum;
 					gate_stop();
+					scrolling = 0;
 					new_event.cmd = cmd_ESTOP_pressed;
 					new_event.event = event_emergency_stopped;
 					new_event.status = status_emergency_stopped;
 					eventAdd(new_event);
 					eventPrint(event_datalogs[event_index]);
+					beep(5);
 				}
 			}
 			if (!BT_OPEN){
 				if (last_keypad_button_press != BT_OPEN_enum){
 					last_keypad_button_press = BT_OPEN_enum;
 					gate_open();
+					scrolling = 0;
 					new_event.cmd = cmd_remote_opening;
 					new_event.event = event_open;
 					new_event.status = status_base;
 					eventAdd(new_event);
 					eventPrint(event_datalogs[event_index]);
+					beep(2);
 				}
 			}
 			if (!BT_CLOSE){
 				if (last_keypad_button_press != BT_CLOSE_enum){
 					last_keypad_button_press = BT_CLOSE_enum;
 					gate_close();
+					scrolling = 0;
 					new_event.cmd = cmd_remote_closing;
 					new_event.event = event_close;
 					new_event.status = status_base;
 					eventAdd(new_event);
 					eventPrint(event_datalogs[event_index]);
+					beep(2);
 				}
 			}
 		}
@@ -148,6 +156,56 @@ void core_main(){
 		if (timer_adc_reader_10Hz_interrupt){
 			timer_adc_reader_10Hz_interrupt = 0;
 			adc_get_multiple_channels();
+
+			// process data
+			uint8_t current_plus_status[16];
+//			current_plus_status[5] = '\0';
+			uint8_t initial_current;
+			initial_current = ADC_value[3] / 10;
+			latest_current_reading = initial_current;
+			current_plus_status[0] = initial_current/10 + '0';
+			current_plus_status[1] = (initial_current % 10) + '0';
+			current_plus_status[2] = ' ';
+			current_plus_status[3] = 'm';
+			current_plus_status[4] = 'A';
+			current_plus_status[5] = ' ';
+			current_plus_status[6] = ' ';
+			current_plus_status[7] = ' ';
+
+			uint8_t * lcd_status_string = " unknown";
+			switch (event_datalogs[event_index].event){
+			case event_open:
+				lcd_status_string = "    open";
+				break;
+			case event_close:
+				lcd_status_string = "   close";
+				break;
+			case event_opened:
+				lcd_status_string = "  opened";
+				break;
+			case event_closed:
+				lcd_status_string = "  closed";
+				break;
+			case event_emergency_stopped:
+				lcd_status_string = "Estopped";
+				break;
+			case event_autoclose:
+				lcd_status_string = "autclose";
+				break;
+			case event_autoclosed:
+				lcd_status_string = "auclosed";
+				break;
+			case event_mech_interference:
+				lcd_status_string = "  object";
+				break;
+			}
+
+			uint8_t i;
+			for (i = 8; i < 16; i++){
+				current_plus_status[i] = lcd_status_string[i - 8];
+			}
+
+			if ((mode == NORMAL_MODE) && !scrolling) print_lcd(current_plus_status);
 		}
 
 		if (ir_new_command_interrupt){

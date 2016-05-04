@@ -94,6 +94,9 @@ typedef struct datalog_t {
 
 volatile mode_t mode;
 
+// boolean for if scrolling through menu.
+volatile uint8_t scrolling;
+
 // set time
 // 04  10  08  01  05  F2
 

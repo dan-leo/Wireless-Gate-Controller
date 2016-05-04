@@ -57,22 +57,6 @@ void adc_get_multiple_channels(){
 	while (!ADC_done)
 		;
 
-	// process data
-	uint8_t ascii_current[6];
-	ascii_current[5] = '\0';
-	uint8_t initial_current;
-	initial_current = ADC_value[3] / 10;
-	latest_current_reading = initial_current;
-	ascii_current[0] = initial_current/10 + '0';
-	ascii_current[1] = (initial_current % 10) + '0';
-	ascii_current[2] = ' ';
-	ascii_current[3] = 'm';
-	ascii_current[4] = 'A';
-
-	if (debug_adc_lcd) print_lcd(ascii_current);
-
-//	print_lcd(adc_ascii_current(ADC_value[3]));
-
 	if (debug_adc_serial){
 		serial_print_adc(ADC_value[2]);
 		serial_print_adc(ADC_value[3]);
