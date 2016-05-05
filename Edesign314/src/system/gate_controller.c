@@ -8,7 +8,7 @@
 
 #include "gate_controller.h"
 #include "../event/event.h"
-
+#include "globals.h"
 
 /**
  * this reads the switches at either end of the rotating gate,
@@ -16,12 +16,12 @@
  */
 void gate_stop_handler(){
 	if (SW_OPENED && !SW_CLOSED){
-		if (last_gate_position != OPEN){
+		if (last_gate_position != OPENED){
 			P7^=0x80;
 			nSLEEP = 0;
 			gate_is_moving = 0;
-			gate_position = OPEN;
-			last_gate_position = OPEN;
+			gate_position = OPENED;
+			last_gate_position = OPENED;
 			//	R_INTC4_Start();
 			// print_lcd("opened");
 			new_event.cmd = cmd_unspecified;
@@ -61,6 +61,7 @@ void gate_close(){
 	nSLEEP = 1;
 	gate_position = UNKNOWN;
 	gate_is_moving = 1;
+	delayMillis(200);
 }
 
 void gate_open(){
@@ -68,9 +69,14 @@ void gate_open(){
 	nSLEEP = 1;
 	gate_position = UNKNOWN;
 	gate_is_moving = 1;
+	delayMillis(200);
 }
 
 void gate_stop(){
 	nSLEEP = 0;
 	gate_is_moving = 0;
+}
+
+void gate_auto(status_b status){
+
 }

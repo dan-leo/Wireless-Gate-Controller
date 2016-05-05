@@ -12,10 +12,12 @@
 #include "../iodefine_ext.h"
 #include "../r_cg_macrodriver.h"
 #include "pins.h"
+#include "io.h"
+
 
 enum gate_position {
 	CLOSED = 0x81,
-	OPEN = 0x82,
+	OPENED = 0x82,
 	UNKNOWN = 0x84
 } gate_pos_t;
 
@@ -27,5 +29,6 @@ void gate_stop_handler();
 void gate_close();
 void gate_open();
 void gate_stop();
+void gate_auto(status_b status);
 
 #endif /* GATE_CONTROLLER_H_ */

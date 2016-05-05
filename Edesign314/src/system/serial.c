@@ -216,7 +216,7 @@ void serial_handler(){
 	case 0xFF:
 		//read status
 		echo(0xFF);
-		echo(gate_position);
+		echo(event_datalogs[event_index].status);
 		break;
 	}
 

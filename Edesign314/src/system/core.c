@@ -19,6 +19,9 @@ extern volatile uint8_t timer_button_checker_1kHz_interrupt;
 
 extern volatile uint8_t rx_flag;
 
+#define max_overcurrent_counter 3 // checks n times before autoclose
+volatile uint8_t nReady_overcurrent_counter;
+
 void core_setup(){
 	mode = NORMAL_MODE;
 	ADC_done = 0;
@@ -30,6 +33,8 @@ void core_setup(){
 	debug_adc_lcd = 0;
 
 	scrolling = 0;
+
+	nReady_overcurrent_counter = 0;
 
 	// idle mode
 	IR_LED_TX = 1;
@@ -95,6 +100,9 @@ void core_setup(){
 	PFDL_Close();*/
 
 	motor_power(28);
+
+	gate_close();
+	//	auto_close();
 }
 
 void core_main(){
@@ -112,8 +120,9 @@ void core_main(){
 			gate_stop_handler();
 			eventButtonHandler();
 			if (!BT_EMER_STOP){
-				if (last_keypad_button_press != BT_EMER_STOP_enum){
-					last_keypad_button_press = BT_EMER_STOP_enum;
+				//				if (last_keypad_button_press != BT_EMER_STOP_enum){
+				//					last_keypad_button_press = BT_EMER_STOP_enum;
+				if (event_datalogs[event_index].event != event_emergency_stopped){
 					gate_stop();
 					scrolling = 0;
 					new_event.cmd = cmd_ESTOP_pressed;
@@ -125,8 +134,9 @@ void core_main(){
 				}
 			}
 			if (!BT_OPEN){
-				if (last_keypad_button_press != BT_OPEN_enum){
-					last_keypad_button_press = BT_OPEN_enum;
+				if (event_datalogs[event_index].event != event_open){
+					//				if (last_keypad_button_press != BT_OPEN_enum){
+					//					last_keypad_button_press = BT_OPEN_enum;
 					gate_open();
 					scrolling = 0;
 					new_event.cmd = cmd_remote_opening;
@@ -138,8 +148,9 @@ void core_main(){
 				}
 			}
 			if (!BT_CLOSE){
-				if (last_keypad_button_press != BT_CLOSE_enum){
-					last_keypad_button_press = BT_CLOSE_enum;
+				//				if (last_keypad_button_press != BT_CLOSE_enum){
+				//					last_keypad_button_press = BT_CLOSE_enum;
+				if (event_datalogs[event_index].event != event_close){
 					gate_close();
 					scrolling = 0;
 					new_event.cmd = cmd_remote_closing;
@@ -152,6 +163,7 @@ void core_main(){
 			}
 		}
 
+
 		// 10 Hz adc reader
 		if (timer_adc_reader_10Hz_interrupt){
 			timer_adc_reader_10Hz_interrupt = 0;
@@ -159,12 +171,12 @@ void core_main(){
 
 			// process data
 			uint8_t current_plus_status[16];
-//			current_plus_status[5] = '\0';
-			uint8_t initial_current;
-			initial_current = ADC_value[3] / 10;
-			latest_current_reading = initial_current;
-			current_plus_status[0] = initial_current/10 + '0';
-			current_plus_status[1] = (initial_current % 10) + '0';
+			//			current_plus_status[5] = '\0';
+			uint8_t current_hex;
+			current_hex = ADC_value[3] / 10;
+			latest_current_reading = current_hex;
+			current_plus_status[0] = current_hex/10 + '0';
+			current_plus_status[1] = (current_hex % 10) + '0';
 			current_plus_status[2] = ' ';
 			current_plus_status[3] = 'm';
 			current_plus_status[4] = 'A';
@@ -172,12 +184,37 @@ void core_main(){
 			current_plus_status[6] = ' ';
 			current_plus_status[7] = ' ';
 
+			uint8_t max_current_before_obstruction = 80; //mA
 			uint8_t * lcd_status_string = " unknown";
 			switch (event_datalogs[event_index].event){
 			case event_open:
+				if (latest_current_reading > max_current_before_obstruction){
+					nReady_overcurrent_counter++;
+					if (nReady_overcurrent_counter > max_overcurrent_counter){
+						nReady_overcurrent_counter=max_overcurrent_counter;
+						gate_close();
+						new_event.cmd = cmd_mechanical_interference;
+						new_event.event = event_autoclose;
+						new_event.status = status_auto_close;
+						eventAdd(new_event);
+						eventPrint(event_datalogs[event_index]);
+					}
+				}
 				lcd_status_string = "    open";
 				break;
 			case event_close:
+				if (latest_current_reading > max_current_before_obstruction){
+					nReady_overcurrent_counter++;
+					if (nReady_overcurrent_counter > max_overcurrent_counter){
+						nReady_overcurrent_counter=max_overcurrent_counter;
+						gate_open();
+						new_event.cmd = cmd_mechanical_interference;
+						new_event.event = event_autoclose;
+						new_event.status = status_auto_close;
+						eventAdd(new_event);
+						eventPrint(event_datalogs[event_index]);
+					}
+				}
 				lcd_status_string = "   close";
 				break;
 			case event_opened:
@@ -191,6 +228,13 @@ void core_main(){
 				break;
 			case event_autoclose:
 				lcd_status_string = "autclose";
+				if (latest_current_reading > max_current_before_obstruction){
+					nReady_overcurrent_counter++;
+					if (nReady_overcurrent_counter > max_overcurrent_counter){
+						nReady_overcurrent_counter=max_overcurrent_counter;
+						PHASE = !PHASE;
+					}
+				}
 				break;
 			case event_autoclosed:
 				lcd_status_string = "auclosed";
