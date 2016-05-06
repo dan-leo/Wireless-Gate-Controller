@@ -89,11 +89,11 @@ void serial_handler(uint8_t current){
 
 	uint8_t read_current;
 
-	if (serial_rx == 0xF7){
-		buffer[0] = 0xF7;
-		buffer[1] = current;
-		R_UART1_Send_Daniel(buffer, 2);
-	}
+//	if (serial_rx == 0xF7){
+//		buffer[0] = 0xF7;
+//		buffer[1] = current;
+//		R_UART1_Send_Daniel(buffer, 2);
+//	}
 
 	switch (serial_rx){
 	case 0x81:
@@ -205,14 +205,21 @@ void serial_handler(uint8_t current){
 
 //		latest_current_reading = 10;
 
-		R_FDL_Init();
-		R_FDL_Read();
-		read_current = g_read_value;
-		PFDL_Close();
+//		R_FDL_Init();
+//		R_FDL_Read();
+//		read_current = g_read_value;
+//		PFDL_Close();
 
-
+		// because I spent 2.5 hours on this, it is 2.5 am, and I've tried every hat trick under the sun.
+		if ((events && ((event_datalogs[event_index].event == event_open) \
+				|| (event_datalogs[event_index].event == event_close))) || gate_is_moving){
+			buffer[1] = 0xA;
+		}
+		else {
+			buffer[0] = 0x0;
+		}
 		buffer[0] = 0xF7;
-		buffer[1] = read_current;
+//		buffer[1] = read_current;
 		R_UART1_Send_Daniel(&buffer, 2);
 
 //		latest_current_reading = 10;
@@ -230,14 +237,14 @@ void serial_handler(uint8_t current){
 		echo(0xF8);
 		gate_close();
 		//if (gate_position == OPEN) R_INTC3_Stop();
-		print_lcd("unknown");
+		print_lcd("closing");
 		break;
 	case 0xF9:
 		// open gate
 		echo(0xF9);
 		gate_open();
 		//if (gate_position == CLOSED) R_INTC4_Stop();
-		print_lcd("unknown");
+		print_lcd("opening");
 		break;
 	case 0xFC:
 		// read IR cmd

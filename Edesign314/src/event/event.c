@@ -21,9 +21,9 @@
 
 volatile uint8_t ready = 0;
 volatile uint8_t event_index_on_lcd = 0;
-volatile uint8_t events = 0;
 
 void eventInit(){
+	events = 0;
 	event_index=-1;
 	ready = true;
 }
