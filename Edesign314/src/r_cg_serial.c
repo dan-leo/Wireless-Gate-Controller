@@ -208,4 +208,25 @@ MD_STATUS R_UART1_Send(uint8_t * const tx_buf, uint16_t tx_num)
 }
 
 /* Start user code for adding. Do not edit comment generated here */
+MD_STATUS R_UART1_Send_Daniel(uint8_t * tx_buf, uint16_t tx_num)
+{
+    MD_STATUS status = MD_OK;
+
+    if (tx_num < 1U)
+    {
+        status = MD_ARGERROR;
+    }
+    else
+    {
+        gp_uart1_tx_address = tx_buf;
+        g_uart1_tx_count = tx_num;
+        STMK1 = 1U;    /* disable INTST1 interrupt */
+        TXD1 = *gp_uart1_tx_address;
+        gp_uart1_tx_address++;
+        g_uart1_tx_count--;
+        STMK1 = 0U;    /* enable INTST1 interrupt */
+    }
+
+    return (status);
+}
 /* End user code. Do not edit comment generated here */

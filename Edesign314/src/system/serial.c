@@ -6,8 +6,9 @@
  */
 
 #include "serial.h"
-#include "globals.h"
+//#include "globals.h"
 #include "../event/event.h"
+#include "../flash/flash.h"
 
 #define RX_BUF_LEN 16
 #define TX_BUF_LEN 16
@@ -23,6 +24,8 @@ volatile uint8_t uart1RxOvrFlag;	// UART2 Receive Overrun Flag
 
 uint8_t rx_tail;
 
+volatile uint8_t serial_latest_current_reading;
+
 extern volatile uint8_t rx_flag;
 
 void serial_clear_tx_buf();
@@ -32,13 +35,11 @@ void serial_clear_tx_buf();
  * Print adc result to serial terminal
  * @param: adc result
  */
-void serial_print_adc(uint16_t reading){
-	uint8_t a;
-	a = reading >> 8;
-	R_UART1_Send(&a, 1);
-	delay(10000U);
-	a = (uint8_t)reading;
-	R_UART1_Send(&a, 1);
+void serial_print_adc(uint8_t reading){
+	uint8_t buffer[2];
+	buffer[0] = 0xF7;
+	buffer[1] = latest_current_reading/5;
+	R_UART1_Send(&buffer, 2);
 }
 
 /**
@@ -73,8 +74,7 @@ void serial_clear_rx_buf(){
 /**
  * handle all serial comms
  */
-void serial_handler(){
-	PM7^=0x80;
+void serial_handler(uint8_t current){
 	//DI();
 	R_UART1_Receive(&serial_rx,1);
 	uart1RxBuf[rx_tail] = serial_rx;
@@ -83,6 +83,17 @@ void serial_handler(){
 	uint8_t toggle = (uint8_t)((ir_rxMessage >> 11) & 0x1);
 	uint8_t data = (uint8_t)(ir_rxMessage & 0x3);
 	uint8_t data_byte = data | (toggle << 7);
+
+	volatile uint8_t buffer[2];
+//	buffer[1] = serial_latest_current_reading;
+
+	uint8_t read_current;
+
+	if (serial_rx == 0xF7){
+		buffer[0] = 0xF7;
+		buffer[1] = current;
+		R_UART1_Send_Daniel(buffer, 2);
+	}
 
 	switch (serial_rx){
 	case 0x81:
@@ -180,13 +191,39 @@ void serial_handler(){
 		print_lcd(uart1RxBuf);
 		serial_clear_rx_buf();
 		return;
+	case 0xF5:
+		echo(0xF5);
+		eventClearDatalog();
+		break;
 	case 0xF6:
 		eventSerialRead();
 		break;
 	case 0xF7:
 		// read current
-		echo(0xF7);
-		serial_print_adc(latest_current_reading);
+		//echo(0xF7);
+//		serial_print_adc(latest_current_reading);
+
+//		latest_current_reading = 10;
+
+		R_FDL_Init();
+		R_FDL_Read();
+		read_current = g_read_value;
+		PFDL_Close();
+
+
+		buffer[0] = 0xF7;
+		buffer[1] = read_current;
+		R_UART1_Send_Daniel(&buffer, 2);
+
+//		latest_current_reading = 10;
+
+//		STMK1 = 1U;    /* disable INTST1 interrupt */
+//		TXD1 = 0xF7;
+//		delay(1000);
+//		delayNoInt(40U);
+//		TXD1 = serial_latest_current_reading;
+//		delayNoInt(16000U);
+//		STMK1 = 0U;    /* enable INTST1 interrupt */
 		break;
 	case 0xF8:
 		// close gate
@@ -226,4 +263,8 @@ void serial_handler(){
 		rx_tail %= RX_BUF_LEN;
 	}
 	//EI();
+}
+
+void updateSerialCurrentReading(uint8_t current){
+	serial_latest_current_reading = current;
 }

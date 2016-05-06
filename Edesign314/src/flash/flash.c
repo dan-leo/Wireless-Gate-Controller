@@ -218,18 +218,18 @@ uint8_t R_FDL_ExecuteWrite(void)
 
 //    P5_bit.no2 = 0U;                                                                    /* LED0 on */
     R_FDL_Init();                                                                       /* FDL initialization */
-    ret  = R_FDL_BlankCheck();                                                          /* Blank check process */
-
-    /* **** When blank check error **** */
-    if (ret == PFDL_ERR_MARGIN)
-    {
-        ret = R_FDL_Erase();                                                           /* Erase data of target block */
-    }
-    /* **** When other than blank check error **** */
-    else
-    {
-        /* Do nothing */
-    }
+//    ret  = R_FDL_BlankCheck();                                                          /* Blank check process */
+//
+//    /* **** When blank check error **** */
+//    if (ret == PFDL_ERR_MARGIN)
+//    {
+//        ret = R_FDL_Erase();                                                           /* Erase data of target block */
+//    }
+//    /* **** When other than blank check error **** */
+//    else
+//    {
+//        /* Do nothing */
+//    }
 
     /* **** When blank check or success data erase is success **** */
     if (ret == PFDL_OK)

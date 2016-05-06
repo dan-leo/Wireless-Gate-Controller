@@ -398,6 +398,7 @@ static void r_uart1_callback_error(uint8_t err_type);
 static void r_uart1_callback_receiveend(void);
 static void r_uart1_callback_sendend(void);
 static void r_uart1_callback_softwareoverrun(uint16_t rx_data);
+MD_STATUS R_UART1_Send_Daniel(uint8_t * tx_buf, uint16_t tx_num);
 
 /* Start user code for function. Do not edit comment generated here */
 /* End user code. Do not edit comment generated here */

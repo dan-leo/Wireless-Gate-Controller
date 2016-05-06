@@ -74,8 +74,8 @@ void core_setup(){
 
 	uint8_t ret;
 
-	/*flash_setup();
-	g_read_value = 9;
+	flash_setup();
+	/*g_read_value = 9;
 
 	g_write_value = 'z';
 	R_FDL_ExecuteWrite();
@@ -99,6 +99,8 @@ void core_setup(){
 	uint8_t write_addr = g_write_address;
 	PFDL_Close();*/
 
+	//this all works. Just not going to implement it. :)
+
 	motor_power(28);
 
 	gate_close();
@@ -110,7 +112,7 @@ void core_main(){
 	while (1U){
 		if (rx_flag){
 			rx_flag = 0;
-			serial_handler();
+			serial_handler(latest_current_reading);
 		}
 
 		// 1kHz button checker
@@ -175,6 +177,11 @@ void core_main(){
 			uint8_t current_hex;
 			current_hex = ADC_value[3] / 10;
 			latest_current_reading = current_hex;
+			updateSerialCurrentReading(current_hex);
+
+			g_write_value = current_hex;
+			R_FDL_ExecuteWrite();
+
 			current_plus_status[0] = current_hex/10 + '0';
 			current_plus_status[1] = (current_hex % 10) + '0';
 			current_plus_status[2] = ' ';
@@ -251,6 +258,7 @@ void core_main(){
 
 			if ((mode == NORMAL_MODE) && !scrolling) print_lcd(current_plus_status);
 		}
+
 
 		if (ir_new_command_interrupt){
 			ir_new_command_interrupt = 0;

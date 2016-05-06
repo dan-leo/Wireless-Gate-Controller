@@ -137,3 +137,13 @@ void eventSerialRead(){
 	}
 
 }
+
+void eventClearDatalog(){
+	int i;
+	for (i = 0; i < 40; i++){
+		event_datalogs[i].used = 0;
+	}
+	events = 0;
+	event_index = -1;
+	event_index_on_lcd = -1;
+}

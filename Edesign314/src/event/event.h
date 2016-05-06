@@ -31,5 +31,6 @@ void eventAdd(datalog_t event);
 void eventPrint(datalog_t event);
 void eventButtonHandler();
 void eventSerialRead();
+void eventClearDatalog();
 
 #endif /* EVENT_H_ */

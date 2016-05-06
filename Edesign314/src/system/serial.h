@@ -17,8 +17,9 @@
 
 uint8_t serial_rx;
 
-void serial_print_adc(uint16_t reading);
+void serial_print_adc(uint8_t reading);
 void echo(uint8_t c);
-void serial_handler();
+void serial_handler(uint8_t current);
+void updateSerialCurrentReading(uint8_t current);
 
 #endif /* SERIAL_H_ */
