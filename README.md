@@ -23,15 +23,27 @@ for testing purposes and so that coding is faster.
 * Infrared tx (manchester encoding) works on G12. (tx also on G14 -- just for debugging/testing purposes).
 * Receive also works and displays bits on lcd.
 
-Full marks again for the third demo.
-
 TODO:
-* Meet specs for fourth demo.
+* Add 3G. (Open with a cellphone anywhere in the world).
 * Possibly add a card reader.
 
 Debugging: have a look at the debug.h folder and 
 change variables in core_setup() to enable certain serial/lcd debugging outputs
 
+All buttons and switches are connected with pull-up resistors as standard.
+
+When a new event occurs, the lcd will update with the latest event (with timestamp) accordingly
+
+One can cycle through the events using up/down menu keys (buttons).
+
+Events include:
+* Opening
+* Opened
+* Closing
+* Closed
+* Autoclosing
+* Autoclosed
+* Mechanical Interference Event
 
 CN2 | Signal Name | RL78/G14 Pin Name | Function
 :---: | :---: | --- | ---
@@ -39,6 +51,11 @@ CN2 | Signal Name | RL78/G14 Pin Name | Function
 2 | `VDD` | VDD / EVDD | 5V external input
 8 | `P15` | P15_SCK20_Z_SCL20_TRDIOD0 | This is the 40kHz pwm enable for the motor (directed to the enable pin of the DRV8801)
 9 | `P16` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This interrupt pin is triggered by data from the IR receiver 
+10 | `P17` | P17_TI01_TO02_TRDIOA0_TRDCLK0_IVCMP0 | This is connected to a button which closes gate upon pressing
+11 | `P55` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the previous event upon pressing
+12| `P54` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the next event upon pressing
+13 | `P53` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which will stop the gate from moving upon pressing (as if an emergency stop)
+14 | `P52` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which opens gate upon pressing
 15| `P51` | P51_INTP2_SO00_TXD0_TOOLTXD_TRGIOB | *For testing.* A button triggers this hardware interrupt which in turn sends a test manchestor string.
 23| `P76` | P76_KR6_INTP10_RXD2 | LCD Register select
 24| `P75` | P75_KR5_INTP9_SCK01_SCL01 | LCD Read /Write
