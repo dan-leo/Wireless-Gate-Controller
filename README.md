@@ -56,10 +56,10 @@ Pin | Signal Name | RL78/G14 Pin Name | Function
 8 | `P15` | P15_SCK20_Z_SCL20_TRDIOD0 | This is the 40kHz pwm enable for the motor (directed to the enable pin of the DRV8801)
 9 | `P16` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This interrupt pin is triggered by data from the IR receiver 
 10 | `P17` | P17_TI01_TO02_TRDIOA0_TRDCLK0_IVCMP0 | This is connected to a button which closes gate upon pressing
-11 | `P55` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the previous event upon pressing
-12| `P54` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the next event upon pressing
-13 | `P53` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which will stop the gate from moving upon pressing (as if an emergency stop)
-14 | `P52` | P16_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which opens gate upon pressing
+11 | `P55` | P55_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the previous event upon pressing
+12| `P54` | P54_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which shows the next event upon pressing
+13 | `P53` | P53_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which will stop the gate from moving upon pressing (as if an emergency stop)
+14 | `P52` | P52_TIO1_TO01_INTP5_TRDIOC0_IVREF0 | This is connected to a button which opens gate upon pressing
 15| `P51` | P51_INTP2_SO00_TXD0_TOOLTXD_TRGIOB | *For testing.* A button triggers this hardware interrupt which in turn sends a test manchestor string.
 23| `P76` | P76_KR6_INTP10_RXD2 | LCD Register select
 24| `P75` | P75_KR5_INTP9_SCK01_SCL01 | LCD Read /Write
