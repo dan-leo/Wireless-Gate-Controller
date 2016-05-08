@@ -45,7 +45,11 @@ Events include:
 * Autoclosed
 * Mechanical Interference Event
 
-CN2 | Signal Name | RL78/G14 Pin Name | Function
+## Pinout
+### G14 Gate controller
+
+#### CN2
+Pin | Signal Name | RL78/G14 Pin Name | Function
 :---: | :---: | --- | ---
 1 | `GND` | VSS / EVSS | Ground
 2 | `VDD` | VDD / EVDD | 5V external input
@@ -65,7 +69,8 @@ CN2 | Signal Name | RL78/G14 Pin Name | Function
 28| `P71` | P71_KR1_SI21_SDA21 | LCD Data channel 1
 29| `P70` | P70_KR0_SCK21_SCL21 | LCD Data channel 0
 
-CN3 | Signal Name | RL78/G14 Pin Name | Function
+#### CN3
+Pin | Signal Name | RL78/G14 Pin Name | Function
 :---: | :---: | --- | ---
 1 | `GND` | VSS / EVSS | Ground
 2 | `VDD` | VDD / EVDD | 5V external input
@@ -82,3 +87,14 @@ CN3 | Signal Name | RL78/G14 Pin Name | Function
 27| `P06` | P06 | Digital in which listens for when the gate closes/is closed (port is polled ~ debouncing).
 28| `P05` | P05 | Digital in which listens for when the gate opens/is opened (port is polled ~ debouncing).
 29| `P30` | P30/INTP3/RTC1HZ/SCK00/SCL00/TRJO0 | *Unused.* Hardware interrupt which listens for when the gate opens/closes.
+
+
+### G12 Infra-red transmitter
+
+Pin | Signal Name | RL78/G14 Pin Name | Function
+:---: | :---: | --- | ---
+3 | `P41`| P41_ANI22_SO01_SDA01_TI02_TO02_INTP1 | Open gate button
+9 | `GND` | VSS | Ground
+10 | `VDD` | VDD | 3.3V external input
+14 | `P13` | P13_ANI19_TI00_TO00_INTP2 | Close gate button
+17 | `P10` | P10_ANI16_PCLBUZ0_SCK00_SCL00 | IR Led output
