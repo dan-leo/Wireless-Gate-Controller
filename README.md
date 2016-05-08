@@ -98,3 +98,5 @@ Pin | Signal Name | RL78/G14 Pin Name | Function
 10 | `VDD` | VDD | 3.3V external input
 14 | `P13` | P13_ANI19_TI00_TO00_INTP2 | Close gate button
 17 | `P10` | P10_ANI16_PCLBUZ0_SCK00_SCL00 | IR Led output
+
+![Schematic](gate_controller_schematic_A3_150dpi_monochrome.png)
